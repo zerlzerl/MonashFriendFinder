@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.monashfriendfinder.R;
+import edu.monashsuzhou.friendfinder.R;
 
 
 public class MenuListFragment extends Fragment {

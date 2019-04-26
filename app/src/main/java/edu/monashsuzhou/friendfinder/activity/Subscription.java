@@ -10,7 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.example.monashfriendfinder.R;
+import edu.monashsuzhou.friendfinder.R;
 
 import edu.monashsuzhou.friendfinder.MainActivity;
 
