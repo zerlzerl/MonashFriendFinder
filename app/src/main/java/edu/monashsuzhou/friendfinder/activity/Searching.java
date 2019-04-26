@@ -32,7 +32,7 @@ import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.ferfalk.simplesearchview.SimpleSearchView;
 import com.ferfalk.simplesearchview.utils.DimensUtils;
 
-import com.example.monashfriendfinder.R;
+import edu.monashsuzhou.friendfinder.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;

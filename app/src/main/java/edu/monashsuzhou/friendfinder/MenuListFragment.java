@@ -15,7 +15,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.monashfriendfinder.R;
+import edu.monashsuzhou.friendfinder.R;
 
 import edu.monashsuzhou.friendfinder.activity.Searching;
 

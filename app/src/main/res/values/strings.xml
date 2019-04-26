@@ -22,6 +22,7 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+
     <string name="action_home">Back to Home</string>
     <string name="username">WildShark!!</string>
     <string name="section_format">Hello World from section: %1$d</string>
@@ -31,4 +32,12 @@
     <string name="search_tab4">more</string>
     <string name="title_activity_menu_list_test">MenuListTest</string>
     <string name="subscription_username">User Name</string>
+
+    <!-- ************************* login ******************** -->
+    <string name="account">e-mail</string>
+    <string name="password">password</string>
+    <string name="check_password">skip</string>
+    <string name="sub">sign up</string>
+    <string name="login">sign in</string>
+    <string name="loading">loading</string>
 </resources>
