@@ -30,7 +30,7 @@
         android:layout_height="@dimen/item_height_normal"
         android:layout_marginLeft="@dimen/margin_large"
         android:layout_marginRight="@dimen/margin_large"
-        android:layout_marginTop="140dp">
+        android:layout_marginTop="120dp">
 
         <ImageView
             android:id="@+id/img_account"
@@ -151,7 +151,7 @@
         <Button
             android:id="@+id/btn_login"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/margin_large"
             android:layout_marginTop="@dimen/margin_medium"
             android:layout_marginBottom="@dimen/margin_small"
@@ -165,7 +165,7 @@
         <Button
             android:id="@+id/btn_sub"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_large"
             android:layout_marginTop="@dimen/margin_medium"
             android:layout_marginBottom="@dimen/margin_small"
