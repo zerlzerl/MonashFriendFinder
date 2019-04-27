@@ -16,7 +16,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name="edu.monashsuzhou.friendfinder.activity.Login"
-            android:label="@string/title_activity_login"
+            android:label="MonashFF"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

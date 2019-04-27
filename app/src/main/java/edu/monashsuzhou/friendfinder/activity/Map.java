@@ -22,7 +22,6 @@ public class Map extends AppCompatActivity {
         setContentView(R.layout.map);
 
         toolbar = findViewById(R.id.map_toolbar);
-
         setSupportActionBar(toolbar);
 
 //        FloatingActionButton fab = findViewById(R.id.fab);
