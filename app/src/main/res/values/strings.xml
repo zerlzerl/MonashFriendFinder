@@ -24,6 +24,14 @@
     </string>
 
     <string name="action_home">Back to Home</string>
+    <string name="username">WildShark!!</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="search_tab1">gender</string>
+    <string name="search_tab2">nation</string>
+    <string name="search_tab3">language</string>
+    <string name="search_tab4">more</string>
+    <string name="title_activity_menu_list_test">MenuListTest</string>
+    <string name="subscription_username">User Name</string>
 
     <!-- ************************* login ******************** -->
     <string name="account">e-mail</string>
