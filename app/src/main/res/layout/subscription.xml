@@ -7,6 +7,7 @@
     tools:context="edu.monashsuzhou.friendfinder.activity.Subscription">
 
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/Subscription_AppBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
@@ -30,12 +31,31 @@
         <!--android:layout_gravity="bottom|end"-->
         <!--android:layout_margin="@dimen/fab_margin"-->
         <!--app:srcCompat="@android:drawable/ic_dialog_email" />-->
+
+    <ScrollView
+        android:id="@+id/Subscription_ScrollView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scrollbars="vertical"
+        android:layout_below="@id/Subscription_AppBarLayout"
+        android:layout_above="@id/Subscription_Bottom">
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:orientation="vertical"
+            android:layout_height="fill_parent">
+
+            <!--Put form controls here-->
+
+        </LinearLayout>
+    </ScrollView>
+
+
     <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/bottom"
-    android:layout_alignParentBottom="true" >
+    android:id="@+id/Subscription_Bottom"
+    android:layout_alignParentBottom="true">
         <Button
             android:id="@+id/addDiaryBtn"
             android:layout_width="fill_parent"
@@ -46,5 +66,7 @@
             android:layout_margin="@dimen/margin"
             android:text="Subscribe Now!"/>
     </LinearLayout>
+
+
 
 </RelativeLayout>
