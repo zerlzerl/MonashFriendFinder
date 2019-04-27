@@ -30,7 +30,7 @@ import edu.monashsuzhou.friendfinder.util.MD5Util;
 import edu.monashsuzhou.friendfinder.util.RestClient;
 import edu.monashsuzhou.friendfinder.util.SharedPreferencesUtils;
 
-public class Login extends AppCompatActivity
+public class Logout extends AppCompatActivity
         implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     private EditText et_account;
@@ -43,8 +43,6 @@ public class Login extends AppCompatActivity
     private LoadingDialog mLoadingDialog; //显示正在加载的对话框
 
     private Toolbar toolbar;
-
-    //测试数据：email为2@2，密码为1，经加密为c4ca4238a0b923820dcc509a6f75849b
 
 
     @Override
@@ -90,12 +88,12 @@ public class Login extends AppCompatActivity
 
 
         //判断用户是否是第一次登陆
-        if (firstLogin()) {
+        if (true) {
             checkBox_rem.setChecked(false);//取消记住密码的复选框
             checkBox_skip.setChecked(false);//取消自动登录的复选框
         }
         //判断是否记住密码
-        if (remenberPassword()) {
+        if (false) {
             checkBox_rem.setChecked(true);//勾选记住密码
             setTextAccountAndPassword();//把密码和账号输入到输入框中
         } else {
@@ -103,7 +101,7 @@ public class Login extends AppCompatActivity
         }
 
         //判断是否自动登录
-        if (skipLogin()) {
+        if (false) {
             checkBox_skip.setChecked(true);
             login();//去登录就可以
 
@@ -224,7 +222,7 @@ public class Login extends AppCompatActivity
      * 获得服务器端的密码
      */
     public String getServerPassword() {
-        String account = getAccount();
+        String account = getAccount(); //syq@qq.com
         if(!account.isEmpty() && account.contains("@")) {
             String info = RestClient.findByAttribute("/entity.studentprofile/findByEmail/", account);
             JSONArray profList = JSON.parseArray(info);
@@ -269,19 +267,20 @@ public class Login extends AppCompatActivity
                 setLoginBtnClickable(false);//点击登录后，设置登录按钮不可点击状态
 
 
-                //睡眠2秒
+                //睡眠3秒
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(3000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
 
-                //判断账号和密码，输入的密码经MD5加密后是否和服务器端存储的一致
+
+                //判断账号和密码
                 if (MD5Util.GetMD5Code(getPassword()).equals(getServerPassword())) {
                     showToast("登录成功");
                     loadCheckBoxState(checkBox_rem, checkBox_skip);//记录下当前用户记住密码和自动登录的状态;
 
-                    startActivity(new Intent(Login.this, MainActivity.class));
+                    startActivity(new Intent(Logout.this, MainActivity.class));
                     finish();//关闭页面
                 } else {
                     showToast("输入的登录账号或密码不正确");
@@ -460,7 +459,7 @@ public class Login extends AppCompatActivity
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(Login.this, msg, Toast.LENGTH_SHORT).show();
+                Toast.makeText(Logout.this, msg, Toast.LENGTH_SHORT).show();
             }
         });
 

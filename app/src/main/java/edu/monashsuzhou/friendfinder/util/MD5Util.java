@@ -4,7 +4,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 /*
- * MD5 算法
+ * MD5 算法：32位小写字母
  */
 public class MD5Util {
 

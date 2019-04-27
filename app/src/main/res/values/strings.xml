@@ -9,6 +9,7 @@
     <string name="title_activity_searching">Searching</string>
     <string name="title_activity_map">Map</string>
     <string name="title_activity_report">Report</string>
+    <string name="title_activity_logout">Logout</string>
     <string name="title_activity_login">Login</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
