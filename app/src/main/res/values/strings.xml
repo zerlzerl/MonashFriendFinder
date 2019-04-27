@@ -36,7 +36,8 @@
     <!-- ************************* login ******************** -->
     <string name="account">e-mail</string>
     <string name="password">password</string>
-    <string name="check_password">skip</string>
+    <string name="check_rem">remeber pswd</string>
+    <string name="check_skip">skip login</string>
     <string name="sub">sign up</string>
     <string name="login">sign in</string>
     <string name="loading">loading</string>

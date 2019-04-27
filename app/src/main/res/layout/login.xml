@@ -124,6 +124,16 @@
         android:gravity="center"
         >
         <CheckBox
+            android:id="@+id/checkBox_rem"
+            android:padding="10dp"
+            android:textSize="@dimen/text_size_medium"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="@string/check_rem"
+            android:textColor="@color/top_bar_normal_bg" android:checked="false"/>
+        <CheckBox
             android:id="@+id/checkBox_skip"
             android:padding="10dp"
             android:textSize="@dimen/text_size_medium"
@@ -131,7 +141,7 @@
             android:layout_width="wrap_content"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="@string/check_password"
+            android:text="@string/check_skip"
             android:textColor="@color/top_bar_normal_bg" android:checked="false"/>
 
     </LinearLayout>
