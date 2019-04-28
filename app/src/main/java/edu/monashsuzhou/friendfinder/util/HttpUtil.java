@@ -3,6 +3,7 @@ package edu.monashsuzhou.friendfinder.util;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import java.io.IOException;
@@ -109,12 +110,12 @@ public class HttpUtil {
         }
     }
 
-    public static JSONObject getJson(String table, String uri) throws IOException {
-        return JSONObject.parseObject(get(table, uri));
-    }
-    public static JSONObject postJson(String table, String uri, Object obj) throws IOException {
-        return JSONObject.parseObject(post(table, uri, obj));
-    }
+//    public static JSONArray getJson(String table, String uri) throws IOException {
+//        return com.alibaba.fastjson.JSON.parseArray(get(table, uri));
+//    }
+//    public static JSONArray postJson(String table, String uri, Object obj) throws IOException {
+//        return com.alibaba.fastjson.JSON.parseArray(post(table, uri, obj));
+//    }
     public static void main(String[] args) throws ParseException {
         try {
             //Examples
@@ -147,10 +148,10 @@ public class HttpUtil {
             System.out.println(msg); // 无返回值
 
             //6 修改一个对象后更新
-            JSONObject profile = getJson("Profile", "1");
-            profile.put("email", "abcdefg@hijklmn");
-            msg = put("Profile", "1", profile);
-            System.out.println(msg); // 无返回值
+//            JSONObject profile = getJson("Profile", "1");
+//            profile.put("email", "abcdefg@hijklmn");
+//            msg = put("Profile", "1", profile);
+//            System.out.println(msg); // 无返回值
 
             msg = get("Location", "1");
 

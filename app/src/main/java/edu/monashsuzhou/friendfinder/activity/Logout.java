@@ -22,9 +22,12 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
+import java.io.IOException;
+
 import edu.monashsuzhou.friendfinder.R;
 
 import edu.monashsuzhou.friendfinder.MainActivity;
+import edu.monashsuzhou.friendfinder.util.HttpUtil;
 import edu.monashsuzhou.friendfinder.util.LoadingDialog;
 import edu.monashsuzhou.friendfinder.util.MD5Util;
 import edu.monashsuzhou.friendfinder.util.RestClient;
@@ -224,7 +227,12 @@ public class Logout extends AppCompatActivity
     public String getServerPassword() {
         String account = getAccount(); //syq@qq.com
         if(!account.isEmpty() && account.contains("@")) {
-            String info = RestClient.findByAttribute("/entity.studentprofile/findByEmail/", account);
+            String info = null;
+            try {
+                info = HttpUtil.get("Profile", "findByEmail/" + account);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             JSONArray profList = JSON.parseArray(info);
             if(profList.size() == 0){
                 //没有这个用户
