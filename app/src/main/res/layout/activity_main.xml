@@ -30,77 +30,189 @@
         </android.support.design.widget.AppBarLayout>
 
 
-        <LinearLayout
+        <android.support.constraint.ConstraintLayout
+            android:layout_marginTop="@dimen/margin_huge"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
             <TextView
-                android:layout_width="match_parent"
+                android:id="@+id/tv_city"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/tv_gray_deep"
-                android:id="@+id/tv_hello"
-                android:layout_marginTop="60dp"
-                android:paddingTop="20dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
+                android:text="Suzhou"
                 android:textSize="@dimen/text_size_most"
-                android:text="Hello Monica, welcome!"/>
+                android:textStyle=""
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_wel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
+                android:textColor="@color/orange_main"
+                android:text="Welcome, Monica."
+                android:textSize="@dimen/text_size_most"
+                android:textStyle=""
+                app:layout_constraintLeft_toRightOf="@+id/tv_city"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <TextView
+                android:id="@+id/tv_discrip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:text="Partly Cloudy"
+                android:textSize="@dimen/text_size_medium"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_city" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="10dp">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/orange_deep"
-                    android:id="@+id/tv_date"
-                    android:textSize="@dimen/text_size_most"
-                    android:layout_weight="1"
-                    android:text="Date:" />
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_discrip">
+
+                <ImageView
+                    android:id="@+id/iv_weather"
+                    android:layout_width="0dp"
+                    android:layout_height="120dp"
+                    android:layout_weight="3"
+                    android:src="@mipmap/ic_clear" />
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/orange_deep"
-                    android:id="@+id/tv_time"
-                    android:textSize="@dimen/text_size_most"
-                    android:layout_weight="1"
-                    android:text="Time:" />
+                    android:id="@+id/tv_temp"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_weight="3"
+                    android:gravity="center"
+                    android:text="26°"
+                    android:textSize="50dp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="4"
+                    android:layout_marginRight="16dp"
+                    android:orientation="vertical"
+                    >
+                    <TextView
+                        android:id="@+id/tv_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:gravity="center_horizontal|bottom"
+                        android:layout_weight="5"
+                        android:text="2019/4/28"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/text_size_most"
+                        />
+                    <TextView
+                        android:id="@+id/tv_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="5"
+                        android:gravity="center_horizontal"
+                        android:textSize="@dimen/text_size_most"
+                        android:text="19:36:45"/>
+                </LinearLayout>
 
 
             </LinearLayout>
 
 
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="10dp">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/orange_deep"
-                    android:id="@+id/tv_tem"
-                    android:textSize="@dimen/text_size_most"
-                    android:layout_weight="1"
-                    android:text="Tem:" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/orange_deep"
-                    android:id="@+id/tv_loc"
-                    android:textSize="@dimen/text_size_most"
-                    android:layout_weight="1"
-                    android:text="Loc:" />
+        </android.support.constraint.ConstraintLayout>
 
 
-            </LinearLayout>
 
 
-        </LinearLayout>
+
+        <!---->
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:paddingLeft="20dp"-->
+            <!--android:paddingRight="20dp"-->
+            <!--android:orientation="vertical">-->
+
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:textColor="@color/tv_gray_deep"-->
+                <!--android:id="@+id/tv_hello"-->
+                <!--android:layout_marginTop="60dp"-->
+                <!--android:paddingTop="20dp"-->
+                <!--android:textSize="@dimen/text_size_most"-->
+                <!--android:text="Hello Monica, welcome!"/>-->
+
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:paddingTop="10dp">-->
+                <!--<TextView-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:textColor="@color/orange_deep"-->
+                    <!--android:id="@+id/tv_date"-->
+                    <!--android:textSize="@dimen/text_size_most"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:text="Date:" />-->
+
+                <!--<TextView-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:textColor="@color/orange_deep"-->
+                    <!--android:id="@+id/tv_time"-->
+                    <!--android:textSize="@dimen/text_size_most"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:text="Time:" />-->
+
+
+            <!--</LinearLayout>-->
+
+
+
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:paddingTop="10dp">-->
+                <!--<TextView-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:textColor="@color/orange_deep"-->
+                    <!--android:id="@+id/tv_tem"-->
+                    <!--android:textSize="@dimen/text_size_most"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:text="Tem:" />-->
+
+                <!--<TextView-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:textColor="@color/orange_deep"-->
+                    <!--android:id="@+id/tv_loc"-->
+                    <!--android:textSize="@dimen/text_size_most"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:text="Loc:" />-->
+
+
+            <!--</LinearLayout>-->
+
+
+        <!--</LinearLayout>-->
     </android.support.design.widget.CoordinatorLayout>
 
 
@@ -113,7 +225,7 @@
         <FrameLayout
             android:id="@+id/id_container_menu"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
 
     </com.mxn.soul.flowingdrawer_core.FlowingMenuLayout>
 
