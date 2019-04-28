@@ -44,6 +44,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="edu.monashsuzhou.friendfinder.activity.Subscription"
+            android:windowSoftInputMode="stateHidden"
             android:label="@string/title_activity_subscription"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- subscription -->
+    <string-array name="nations">
+        <item>Australia</item>
+        <item>China</item>
+        <item>United States</item>
+        <item>United Kingdom</item>
+        <item>France</item>
+        <item>Germany</item>
+        <item>Italy</item>
+        <item>Switzerland</item>
+        <item>Swiss</item>
+        <item>Canada</item>
+        <item>India</item>
+    </string-array>
+
+    <string-array name="languages">
+        <item>English</item>
+        <item>Chinese</item>
+        <item>Spanish</item>
+        <item>Hindi</item>
+        <item>Arabic</item>
+        <item>Portuguese</item>
+        <item>Bengali</item>
+        <item>Russian</item>
+        <item>Japanese</item>
+        <item>Punjabi/Lahnda</item>
+        <item>French</item>
+    </string-array>
+
+    <string-array name="units">
+        <item>FIT5048 - Operating Systems</item>
+        <item>FIT5178 - Computer Networks</item>
+        <item>FIT5183 - Mobile and Distributed Computing Systems</item>
+        <item>FIT5186 - Intelligent Systems</item>
+        <item>FIT5187 - Wireless Networks</item>
+        <item>FIT5190 - IT Research Methods</item>
+        <item>FIT5191 - Algorithms</item>
+    </string-array>
+    <string name="nation">Select Your Nationality</string>
+    <string name="language">Select Your Language</string>
+</resources>

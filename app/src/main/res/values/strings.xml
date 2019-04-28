@@ -42,4 +42,13 @@
     <string name="sub">sign up</string>
     <string name="login">sign in</string>
     <string name="loading">loading</string>
+
+    <!-- Subscription -->
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="part_time">Part Time</string>
+    <string name="full_time">Full Time</string>
+    <string name="unit">Select Your Favorite Unit</string>
+
+
 </resources>
