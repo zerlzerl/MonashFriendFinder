@@ -165,7 +165,7 @@
             android:paddingTop="@dimen/margin_small"
             android:text="@string/login"
             android:background="@drawable/btn_orange_selector"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/holo_blue_dark"
             android:textSize="@dimen/text_size_normal"/>
 
         <Button
@@ -179,7 +179,7 @@
             android:paddingTop="@dimen/margin_small"
             android:text="@string/sub"
             android:background="@drawable/btn_orange_selector"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/holo_blue_dark"
             android:textSize="@dimen/text_size_normal"/>
     </LinearLayout>
 

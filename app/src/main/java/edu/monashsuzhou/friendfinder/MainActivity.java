@@ -1,18 +1,30 @@
 package edu.monashsuzhou.friendfinder;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
 
 import edu.monashsuzhou.friendfinder.R;
 import com.mxn.soul.flowingdrawer_core.ElasticDrawer;
 import com.mxn.soul.flowingdrawer_core.FlowingDrawer;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class MainActivity extends AppCompatActivity {
 
     private FlowingDrawer mDrawer;
+
+    private TextView tv_date;
+    private TextView tv_time;
+    private TextView tv_tem;
+    private TextView tv_loc;
+
+    private Handler mHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +36,39 @@ public class MainActivity extends AppCompatActivity {
         setupToolbar();
         setupMenu();
 
+        initTextViews();
+
+        //显示日期和时间
+        mHandler = new Handler();
+        if(true) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");// HH:mm:ss
+                    Date now = new Date(System.currentTimeMillis());
+                    String now_format = ""+simpleDateFormat.format(now);
+                    String[] dateTime = now_format.split(" ");
+                    String date = dateTime[0];
+                    String time = dateTime[1];
+                    tv_date.setText("Date:\n" + date);
+                    tv_time.setText("Time:\n" + time);
+                    mHandler.postDelayed(this, 1000); //一秒钟刷新一次
+                }
+            });
+        }
+
+
+
+        //显示天气
+
+
+    }
+
+    private void initTextViews() {
+        tv_date = (TextView) findViewById(R.id.tv_date);
+        tv_time = (TextView) findViewById(R.id.tv_time);
+        tv_tem = (TextView) findViewById(R.id.tv_tem);
+        tv_loc = (TextView) findViewById(R.id.tv_loc);
 
     }
 
@@ -72,4 +117,9 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
+
+
+
+
+
 }
