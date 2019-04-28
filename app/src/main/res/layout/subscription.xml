@@ -427,17 +427,15 @@
                     android:textSize="@dimen/text_size_large"
                     android:text="Course"/>
 
-                <Spinner
-                    android:id="@+id/course_spinner"
-                    android:layout_width="wrap_content"
+                <EditText
+                    android:id="@+id/course_multi_selector"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_tiny"
                     android:layout_marginStart="@dimen/margin_normal"
                     android:layout_marginEnd="@dimen/margin_normal"
-                    android:entries="@array/nations"
-                    android:spinnerMode="dialog"
-                    android:prompt="@string/nation"
-                    android:ems="10"/>
+                    android:ems="10"
+                    android:inputType="text"
+                    android:hint="Select Your Course" />
             </LinearLayout>
 
             <LinearLayout

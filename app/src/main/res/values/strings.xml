@@ -49,6 +49,9 @@
     <string name="part_time">Part Time</string>
     <string name="full_time">Full Time</string>
     <string name="unit">Select Your Favorite Unit</string>
+    <string name="ok">OK</string>
+    <string name="cancel">CANCEL</string>
+    <string name="course_select">Select Your Course</string>
 
 
 </resources>
