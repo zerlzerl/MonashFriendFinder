@@ -119,44 +119,44 @@ public class HttpUtil {
         try {
             //Examples
             //1.通过ID找学生
-//            String msg = get("Profile","1");
-//            System.out.println(msg);
-//
-//            //2.通过单个attr找学生
-//            msg = get("Profile", "findByDateOfBirth/1995-11-20");
-//            System.out.println(msg);
-//
-//            //3.访问频率
-////            msg = get("Profile", "visitingFrequency/{starting_date}/{ending_date}/{student_id}/{surname}/{first_name}");
-////            System.out.println(msg);
-//
-//            //4.通过任何叠加条件查找：
-//            JSONObject params = new JSONObject();
-//            params.put("password","123");
-//            params.put("firstName","yq");
-//            msg = post("Profile", "findByAnyAttr", params);
-//            System.out.println(msg);
-//            //4.1 通过创建一个对象来进行查找
-//            StudentProfile student = new StudentProfile().setPassword("123").setFirstName("yq").setDateOfBirth("1995-11-11");
-//            msg = post("Profile", "findByAnyAttr", student);
-//            System.out.println(msg);
-//
-//            //5 新增一个新对象
-//            student = new StudentProfile().setEmail("abcdefg@hijklmn").setFirstName("opqrst").setPassword("1234567890");
-//            msg = post("Profile", "", student);
-//            System.out.println(msg); // 无返回值
-//
-//            //6 修改一个对象后更新
-//            JSONObject profile = getJson("Profile", "1");
-//            profile.put("email", "abcdefg@hijklmn");
-//            msg = put("Profile", "1", profile);
-//            System.out.println(msg); // 无返回值
-//
-//            msg = get("Location", "1");
+            String msg = get("Profile","1");
+            System.out.println(msg);
+
+            //2.通过单个attr找学生
+            msg = get("Profile", "findByDateOfBirth/1995-11-20");
+            System.out.println(msg);
+
+            //3.访问频率
+            msg = get("Profile", "visitingFrequency/2010-01-01/2019-01-01/1/z/zhp");
+            System.out.println(msg);
+
+            //4.通过任何叠加条件查找：
+            JSONObject params = new JSONObject();
+            params.put("password","123");
+            params.put("firstName","yq");
+            msg = post("Profile", "findByAnyAttr", params);
+            System.out.println(msg);
+            //4.1 通过创建一个对象来进行查找
+            StudentProfile student = new StudentProfile().setPassword("123").setFirstName("yq").setDateOfBirth("1995-11-11");
+            msg = post("Profile", "findByAnyAttr", student);
+            System.out.println(msg);
+
+            //5 新增一个新对象
+            student = new StudentProfile().setEmail("abcdefg@hijklmn").setFirstName("opqrst").setPassword("1234567890");
+            msg = post("Profile", "", student);
+            System.out.println(msg); // 无返回值
+
+            //6 修改一个对象后更新
+            JSONObject profile = getJson("Profile", "1");
+            profile.put("email", "abcdefg@hijklmn");
+            msg = put("Profile", "1", profile);
+            System.out.println(msg); // 无返回值
+
+            msg = get("Location", "1");
 
             //7 删除一个对象，此处修改了A1部分的StudentProfile.java文件，需要将CascadeType.ALL 改为 CascadeType.REMOVE
             StudentProfile deleteStu1 = new StudentProfile().setStudentId(1);
-            String msg = deleteById("Profile", "1");
+            msg = deleteById("Profile", "1");
             System.out.println(msg);
         } catch (IOException e) {
             e.printStackTrace();
