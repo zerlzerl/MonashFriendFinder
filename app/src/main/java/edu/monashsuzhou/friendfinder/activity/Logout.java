@@ -39,6 +39,8 @@ public class Logout extends AppCompatActivity
     private EditText et_account;
     private EditText et_password;
     private Button mLoginBtn;
+    private Button signUpBtn;
+
     private CheckBox checkBox_rem;
     private CheckBox checkBox_skip;
     private ImageView iv_see_password;
@@ -172,6 +174,7 @@ public class Logout extends AppCompatActivity
 
     private void initViews() {
         mLoginBtn = (Button) findViewById(R.id.btn_login);
+        signUpBtn = (Button) findViewById(R.id.btn_sub);
         et_account = (EditText) findViewById(R.id.et_account);
         et_password = (EditText) findViewById(R.id.et_password);
         checkBox_rem = (CheckBox) findViewById(R.id.checkBox_rem);
@@ -181,6 +184,7 @@ public class Logout extends AppCompatActivity
 
     private void setupEvents() {
         mLoginBtn.setOnClickListener(this);
+        signUpBtn.setOnClickListener(this);
         checkBox_rem.setOnCheckedChangeListener(this);
         checkBox_skip.setOnCheckedChangeListener(this);
         iv_see_password.setOnClickListener(this);
@@ -216,10 +220,18 @@ public class Logout extends AppCompatActivity
             case R.id.iv_see_password:
                 setPasswordVisibility();    //改变图片并设置输入框的文本可见或不可见
                 break;
-
+            case R.id.btn_sub:
+                jumpToSubscriptionPage();
+                break;
         }
     }
 
+    /**
+     * 跳转到subscription 页面
+     */
+    private void jumpToSubscriptionPage() {
+        startActivity(new Intent(this, Subscription.class));
+    }
 
     /**
      * 获得服务器端的密码
