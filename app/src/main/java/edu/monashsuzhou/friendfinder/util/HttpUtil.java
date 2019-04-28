@@ -44,10 +44,13 @@ public class HttpUtil {
         put("Friendship","entity.studentfriendship");
     }};
 
-    public static String get(String table, String uri) throws IOException {
-        String url = service_path + TABLE2SERVICE.get(table) + "/" + uri;
-//        Log.i(HttpUtil.class.getName() + "GET:", url);
-        System.out.println(url);
+    /**
+     * 通用get方法，可用来调用外部API
+     * @param url
+     * @return
+     * @throws IOException
+     */
+    public static String get(String url) throws IOException {
         Request request = new Request.Builder()
                 .url(url)
                 .build();
@@ -58,6 +61,20 @@ public class HttpUtil {
         } else {
             throw new IOException("Unexpected code " + response);
         }
+    }
+
+    /**
+     * 封装的调用服务器api的方法，以下post，put，delete也是
+     * @param table
+     * @param uri
+     * @return
+     * @throws IOException
+     */
+    public static String get(String table, String uri) throws IOException {
+        String url = service_path + TABLE2SERVICE.get(table) + "/" + uri;
+//        Log.i(HttpUtil.class.getName() + "GET:", url);
+        System.out.println(url);
+        return get(url);
     }
 
     public static String post(String table, String uri, Object obj) throws IOException {
@@ -94,8 +111,8 @@ public class HttpUtil {
         }
     }
 
-    public static String deleteById(String table, String uri) throws IOException {
-        String url = service_path + TABLE2SERVICE.get(table) + "/" + uri;
+    public static String deleteById(String table, String id) throws IOException {
+        String url = service_path + TABLE2SERVICE.get(table) + "/" + id;
 //        Log.i(HttpUtil.class.getName() + "POST:", url);
         System.out.println(url);
         Request request = new Request.Builder()
