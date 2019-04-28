@@ -10,7 +10,8 @@
 
 
     <!--加载对话窗-->
-    <style name="BaseDialog" parent="@android:style/Theme.Dialog"/>
+    <style name="BaseDialog" parent="@android:style/Theme.Dialog" />
+
     <style name="Theme.Light.LoadingDialog" parent="@style/BaseDialog">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowFrame">@null</item>
@@ -21,7 +22,6 @@
         <item name="android:backgroundDimEnabled">true</item>
         <item name="android:windowSoftInputMode">adjustPan</item>
     </style>
-
 
 
     <style name="AppTheme.NoActionBar">

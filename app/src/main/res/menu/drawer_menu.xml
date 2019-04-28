@@ -2,27 +2,27 @@
     <group android:id="@+id/menu_group_1">
         <item
             android:id="@+id/menu_logout"
-            android:icon="@drawable/ic_launcher"
+            android:icon="@drawable/ic_baseline_exit_to_app_24px"
             android:title="Logout" />
         <item
             android:id="@+id/menu_sub"
-            android:icon="@drawable/ic_global_menu_feed"
-            android:title="Subscription" />
+            android:icon="@drawable/ic_baseline_border_color_24px"
+            android:title="EditProfile" />
         <item
             android:id="@+id/menu_sea"
-            android:icon="@drawable/ic_global_menu_direct"
+            android:icon="@drawable/ic_search_black_24dp"
             android:title="Searching" />
         <item
             android:id="@+id/menu_mf"
-            android:icon="@drawable/ic_global_menu_news"
+            android:icon="@drawable/ic_baseline_email_24px"
             android:title="MyFriends" />
         <item
             android:id="@+id/menu_map"
-            android:icon="@drawable/ic_global_menu_popular"
+            android:icon="@drawable/ic_baseline_location_on_24px"
             android:title="Map" />
         <item
             android:id="@+id/menu_rep"
-            android:icon="@drawable/ic_global_menu_nearby"
+            android:icon="@drawable/ic_baseline_bar_chart_24px"
             android:title="Report" />
     </group>
     <group android:id="@+id/menu_group_2">

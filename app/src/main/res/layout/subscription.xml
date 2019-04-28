@@ -46,28 +46,52 @@
             android:orientation="vertical">
 
 
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:orientation="horizontal">-->
+
+                <!--<ImageView-->
+                    <!--android:id="@+id/subscription_user_icon"-->
+                    <!--android:layout_width="@dimen/image_height"-->
+                    <!--android:layout_height="@dimen/image_height"-->
+                    <!--android:layout_marginTop="@dimen/margin_tiny"-->
+                    <!--android:layout_marginStart="@dimen/margin_normal"-->
+                    <!--app:srcCompat="@drawable/ic_baseline_perm_identity_24px" />-->
+
+                <!--<EditText-->
+                    <!--android:id="@+id/subscription_user_name_text"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginStart="@dimen/margin_normal"-->
+                    <!--android:layout_marginEnd="@dimen/margin_normal"-->
+                    <!--android:ems="10"-->
+                    <!--android:inputType="text"-->
+                    <!--android:hint="User name..." />-->
+            <!--</LinearLayout>-->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/margin_small">
 
                 <ImageView
-                    android:id="@+id/subscription_user_icon"
+                    android:id="@+id/subscription_email"
                     android:layout_width="@dimen/image_height"
                     android:layout_height="@dimen/image_height"
                     android:layout_marginTop="@dimen/margin_tiny"
                     android:layout_marginStart="@dimen/margin_normal"
-                    app:srcCompat="@drawable/ic_baseline_perm_identity_24px" />
+                    app:srcCompat="@drawable/ic_baseline_email_24px" />
 
                 <EditText
-                    android:id="@+id/subscription_user_name_text"
+                    android:id="@+id/subscription_email_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_normal"
                     android:layout_marginEnd="@dimen/margin_normal"
                     android:ems="10"
-                    android:inputType="text"
-                    android:hint="User name..." />
+                    android:inputType="textEmailAddress"
+                    android:hint="Email..."/>
             </LinearLayout>
 
             <LinearLayout
@@ -120,31 +144,6 @@
                     android:inputType="textPassword"
                     android:hint="Repeat Password..."/>
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="@dimen/margin_small">
-
-                <ImageView
-                    android:id="@+id/subscription_email"
-                    android:layout_width="@dimen/image_height"
-                    android:layout_height="@dimen/image_height"
-                    android:layout_marginTop="@dimen/margin_tiny"
-                    android:layout_marginStart="@dimen/margin_normal"
-                    app:srcCompat="@drawable/ic_baseline_email_24px" />
-
-                <EditText
-                    android:id="@+id/subscription_email_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_normal"
-                    android:layout_marginEnd="@dimen/margin_normal"
-                    android:ems="10"
-                    android:inputType="textEmailAddress"
-                    android:hint="Email..."/>
             </LinearLayout>
 
             <LinearLayout
@@ -526,7 +525,7 @@
     android:id="@+id/Subscription_Bottom"
     android:layout_alignParentBottom="true">
         <Button
-            android:id="@+id/addDiaryBtn"
+            android:id="@+id/SubscribeNowBtn"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
