@@ -1,17 +1,23 @@
 package edu.monashsuzhou.friendfinder.activity;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import android.util.DisplayMetrics;
 import android.graphics.Color;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.Entry;
@@ -20,17 +26,21 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 import edu.monashsuzhou.friendfinder.R;
 
 import edu.monashsuzhou.friendfinder.MainActivity;
+import edu.monashsuzhou.friendfinder.util.HttpUtil;
 
 public class Report extends AppCompatActivity {
     private PieChart mChart;
+    private PieData pieData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +50,9 @@ public class Report extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         mChart = (PieChart) findViewById(R.id.pie_chart);
+        getUnitFrequency();
+        showChart(pieData);
 
-        PieData mPieData = getPieData(4, 100);
-        showChart(mChart, mPieData);
     }
 
     @Override
@@ -69,69 +79,66 @@ public class Report extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void showChart(PieChart pieChart, PieData pieData) {
-        pieChart.setHoleColor(Color.TRANSPARENT);
-        pieChart.setHoleRadius(50f);  //半径
-        pieChart.setTransparentCircleRadius(54f); // 半透明圈
-        //pieChart.setHoleRadius(0)  //实心圆
-        //pieChart.setDescription("测试饼状图");
+    private void showChart(PieData pieData) {
+        mChart.setHoleColor(Color.TRANSPARENT);
+        mChart.setHoleRadius(50f);  //半径
+        mChart.setTransparentCircleRadius(54f); // 半透明圈
+        //mChart.setHoleRadius(0)  //实心圆
+        //mChart.setDescription("测试饼状图");
         // mChart.setDrawYValues(true);
-        pieChart.setDrawCenterText(true);  //饼状图中间可以添加文字
-        pieChart.setDrawHoleEnabled(true);
-        pieChart.setRotationAngle(90); // 初始旋转角度
-        pieChart.setCenterTextSize(15);
+        mChart.setDrawCenterText(true);  //饼状图中间可以添加文字
+        mChart.setDrawHoleEnabled(true);
+        mChart.setRotationAngle(90); // 初始旋转角度
+        mChart.setCenterTextSize(15);
         // draws the corresponding description value into the slice
         // mChart.setDrawXValues(true);
         // enable rotation of the chart by touch
-        pieChart.setRotationEnabled(true); // 可以手动旋转
+        mChart.setRotationEnabled(true); // 可以手动旋转
         // display percentage values
-        pieChart.setUsePercentValues(true);  //显示成百分比
+        mChart.setUsePercentValues(true);  //显示成百分比
 
-        pieChart.setCenterText("Quarterly Revenue");  //饼状图中间的文字
+        mChart.setCenterText("Unit Frequency");  //饼状图中间的文字
         //设置数据
-        pieChart.setData(pieData);
-        pieChart.setEntryLabelColor(Color.BLACK);
+        mChart.setData(pieData);
+        mChart.setEntryLabelColor(Color.BLACK);
+
         Legend l = mChart.getLegend();
-        l.setYOffset(12);
-        l.setXOffset(12);
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.CENTER );
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.CENTER);
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
         l.setOrientation(Legend.LegendOrientation.VERTICAL);
-
         l.setDrawInside(false);
         l.setXEntrySpace(7f);
         l.setYEntrySpace(0f);
         l.setYOffset(0f);
 
-        pieChart.animateXY(1000, 1000);  //设置动画
-        // mChart.spin(2000, 0, 360);
+        mChart.animateXY(1000, 1000);  //设置动画
     }
 
-    private PieData getPieData(int count, float range) {
-        List<String> xValues = new ArrayList<String>();  //xVals用来表示每个饼块上的内容
-        for (int i = 0; i < count; i++) {
-            xValues.add("Quarterly" + (i + 1));  //饼块上显示成Quarterly1, Quarterly2, Quarterly3, Quarterly4
+    private PieData getPieData(JSONArray data) {
+
+        int total_cnt = 0;
+        java.util.Map<String, Float> reuslt_map =  new HashMap <String,Float>();
+        for(int i = 0 ; i < data.size(); i++ ){
+            JSONObject obj = data.getJSONObject(i);
+            Float frequency = obj.getFloat("frequency");
+            String unit_name = obj.getString("unit");
+            if (!reuslt_map.containsKey(unit_name)){
+                reuslt_map.put(unit_name,frequency);
+            } else {
+                reuslt_map.put(unit_name,reuslt_map.get(unit_name) + frequency);
+            }
+            total_cnt += frequency;
         }
-        List<PieEntry> yValues = new ArrayList<PieEntry>();  //yVals用来表示封装每个饼块的实际数据
-        // 饼图数据
-        /**
-         * 将一个饼形图分成四部分， 四部分的数值比例为14:14:34:38
-         * 所以 14代表的百分比就是14%
-         */
-
         ArrayList<PieEntry> entries = new ArrayList<>();
-        float quarterly1 = 14;
-        float quarterly2 = 14;
-        float quarterly3 = 34;
-        float quarterly4 = 38;
+        for (String unit_name : reuslt_map.keySet()) {
+            float f_num = reuslt_map.get(unit_name);
+            System.out.println(f_num);
+            entries.add(new PieEntry(f_num, unit_name));
+        }
 
-        yValues.add(new PieEntry(quarterly1, "Quarterly 1"));
-        yValues.add(new PieEntry(quarterly2, "Quarterly 2"));
-        yValues.add(new PieEntry(quarterly3, "Quarterly 3" ));
-        yValues.add(new PieEntry(quarterly4, "Quarterly 4"));
 
         //y轴的集合
-        PieDataSet pieDataSet = new PieDataSet(yValues, "Quarterly Revenue 2014"/*显示在比例图上*/);
+        PieDataSet pieDataSet = new PieDataSet(entries, "Favourite units pie graph"/*显示在比例图上*/);
         pieDataSet.setSliceSpace(0f); //设置个饼状图之间的距离
         ArrayList<Integer> colors = new ArrayList<>();
 
@@ -162,5 +169,36 @@ public class Report extends AppCompatActivity {
         return pieData;
     }
 
-    
+    public java.util.Map<String, Integer> getUnitFrequency() {
+        java.util.Map<String, Integer> resultMap = new HashMap<String, Integer>();
+        HttpConnector hc = new HttpConnector();
+        hc.execute(new String[]{"1"});
+
+        return resultMap;
+    }
+
+    private class HttpConnector extends AsyncTask<String, Void, PieData> {
+        @Override
+        protected PieData doInBackground(String... params) {
+            int student_id = Integer.parseInt(params[0]);;
+            String info = "";
+            try {
+                info = HttpUtil.get("Profile", "unitFrequency");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Log.i("unitFrequency", info);
+
+            JSONArray data = JSON.parseArray(info);
+            PieData mPieData = getPieData(data);
+            return mPieData;
+        }
+
+        @Override
+        protected void onPostExecute(PieData result) {
+            pieData = result;
+            showChart(result);
+        }
+    }
+
 }

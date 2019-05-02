@@ -170,12 +170,17 @@ public class HttpUtil {
 //            msg = put("Profile", "1", profile);
 //            System.out.println(msg); // 无返回值
 
+
             msg = get("Location", "1");
 
             //7 删除一个对象，此处修改了A1部分的StudentProfile.java文件，需要将CascadeType.ALL 改为 CascadeType.REMOVE
             StudentProfile deleteStu1 = new StudentProfile().setStudentId(1);
             msg = deleteById("Profile", "1");
             System.out.println(msg);
+
+            msg = HttpUtil.get("Profile", "unitFrequency");
+            System.out.println(msg);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
