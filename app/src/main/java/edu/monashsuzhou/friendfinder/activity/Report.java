@@ -1,6 +1,9 @@
 package edu.monashsuzhou.friendfinder.activity;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -8,12 +11,20 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import android.util.DisplayMetrics;
 import android.graphics.Color;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -25,6 +36,7 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.utils.Utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,7 +50,7 @@ import edu.monashsuzhou.friendfinder.R;
 import edu.monashsuzhou.friendfinder.MainActivity;
 import edu.monashsuzhou.friendfinder.util.HttpUtil;
 
-public class Report extends AppCompatActivity {
+public class Report extends AppCompatActivity implements AdapterView.OnItemClickListener {
     private PieChart mChart;
     private PieData pieData;
 
@@ -49,10 +61,24 @@ public class Report extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.report_toolbar);
         setSupportActionBar(toolbar);
 
-        mChart = (PieChart) findViewById(R.id.pie_chart);
-        getUnitFrequency();
-        showChart(pieData);
 
+        // initialize the utilities
+        Utils.init(this);
+
+        ArrayList<ContentItem> objects = new ArrayList<>();
+
+        ////
+
+        objects.add(0, new ContentItem("Common attributes Report", "a pie chart"));
+
+        objects.add(1, new ContentItem("Location Report", "a line chart."));
+
+        MyAdapter adapter = new MyAdapter(this, objects);
+
+        ListView lv = findViewById(R.id.listView1);
+        lv.setAdapter(adapter);
+
+        lv.setOnItemClickListener(this);
     }
 
     @Override
@@ -79,125 +105,80 @@ public class Report extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void showChart(PieData pieData) {
-        mChart.setHoleColor(Color.TRANSPARENT);
-        mChart.setHoleRadius(50f);  //半径
-        mChart.setTransparentCircleRadius(54f); // 半透明圈
-        //mChart.setHoleRadius(0)  //实心圆
-        //mChart.setDescription("测试饼状图");
-        // mChart.setDrawYValues(true);
-        mChart.setDrawCenterText(true);  //饼状图中间可以添加文字
-        mChart.setDrawHoleEnabled(true);
-        mChart.setRotationAngle(90); // 初始旋转角度
-        mChart.setCenterTextSize(15);
-        // draws the corresponding description value into the slice
-        // mChart.setDrawXValues(true);
-        // enable rotation of the chart by touch
-        mChart.setRotationEnabled(true); // 可以手动旋转
-        // display percentage values
-        mChart.setUsePercentValues(true);  //显示成百分比
+    @Override
+    public void onItemClick(AdapterView<?> av, View v, int pos, long arg3) {
 
-        mChart.setCenterText("Unit Frequency");  //饼状图中间的文字
-        //设置数据
-        mChart.setData(pieData);
-        mChart.setEntryLabelColor(Color.BLACK);
+        Intent i = null;
 
-        Legend l = mChart.getLegend();
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.CENTER);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
-        l.setOrientation(Legend.LegendOrientation.VERTICAL);
-        l.setDrawInside(false);
-        l.setXEntrySpace(7f);
-        l.setYEntrySpace(0f);
-        l.setYOffset(0f);
-
-        mChart.animateXY(1000, 1000);  //设置动画
+        switch (pos) {
+            case 0:
+                i = new Intent(this, CommonAttributesReport.class);
+                break;
+            case 1:
+                i = new Intent(this, LocationReport.class);
+                break;
+        }
+        if (i != null) startActivity(i);
     }
 
-    private PieData getPieData(JSONArray data) {
 
-        int total_cnt = 0;
-        java.util.Map<String, Float> reuslt_map =  new HashMap <String,Float>();
-        for(int i = 0 ; i < data.size(); i++ ){
-            JSONObject obj = data.getJSONObject(i);
-            Float frequency = obj.getFloat("frequency");
-            String unit_name = obj.getString("unit");
-            if (!reuslt_map.containsKey(unit_name)){
-                reuslt_map.put(unit_name,frequency);
+    private class ContentItem {
+
+        final String name;
+        final String desc;
+        boolean isSection = false;
+
+        ContentItem(String n) {
+            name = n;
+            desc = "";
+            isSection = true;
+        }
+
+        ContentItem(String n, String d) {
+            name = n;
+            desc = d;
+        }
+    }
+    private class MyAdapter extends ArrayAdapter<ContentItem> {
+
+
+        MyAdapter(Context context, List<ContentItem> objects) {
+            super(context, 0, objects);
+
+         }
+
+        @SuppressLint("InflateParams")
+        @NonNull
+        @Override
+        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+
+            ContentItem c = getItem(position);
+
+            ViewHolder holder;
+
+            holder = new ViewHolder();
+
+            if (c != null && c.isSection) {
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item_section, null);
             } else {
-                reuslt_map.put(unit_name,reuslt_map.get(unit_name) + frequency);
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item, null);
             }
-            total_cnt += frequency;
-        }
-        ArrayList<PieEntry> entries = new ArrayList<>();
-        for (String unit_name : reuslt_map.keySet()) {
-            float f_num = reuslt_map.get(unit_name);
-            System.out.println(f_num);
-            entries.add(new PieEntry(f_num, unit_name));
-        }
+
+            holder.tvName = convertView.findViewById(R.id.tvName);
+            holder.tvDesc = convertView.findViewById(R.id.tvDesc);
+
+            convertView.setTag(holder);
 
 
-        //y轴的集合
-        PieDataSet pieDataSet = new PieDataSet(entries, "Favourite units pie graph"/*显示在比例图上*/);
-        pieDataSet.setSliceSpace(0f); //设置个饼状图之间的距离
-        ArrayList<Integer> colors = new ArrayList<>();
+            holder.tvName.setText(c != null ? c.name : null);
+            holder.tvDesc.setText(c != null ? c.desc : null);
 
-        for (int c : ColorTemplate.VORDIPLOM_COLORS)
-            colors.add(c);
-
-        for (int c : ColorTemplate.JOYFUL_COLORS)
-            colors.add(c);
-
-        for (int c : ColorTemplate.COLORFUL_COLORS)
-            colors.add(c);
-
-        for (int c : ColorTemplate.LIBERTY_COLORS)
-            colors.add(c);
-
-        for (int c : ColorTemplate.PASTEL_COLORS)
-            colors.add(c);
-
-        colors.add(ColorTemplate.getHoloBlue());
-
-        pieDataSet.setColors(colors);
-
-        pieDataSet.setValueTextColor(Color.BLACK);
-        DisplayMetrics metrics = getResources().getDisplayMetrics();
-        float px = 5 * (metrics.densityDpi / 160f);
-        pieDataSet.setSelectionShift(px); // 选中态多出的长度
-        PieData pieData = new PieData(pieDataSet);
-        return pieData;
-    }
-
-    public java.util.Map<String, Integer> getUnitFrequency() {
-        java.util.Map<String, Integer> resultMap = new HashMap<String, Integer>();
-        HttpConnector hc = new HttpConnector();
-        hc.execute(new String[]{"1"});
-
-        return resultMap;
-    }
-
-    private class HttpConnector extends AsyncTask<String, Void, PieData> {
-        @Override
-        protected PieData doInBackground(String... params) {
-            int student_id = Integer.parseInt(params[0]);;
-            String info = "";
-            try {
-                info = HttpUtil.get("Profile", "unitFrequency");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            Log.i("unitFrequency", info);
-
-            JSONArray data = JSON.parseArray(info);
-            PieData mPieData = getPieData(data);
-            return mPieData;
+            return convertView;
         }
 
-        @Override
-        protected void onPostExecute(PieData result) {
-            pieData = result;
-            showChart(result);
+        private class ViewHolder {
+
+            TextView tvName, tvDesc;
         }
     }
 
