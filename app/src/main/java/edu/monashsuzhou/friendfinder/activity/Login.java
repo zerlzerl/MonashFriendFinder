@@ -36,6 +36,7 @@ import edu.monashsuzhou.friendfinder.util.SharedPreferencesUtils;
 public class Login extends AppCompatActivity
         implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
+    private static int id;
     private EditText et_account;
     private EditText et_password;
     private Button mLoginBtn;
@@ -256,6 +257,8 @@ public class Login extends AppCompatActivity
                 //查到了用户
                 JSONObject prof = profList.getJSONObject(0);
                 String pswd = prof.getString("password");
+                id = prof.getInteger("studentId");
+
                 return pswd;
             }
         }
@@ -487,7 +490,9 @@ public class Login extends AppCompatActivity
 
     }
 
-
+    public static int getCurrentId(){
+        return id;
+    }
 
 
 
