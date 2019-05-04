@@ -486,11 +486,11 @@ public class Login extends AppCompatActivity
                 Toast.makeText(Login.this, msg, Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
 
-    public static int getCurrentId() {
+
+    public static int getCurrentId(){
         return id;
     }
 
