@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.EditProfile">
+    tools:context="edu.monashsuzhou.friendfinder.activity.EditProfile">
 
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/Subscription_AppBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+            android:id="@+id/edit_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
@@ -20,23 +21,520 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+
+    <!--<include layout="@layout/content_subscription.xml" />-->
+
+    <!--<android.support.design.widget.FloatingActionButton-->
+    <!--android:id="@+id/fab"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="bottom|end"-->
+    <!--android:layout_margin="@dimen/fab_margin"-->
+    <!--app:srcCompat="@android:drawable/ic_dialog_email" />-->
+
+    <ScrollView
+        android:id="@+id/Subscription_ScrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:context=".activity.EditProfile"
-        tools:showIn="@layout/edit_profile">
-
-    </android.support.constraint.ConstraintLayout>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        android:scrollbars="vertical"
+        android:layout_below="@id/Subscription_AppBarLayout"
+        android:layout_above="@id/Subscription_Bottom">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:orientation="vertical">
 
-</android.support.design.widget.CoordinatorLayout>
+
+            <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:orientation="horizontal">-->
+
+            <!--<ImageView-->
+            <!--android:id="@+id/subscription_user_icon"-->
+            <!--android:layout_width="@dimen/image_height"-->
+            <!--android:layout_height="@dimen/image_height"-->
+            <!--android:layout_marginTop="@dimen/margin_tiny"-->
+            <!--android:layout_marginStart="@dimen/margin_normal"-->
+            <!--app:srcCompat="@drawable/ic_baseline_perm_identity_24px" />-->
+
+            <!--<EditText-->
+            <!--android:id="@+id/subscription_user_name_text"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginStart="@dimen/margin_normal"-->
+            <!--android:layout_marginEnd="@dimen/margin_normal"-->
+            <!--android:ems="10"-->
+            <!--android:inputType="text"-->
+            <!--android:hint="User name..." />-->
+            <!--</LinearLayout>-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/margin_small">
+
+                <ImageView
+                    android:id="@+id/subscription_email"
+                    android:layout_width="@dimen/image_height"
+                    android:layout_height="@dimen/image_height"
+                    android:layout_marginTop="@dimen/margin_tiny"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    app:srcCompat="@drawable/ic_baseline_email_24px" />
+
+                <EditText
+                    android:id="@+id/subscription_email_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    android:layout_marginEnd="@dimen/margin_normal"
+                    android:ems="10"
+                    android:inputType="textEmailAddress"
+                    android:hint="Email..."/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/margin_small">
+
+                <ImageView
+                    android:id="@+id/subscription_user_password"
+                    android:layout_width="@dimen/image_height"
+                    android:layout_height="@dimen/image_height"
+                    android:layout_marginTop="@dimen/margin_tiny"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    app:srcCompat="@drawable/ic_baseline_lock_24px" />
+
+                <EditText
+                    android:id="@+id/subscription_user_password_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    android:layout_marginEnd="@dimen/margin_normal"
+                    android:ems="10"
+                    android:inputType="textPassword"
+                    android:hint="Password..."/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/margin_small">
+
+                <ImageView
+                    android:id="@+id/subscription_user_password_repeat"
+                    android:layout_width="@dimen/image_height"
+                    android:layout_height="@dimen/image_height"
+                    android:layout_marginTop="@dimen/margin_tiny"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    app:srcCompat="@drawable/ic_baseline_repeat_24px" />
+
+                <EditText
+                    android:id="@+id/subscription_user_password_repeat_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    android:layout_marginEnd="@dimen/margin_normal"
+                    android:ems="10"
+                    android:inputType="textPassword"
+                    android:hint="Repeat Password..."/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/margin_large">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    android:textSize="@dimen/text_size_medium"
+                    android:text="Additional Information"/>
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_marginTop="@dimen/margin_normal"
+                    android:layout_marginStart="@dimen/margin_small"
+                    android:layout_marginEnd="@dimen/margin_normal"
+                    android:layout_height="1dp"
+                    android:background="@android:color/darker_gray"  />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/margin_small">
+
+                <ImageView
+                    android:id="@+id/first_sur_names"
+                    android:layout_width="@dimen/image_height"
+                    android:layout_height="@dimen/image_height"
+                    android:layout_marginTop="@dimen/margin_tiny"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    app:srcCompat="@drawable/ic_baseline_perm_contact_calendar_24px" />
+
+                <EditText
+                    android:id="@+id/firstName_text"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    android:layout_marginEnd="@dimen/margin_normal"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:hint="First name..." />
+
+
+
+                <EditText
+                    android:id="@+id/Surname_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    android:layout_marginEnd="@dimen/margin_normal"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:hint="Surname..." />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/margin_small">
+
+                <ImageView
+                    android:id="@+id/gender"
+                    android:layout_width="@dimen/image_height"
+                    android:layout_height="@dimen/image_height"
+                    android:layout_marginTop="@dimen/margin_tiny"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    app:srcCompat="@drawable/ic_male_female" />
+
+                <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <RadioButton android:id="@+id/radio_male"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_normal"
+                        android:layout_marginEnd="@dimen/margin_normal"
+                        android:text="@string/male"/>
+                    <RadioButton android:id="@+id/radio_female"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/female"/>
+                </RadioGroup>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/margin_small">
+
+                <ImageView
+                    android:id="@+id/dOB"
+                    android:layout_width="@dimen/image_height"
+                    android:layout_height="@dimen/image_height"
+                    android:layout_marginTop="@dimen/margin_tiny"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    app:srcCompat="@drawable/ic_baseline_calendar_today_24px" />
+
+                <EditText
+                    android:id="@+id/dateOfBirth"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    android:layout_marginEnd="@dimen/margin_normal"
+                    android:ems="10"
+                    android:hint="Select your Birthday..." />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/margin_small">
+
+                <ImageView
+                    android:id="@+id/nation"
+                    android:layout_width="@dimen/image_height"
+                    android:layout_height="@dimen/image_height"
+                    android:layout_marginTop="@dimen/margin_tiny"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    app:srcCompat="@drawable/ic_baseline_language_24px" />
+
+                <Spinner
+                    android:id="@+id/nation_spinner"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    android:layout_marginEnd="@dimen/margin_normal"
+                    android:entries="@array/nations"
+                    android:spinnerMode="dialog"
+                    android:prompt="@string/nation"
+                    android:ems="10"/>
+
+                <Spinner
+                    android:id="@+id/language_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    android:layout_marginEnd="@dimen/margin_normal"
+                    android:entries="@array/languages"
+                    android:spinnerMode="dialog"
+                    android:prompt="@string/language"
+                    android:ems="10"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/margin_small">
+
+                <ImageView
+                    android:layout_width="@dimen/image_height"
+                    android:layout_height="@dimen/image_height"
+                    android:layout_marginTop="@dimen/margin_tiny"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    app:srcCompat="@drawable/ic_baseline_location_on_24px" />
+
+                <EditText
+                    android:id="@+id/suburb_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    android:layout_marginEnd="@dimen/margin_normal"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:hint="Suburb..." />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/margin_small">
+
+                <EditText
+                    android:id="@+id/address_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="54dp"
+                    android:layout_marginEnd="@dimen/margin_normal"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:hint="Address..." />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/margin_small">
+
+                <ImageView
+                    android:layout_width="@dimen/image_height"
+                    android:layout_height="@dimen/image_height"
+                    android:layout_marginTop="@dimen/margin_tiny"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    app:srcCompat="@drawable/ic_baseline_work_24px" />
+
+                <EditText
+                    android:id="@+id/current_job"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    android:layout_marginEnd="@dimen/margin_normal"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:hint="Your Current Job..." />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/margin_large">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    android:textSize="@dimen/text_size_medium"
+                    android:text="Study Information"/>
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_marginTop="@dimen/margin_normal"
+                    android:layout_marginStart="@dimen/margin_small"
+                    android:layout_marginEnd="@dimen/margin_normal"
+                    android:layout_height="1dp"
+                    android:background="@android:color/darker_gray"  />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/margin_small">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_tiny"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    android:textSize="@dimen/text_size_large"
+                    android:text="Study Mode"/>
+
+                <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <RadioButton android:id="@+id/radio_part_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_large"
+                        android:layout_marginEnd="@dimen/margin_normal"
+                        android:text="@string/part_time"/>
+                    <RadioButton android:id="@+id/radio_full_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/full_time"/>
+                </RadioGroup>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/margin_small">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_tiny"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    android:textSize="@dimen/text_size_large"
+                    android:text="Course"/>
+
+                <EditText
+                    android:id="@+id/course_multi_selector"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    android:layout_marginEnd="@dimen/margin_normal"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:hint="Select Your Course" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/margin_small">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_tiny"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    android:textSize="@dimen/text_size_large"
+                    android:text="Favorite Unit"/>
+
+                <Spinner
+                    android:id="@+id/favor_unit_spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_tiny"
+                    android:layout_marginStart="23dp"
+                    android:layout_marginEnd="@dimen/margin_normal"
+                    android:entries="@array/units"
+                    android:spinnerMode="dialog"
+                    android:prompt="@string/unit"
+                    android:ems="10"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/margin_small">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_tiny"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    android:textSize="@dimen/text_size_large"
+                    android:text="Favorite Sport"/>
+
+                <EditText
+                    android:id="@+id/favor_sport_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="17dp"
+                    android:layout_marginEnd="@dimen/margin_normal"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:hint="" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/margin_small">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_tiny"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    android:textSize="@dimen/text_size_large"
+                    android:text="Favorite Movie"/>
+
+                <EditText
+                    android:id="@+id/favor_movie_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    android:layout_marginEnd="@dimen/margin_normal"
+                    android:ems="10"
+                    android:inputType="text" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </ScrollView>
+
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/Subscription_Bottom"
+        android:layout_alignParentBottom="true">
+        <Button
+            android:id="@+id/SubscribeNowBtn"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:background="@drawable/button_select"
+            android:textSize="20dp"
+            android:layout_margin="@dimen/margin"
+            android:text="Confirm Edit!"/>
+    </LinearLayout>
+
+
+
+</RelativeLayout>
