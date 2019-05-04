@@ -47,6 +47,7 @@ public class Login extends AppCompatActivity
     private LoadingDialog mLoadingDialog; //显示正在加载的对话框
 
     private Toolbar toolbar;
+    private static int id = -1;
 
     //测试数据：email为2@2，密码为1，经加密为c4ca4238a0b923820dcc509a6f75849b
 
@@ -256,6 +257,7 @@ public class Login extends AppCompatActivity
                 //查到了用户
                 JSONObject prof = profList.getJSONObject(0);
                 String pswd = prof.getString("password");
+                id = prof.getInteger("studentId");
                 return pswd;
             }
         }
@@ -488,9 +490,12 @@ public class Login extends AppCompatActivity
     }
 
 
+    public static int getCurrentId() {
+        return id;
+    }
 
-
-
-
+    public static void setCurrentId(int _id) {
+        id = _id;
+    }
 
 }

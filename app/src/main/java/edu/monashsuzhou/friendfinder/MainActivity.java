@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -24,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import edu.monashsuzhou.friendfinder.R;
+import edu.monashsuzhou.friendfinder.activity.Login;
 import edu.monashsuzhou.friendfinder.util.HttpUtil;
 
 import com.alibaba.fastjson.JSON;
@@ -41,19 +43,23 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private FlowingDrawer mDrawer;
+    private String  temp;
+    private String city;
+    private String uName;
+    private String descrip;
+    private String icon;
+    private Integer weatherR; 
 
     private TextView tv_date;
     private TextView tv_time;
     private TextView tv_temp;
     private TextView tv_city;
-    private TextView tv_welcome;
+    private TextView tv_uName;
     private TextView tv_descrip;
     private ImageView iv_weather;
 
     private Handler mHandler;
-    //定位都要通过LocationManager这个类实现
-    private LocationManager locationManager;
-    private String provider;
+
 
     @SuppressWarnings("static-access")
     @Override
@@ -67,6 +73,31 @@ public class MainActivity extends AppCompatActivity {
         setupMenu();
 
         initTextViews();
+
+        //显示地点和温度
+        String studentInfo = null;
+        try {
+            studentInfo = HttpUtil.get("Profile", "" + Login.getCurrentId());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        JSONObject studentObj = JSON.parseObject(studentInfo);
+        city = studentObj.getString("suburb");
+        uName = studentObj.getString("firstName");
+        SharedPreferences setting = getSharedPreferences("quickresume", 0);
+        Boolean user_first = setting.getBoolean("FIRST",true);
+        if(user_first){ //第一次onCreate
+            WeatherDisplayTask weatherDisplayTask = new WeatherDisplayTask();
+            weatherDisplayTask.execute(city, uName);
+        }else{ //不是第一次onCreate，可以直接显示
+            setting.edit().putBoolean("FIRST", false).commit();
+            tv_city.setText(city);
+            tv_uName.setText("Welcome, " + uName + "!");
+            weatherR = getImageIcon(icon);
+            tv_temp.setText(temp);
+            tv_descrip.setText(descrip);
+            iv_weather.setImageResource(weatherR);
+        }
 
         //显示日期和时间
         mHandler = new Handler();
@@ -88,51 +119,18 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        //显示地点和温度
-        WeatherDisplayTask weatherDisplayTask = new WeatherDisplayTask();
-        weatherDisplayTask.execute("Nanjing", "Monny");
+    }
 
 
-
-        //通过location去查天气情况
-        //显示地点和温度
-        //第一步：检索参数为城市和天气类型，实况天气为WEATHER_TYPE_LIVE、天气预报为WEATHER_TYPE_FORECAST
-//        WeatherSearchQuery query = new WeatherSearchQuery("北京", WeatherSearchQuery.WEATHER_TYPE_LIVE);
-//        WeatherSearch weathersearch=new WeatherSearch(this);
-//        weathersearch.setOnWeatherSearchListener(new WeatherSearch.OnWeatherSearchListener() {
-//            @Override
-//            public void onWeatherLiveSearched(LocalWeatherLiveResult result, int i) {
-//                LocalWeatherLive liveResult = result.getLiveResult();
-////            liveTimeTxt.setText(liveResult.getReportTime()); //时间
-//                tv_descrip.setText(liveResult.getWeather()); //气象
-//                tv_temp.setText(liveResult.getTemperature() + "°C");     //温度
-//            }
-//
-//            @Override
-//            public void onWeatherForecastSearched(LocalWeatherForecastResult forecastResult, int i) {
-//
-//            }
-//        });
-//        weathersearch.setQuery(query);
-//        weathersearch.searchWeatherAsyn(); //异步搜索
-
-        /**
-         * 实时天气查询回调
-         */
-//        public void onWeatherLiveSearched(LocalWeatherLiveResult result, int i) {
-//            LocalWeatherLive liveResult = result.getLiveResult();
-////            liveTimeTxt.setText(liveResult.getReportTime()); //时间
-//            tv_descrip.setText(liveResult.getWeather()); //气象
-//            tv_temp.setText(liveResult.getTemperature() + "°C");     //温度
-////            liveWindDirectionTxt.setText(liveResult.getWindDirection()); //风向
-////            liveWindPowerTxt.setText(liveResult.getWindPower() + "级"); //风力
-////            liveHumidityTxt.setText(liveResult.getHumidity() + "%"); //湿度
-//        }
-
-
-
-
-
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        tv_city.setText(city);
+        tv_uName.setText("Welcome, " + uName + "!");
+        weatherR = getImageIcon(icon);
+        tv_temp.setText(temp);
+        tv_descrip.setText(descrip);
+        iv_weather.setImageResource(weatherR);
     }
 
     private void initTextViews() {
@@ -141,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
         tv_temp = (TextView) findViewById(R.id.tv_temp);
         tv_city = (TextView) findViewById(R.id.tv_city);
         tv_descrip = (TextView) findViewById(R.id.tv_descrip);
-        tv_welcome = (TextView) findViewById(R.id.tv_welcome);
+        tv_uName = (TextView) findViewById(R.id.tv_uName);
         iv_weather = (ImageView) findViewById(R.id.iv_weather);
 
     }
@@ -230,10 +228,10 @@ public class MainActivity extends AppCompatActivity {
     private class WeatherDisplayTask extends AsyncTask<String, Integer, String>{
         @Override
         protected String doInBackground(String... strings) {
-            String city = strings[0];
-            String uName = strings[1];
+            city = strings[0];
+            uName = strings[1];
             tv_city.setText(city);
-            tv_welcome.setText("Welcome, " + uName + "!");
+            tv_uName.setText("Welcome, " + uName + "!");
             try {
                 String weatherInfo = HttpUtil.get(Constant.WEATHER_HOST + "?q=" + city + "&APPID=" + Constant.APPID
                         + "&units=" + Constant.UNITS + "&cnt=" + Constant.N_DAYS);
@@ -249,14 +247,17 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(weatherInfo);
             Log.i("Weather", weatherInfo);
             JSONObject weatherJson = JSON.parseObject(weatherInfo);
-
-            tv_temp.setText("" + weatherJson.getJSONArray("list").getJSONObject(0)
-                    .getJSONObject("temp").getInteger("day") + "°");
-            tv_descrip.setText(weatherJson.getJSONArray("list").getJSONObject(0)
-                    .getJSONArray("weather").getJSONObject(0).getString("description"));
-            String icon = weatherJson.getJSONArray("list").getJSONObject(0)
+            
+            temp = "" + weatherJson.getJSONArray("list").getJSONObject(0)
+                    .getJSONObject("temp").getInteger("day") + "°";
+            descrip = weatherJson.getJSONArray("list").getJSONObject(0)
+                    .getJSONArray("weather").getJSONObject(0).getString("description");
+            icon = weatherJson.getJSONArray("list").getJSONObject(0)
                     .getJSONArray("weather").getJSONObject(0).getString("main");
-            iv_weather.setImageResource(getImageIcon(icon));
+            weatherR = getImageIcon(icon);
+            tv_temp.setText(temp);
+            tv_descrip.setText(descrip);
+            iv_weather.setImageResource(weatherR);
 
 
         }
