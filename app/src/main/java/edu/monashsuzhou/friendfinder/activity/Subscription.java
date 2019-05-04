@@ -317,7 +317,7 @@ public class Subscription extends AppCompatActivity {
             super.onPostExecute(isSuccess);
             if (isSuccess){
                 //注册成功
-                startActivity(new Intent(Subscription.this, MainActivity.class));
+                startActivity(new Intent(Subscription.this, Login.class));
             }else{
                 AlertDialog.Builder builder = new AlertDialog.Builder(Subscription.this);
                 builder.setMessage("Subscription Failure!");
