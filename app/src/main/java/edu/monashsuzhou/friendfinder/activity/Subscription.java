@@ -284,6 +284,7 @@ public class Subscription extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
 //            Log.i(Subscription.class.getName(), result);
+            if (result == null) return;
             JSONArray array = JSON.parseArray(result);
             if (array.size() > 0){
                 //有重复项
