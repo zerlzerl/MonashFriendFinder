@@ -203,7 +203,7 @@ public class Subscription extends AppCompatActivity {
                 if (full.isChecked()) studyMode = "Full Time";
 
                 String course = ((EditText)findViewById(R.id.course_multi_selector)).getText().toString();
-                if (!StringUtils.isBlank(course)) course = course.substring(0,suburb.length()-1);
+                if (!StringUtils.isBlank(course)) course = course.substring(0,course.length()-1);
                 String favorUnit = ((Spinner)findViewById(R.id.favor_unit_spinner)).getSelectedItem().toString();
                 String favorSport = ((EditText)findViewById(R.id.favor_sport_text)).getText().toString();
                 String favorMovie = ((EditText)findViewById(R.id.favor_movie_text)).getText().toString();

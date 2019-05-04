@@ -26,6 +26,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -179,6 +180,15 @@ public class EditProfile extends AppCompatActivity {
                 if (female.isChecked()) gender = "female";
 
                 String dateOfBirth = ((EditText)findViewById(R.id.dateOfBirth)).getText().toString();
+                try {
+                    SimpleDateFormat df1 = new SimpleDateFormat("dd/MM/yyyy");
+                    Date date = df1.parse(dateOfBirth);
+                    SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd/HH:mm:ss");
+                    dateOfBirth = df2.format(date) + "+08:00";
+                    dateOfBirth = dateOfBirth.replace("/","T");
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
                 String nation = ((Spinner)findViewById(R.id.nation_spinner)).getSelectedItem().toString();
                 String lang = ((Spinner)findViewById(R.id.language_spinner)).getSelectedItem().toString();
                 String suburb = ((EditText)findViewById(R.id.suburb_text)).getText().toString();
@@ -192,14 +202,20 @@ public class EditProfile extends AppCompatActivity {
                 if (full.isChecked()) studyMode = "Full Time";
 
                 String course = ((EditText)findViewById(R.id.course_multi_selector)).getText().toString();
-                if (!StringUtils.isBlank(course)) course = course.substring(0,suburb.length()-1);
+                if (!StringUtils.isBlank(course)) course = course.substring(0,course.length()-1);
                 String favorUnit = ((Spinner)findViewById(R.id.favor_unit_spinner)).getSelectedItem().toString();
                 String favorSport = ((EditText)findViewById(R.id.favor_sport_text)).getText().toString();
                 String favorMovie = ((EditText)findViewById(R.id.favor_movie_text)).getText().toString();
 
-                String currentDateTime = new SimpleDateFormat("yyyy-MM-dd||HH:mm:ss").format(new Date());
+//                String currentDateTime = new SimpleDateFormat("yyyy-MM-dd/HH:mm:ss").format(new Date());
+//                String currentDate = currentDateTime.split("/")[0];
+//                String currentTime = currentDateTime.split("/")[1];
+//                Log.i(Subscription.class.getName(), currentDateTime + "/" + currentDate + "/" + currentTime);
+                String subscriptionData = "New User Subscription";
+                String currentTime = new SimpleDateFormat("yyyy-MM-dd/HH:mm:ss").format(new Date()) + "+08:00";
+                currentTime = currentTime.replace("/","T");
                 StudentProfile newStudent = new StudentProfile()
-//                        .setStudentId(2) // 假的
+                        .setStudentId(Login.getCurrentId())
                         .setEmail(email)
                         .setPassword(MD5Util.GetMD5Code(pwd))
                         .setFirstName(fisrtName)
@@ -216,16 +232,16 @@ public class EditProfile extends AppCompatActivity {
                         .setFavouriteUnit(favorUnit)
                         .setFavouriteSport(favorSport)
                         .setFavouriteMovie(favorMovie)
-                        .setSubscriptionData(currentDateTime.split("||")[0])
-                        .setSubscriptionTime(currentDateTime.split("||")[1]);
+                        .setSubscriptionData(subscriptionData)
+                        .setSubscriptionTime(currentTime);
 
                 //传服务器
-                new EditProfile.SubScriptionEditProfileTask().execute(newStudent);
+                new SubScriptionEditProfileTask().execute(newStudent);
             }
         });
 
         //set original info
-        int studentId = 2; // 假的
+        int studentId = Login.getCurrentId();
         InitOriginalInformatiionTask initOriginalInformatiionTask = new InitOriginalInformatiionTask();
         initOriginalInformatiionTask.execute(studentId);
 
@@ -277,13 +293,20 @@ public class EditProfile extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
 //            Log.i(Subscription.class.getName(), result);
+            if (result == null) return;
             JSONArray array = JSON.parseArray(result);
             if (array.size() > 0){
                 //有重复项
-                AlertDialog.Builder builder = new AlertDialog.Builder(EditProfile.this);
-                builder.setMessage("The email has been registered!");
-                builder.show();
-                isEmailDuplicated = true;
+                if (array.getJSONObject(0).getInteger("studentId") == Login.getCurrentId()){
+                    //当前登录用户
+                    isEmailDuplicated = false;
+                }else{
+                    AlertDialog.Builder builder = new AlertDialog.Builder(EditProfile.this);
+                    builder.setMessage("The email has been registered!");
+                    builder.show();
+                    isEmailDuplicated = true;
+                }
+
             }else{
                 isEmailDuplicated = false;
             }
@@ -351,14 +374,15 @@ public class EditProfile extends AppCompatActivity {
                 ((EditText)findViewById(R.id.Surname_text)).setText(surname);
 
                 String gender = studentJson.getString("gender");
+                Log.i("========gender========" , gender);
                 if (gender == null){
                     //do nothing
                 }
                 else {
                     if (gender.equals("male"))
-                        ((RadioButton)findViewById(R.id.radio_male)).setSelected(true);
+                        ((RadioButton)findViewById(R.id.radio_male)).setChecked(true);
                     else if (gender.equals("female"))
-                        ((RadioButton)findViewById(R.id.radio_female)).setSelected(true);
+                        ((RadioButton)findViewById(R.id.radio_female)).setChecked(true);
                     else{
                         //do nothing
                     }
@@ -393,9 +417,9 @@ public class EditProfile extends AppCompatActivity {
                     //do nothing
                 } else {
                     if (studyMode.equals("Part Time"))
-                        ((RadioButton)findViewById(R.id.radio_part_time)).setSelected(true);
+                        ((RadioButton)findViewById(R.id.radio_part_time)).setChecked(true);
                     else if (studyMode.equals("Full Time"))
-                        ((RadioButton)findViewById(R.id.radio_full_time)).setSelected(true);
+                        ((RadioButton)findViewById(R.id.radio_full_time)).setChecked(true);
                     else{
                         //do nothing
                     }
