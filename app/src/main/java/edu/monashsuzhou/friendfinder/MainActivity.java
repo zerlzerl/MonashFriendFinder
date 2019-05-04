@@ -44,8 +44,8 @@ public class MainActivity extends AppCompatActivity {
 
     private FlowingDrawer mDrawer;
     private String  temp;
-    private String city;
-    private String uName;
+    private String city = "Suzhou"; //默认的城市
+    private String uName = "User"; //默认的用户名
     private String descrip;
     private String icon;
     private Integer weatherR; 
@@ -75,20 +75,11 @@ public class MainActivity extends AppCompatActivity {
         initTextViews();
 
         //显示地点和温度
-        String studentInfo = null;
-        try {
-            studentInfo = HttpUtil.get("Profile", "" + Login.getCurrentId());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        JSONObject studentObj = JSON.parseObject(studentInfo);
-        city = studentObj.getString("suburb");
-        uName = studentObj.getString("firstName");
         SharedPreferences setting = getSharedPreferences("quickresume", 0);
         Boolean user_first = setting.getBoolean("FIRST",true);
         if(user_first){ //第一次onCreate
             WeatherDisplayTask weatherDisplayTask = new WeatherDisplayTask();
-            weatherDisplayTask.execute(city, uName);
+            weatherDisplayTask.execute("" + Login.getCurrentId());
         }else{ //不是第一次onCreate，可以直接显示
             setting.edit().putBoolean("FIRST", false).commit();
             tv_city.setText(city);
@@ -228,8 +219,16 @@ public class MainActivity extends AppCompatActivity {
     private class WeatherDisplayTask extends AsyncTask<String, Integer, String>{
         @Override
         protected String doInBackground(String... strings) {
-            city = strings[0];
-            uName = strings[1];
+            String currentId = strings[0];
+            String studentInfo = null;
+            try {
+                studentInfo = HttpUtil.get("Profile", currentId);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            JSONObject studentObj = JSON.parseObject(studentInfo);
+            city = studentObj.getString("suburb");
+            uName = studentObj.getString("firstName");
             tv_city.setText(city);
             tv_uName.setText("Welcome, " + uName + "!");
             try {
@@ -262,8 +261,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
-
-
 
 
 }
