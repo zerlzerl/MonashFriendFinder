@@ -28,6 +28,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -180,6 +181,14 @@ public class Subscription extends AppCompatActivity {
                 if (female.isChecked()) gender = "female";
 
                 String dateOfBirth = ((EditText)findViewById(R.id.dateOfBirth)).getText().toString();
+                try {
+                    SimpleDateFormat df1 = new SimpleDateFormat("dd/MM/yyyy");
+                    Date date = df1.parse(dateOfBirth);
+                    SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd");
+                    dateOfBirth = df2.format(date);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
                 String nation = ((Spinner)findViewById(R.id.nation_spinner)).getSelectedItem().toString();
                 String lang = ((Spinner)findViewById(R.id.language_spinner)).getSelectedItem().toString();
                 String suburb = ((EditText)findViewById(R.id.suburb_text)).getText().toString();
@@ -198,7 +207,12 @@ public class Subscription extends AppCompatActivity {
                 String favorSport = ((EditText)findViewById(R.id.favor_sport_text)).getText().toString();
                 String favorMovie = ((EditText)findViewById(R.id.favor_movie_text)).getText().toString();
 
-                String currentDateTime = new SimpleDateFormat("yyyy-MM-dd||HH:mm:ss").format(new Date());
+//                String currentDateTime = new SimpleDateFormat("yyyy-MM-dd/HH:mm:ss").format(new Date());
+//                String currentDate = currentDateTime.split("/")[0];
+//                String currentTime = currentDateTime.split("/")[1];
+//                Log.i(Subscription.class.getName(), currentDateTime + "/" + currentDate + "/" + currentTime);
+                String currentDate = new SimpleDateFormat().format(new Date());
+                String currentTime = new SimpleDateFormat().format(new Date());
                 StudentProfile newStudent = new StudentProfile()
                         .setEmail(email)
                         .setPassword(MD5Util.GetMD5Code(pwd))
@@ -216,8 +230,8 @@ public class Subscription extends AppCompatActivity {
                         .setFavouriteUnit(favorUnit)
                         .setFavouriteSport(favorSport)
                         .setFavouriteMovie(favorMovie)
-                        .setSubscriptionData(currentDateTime.split("||")[0])
-                        .setSubscriptionTime(currentDateTime.split("||")[1]);
+                        .setSubscriptionData(currentDate)
+                        .setSubscriptionTime(currentTime);
 
                 //传服务器
                 new SubScriptionNewUserTask().execute(newStudent);
