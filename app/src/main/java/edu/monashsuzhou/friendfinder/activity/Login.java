@@ -36,7 +36,6 @@ import edu.monashsuzhou.friendfinder.util.SharedPreferencesUtils;
 public class Login extends AppCompatActivity
         implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
-    private static int id;
     private EditText et_account;
     private EditText et_password;
     private Button mLoginBtn;
@@ -48,6 +47,7 @@ public class Login extends AppCompatActivity
     private LoadingDialog mLoadingDialog; //显示正在加载的对话框
 
     private Toolbar toolbar;
+    private static int id = -1;
 
     //测试数据：email为2@2，密码为1，经加密为c4ca4238a0b923820dcc509a6f75849b
 
@@ -258,7 +258,6 @@ public class Login extends AppCompatActivity
                 JSONObject prof = profList.getJSONObject(0);
                 String pswd = prof.getString("password");
                 id = prof.getInteger("studentId");
-
                 return pswd;
             }
         }
@@ -487,15 +486,16 @@ public class Login extends AppCompatActivity
                 Toast.makeText(Login.this, msg, Toast.LENGTH_SHORT).show();
             }
         });
-
     }
+
+
 
     public static int getCurrentId(){
         return id;
     }
 
-
-
-
+    public static void setCurrentId(int _id) {
+        id = _id;
+    }
 
 }

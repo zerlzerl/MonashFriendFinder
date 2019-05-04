@@ -49,7 +49,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/tv_welcome"
+                android:id="@+id/tv_uName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
@@ -70,7 +70,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                android:text="Partly Cloudy"
+                android:text="partly cloudy"
                 android:textSize="@dimen/text_size_large"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_city" />
@@ -119,7 +119,7 @@
                         android:layout_weight="5"
                         android:text="2019/4/28"
                         android:textStyle="bold"
-                        android:textSize="@dimen/text_size_most"
+                        android:textSize="@dimen/text_size_large"
                         />
                     <TextView
                         android:id="@+id/tv_time"
@@ -127,7 +127,7 @@
                         android:layout_height="0dp"
                         android:layout_weight="5"
                         android:gravity="center_horizontal"
-                        android:textSize="@dimen/text_size_most"
+                        android:textSize="@dimen/text_size_large"
                         android:text="19:36:45"/>
                 </LinearLayout>
 

@@ -253,6 +253,8 @@ public class Logout extends AppCompatActivity
                 //查到了用户
                 JSONObject prof = profList.getJSONObject(0);
                 String pswd = prof.getString("password");
+                int id = prof.getInteger("studentId");
+                Login.setCurrentId(id);
                 return pswd;
             }
         }

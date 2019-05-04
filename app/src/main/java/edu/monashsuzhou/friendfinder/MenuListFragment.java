@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import edu.monashsuzhou.friendfinder.R;
 
+import edu.monashsuzhou.friendfinder.activity.Login;
 import edu.monashsuzhou.friendfinder.activity.Searching;
 
 
@@ -44,6 +45,9 @@ public class MenuListFragment extends Fragment {
                     intent.setClass(getActivity(), Class.forName("edu.monashsuzhou.friendfinder.activity." + menuItem.getTitle()));
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
+                }
+                if(menuItem.getTitle().equals("Logout")) {
+                    Login.setCurrentId(-1);
                 }
                 startActivity(intent);
                 return false;
