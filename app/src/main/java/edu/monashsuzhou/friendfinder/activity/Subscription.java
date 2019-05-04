@@ -184,8 +184,9 @@ public class Subscription extends AppCompatActivity {
                 try {
                     SimpleDateFormat df1 = new SimpleDateFormat("dd/MM/yyyy");
                     Date date = df1.parse(dateOfBirth);
-                    SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd");
-                    dateOfBirth = df2.format(date);
+                    SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd/HH:mm:ss");
+                    dateOfBirth = df2.format(date) + "+08:00";
+                    dateOfBirth = dateOfBirth.replace("/","T");
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -211,8 +212,9 @@ public class Subscription extends AppCompatActivity {
 //                String currentDate = currentDateTime.split("/")[0];
 //                String currentTime = currentDateTime.split("/")[1];
 //                Log.i(Subscription.class.getName(), currentDateTime + "/" + currentDate + "/" + currentTime);
-                String currentDate = new SimpleDateFormat().format(new Date());
-                String currentTime = new SimpleDateFormat().format(new Date());
+                String subscriptionData = "New User Subscription";
+                String currentTime = new SimpleDateFormat("yyyy-MM-dd/HH:mm:ss").format(new Date()) + "+08:00";
+                currentTime = currentTime.replace("/","T");
                 StudentProfile newStudent = new StudentProfile()
                         .setEmail(email)
                         .setPassword(MD5Util.GetMD5Code(pwd))
@@ -230,7 +232,7 @@ public class Subscription extends AppCompatActivity {
                         .setFavouriteUnit(favorUnit)
                         .setFavouriteSport(favorSport)
                         .setFavouriteMovie(favorMovie)
-                        .setSubscriptionData(currentDate)
+                        .setSubscriptionData(subscriptionData)
                         .setSubscriptionTime(currentTime);
 
                 //传服务器

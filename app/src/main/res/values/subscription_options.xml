@@ -29,14 +29,23 @@
         <item>French</item>
     </string-array>
 
+    <!--<string-array name="units">-->
+        <!--<item>FIT5048 - Operating Systems</item>-->
+        <!--<item>FIT5178 - Computer Networks</item>-->
+        <!--<item>FIT5183 - Mobile and Distributed Computing Systems</item>-->
+        <!--<item>FIT5186 - Intelligent Systems</item>-->
+        <!--<item>FIT5187 - Wireless Networks</item>-->
+        <!--<item>FIT5190 - IT Research Methods</item>-->
+        <!--<item>FIT5191 - Algorithms</item>-->
+    <!--</string-array>-->
     <string-array name="units">
-        <item>FIT5048 - Operating Systems</item>
-        <item>FIT5178 - Computer Networks</item>
-        <item>FIT5183 - Mobile and Distributed Computing Systems</item>
-        <item>FIT5186 - Intelligent Systems</item>
-        <item>FIT5187 - Wireless Networks</item>
-        <item>FIT5190 - IT Research Methods</item>
-        <item>FIT5191 - Algorithms</item>
+        <item>FIT5048</item>
+        <item>FIT5178</item>
+        <item>FIT5183</item>
+        <item>FIT5186</item>
+        <item>FIT5187</item>
+        <item>FIT5190</item>
+        <item>FIT5191</item>
     </string-array>
     <string name="nation">Select Your Nationality</string>
     <string name="language">Select Your Language</string>
