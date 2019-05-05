@@ -15,6 +15,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
@@ -104,6 +105,9 @@ public class CommonAttributesReport extends AppCompatActivity {
         l.setYOffset(0f);
 
         mChart.animateXY(1000, 1000);  //设置动画
+        Description desc = new Description();
+        desc.setText("");
+        mChart.setDescription(desc);
     }
 
     private PieData getPieData(JSONArray data) {
@@ -127,7 +131,6 @@ public class CommonAttributesReport extends AppCompatActivity {
 
             entries.add(new PieEntry(f_num, unit_name));
         }
-
 
         //y轴的集合
         PieDataSet pieDataSet = new PieDataSet(entries, "Favourite units pie graph"/*显示在比例图上*/);
@@ -179,6 +182,7 @@ public class CommonAttributesReport extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            System.out.println(info);
             Log.i("unitFrequency", info);
 
             JSONArray data = JSON.parseArray(info);

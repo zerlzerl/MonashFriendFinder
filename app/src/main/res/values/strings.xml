@@ -53,6 +53,14 @@
     <string name="cancel">CANCEL</string>
     <string name="course_select">Select Your Course</string>
     <string name="title_activity_edit_profile">Edit Profile</string>
+    <string name="title_activity_google_maps">Map</string>
+    <string-array name="spingarr">
+        <item>10</item>
+        <item>20</item>
+        <item>30</item>
+        <item>40</item>
+        <item>all</item>
+    </string-array>
 
     <!-- searching -->
     <string name="search_filter_btn">Filter</string>
