@@ -109,7 +109,7 @@ public class MyFriends extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public class Student {
+    public static class Student {
         public String fName;
         public int fGender;
         public String fSuburb;
