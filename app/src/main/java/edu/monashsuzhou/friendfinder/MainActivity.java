@@ -244,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String weatherInfo) {
             super.onPostExecute(weatherInfo);
-            Log.i("Weather", weatherInfo);
+//            Log.i("Weather", weatherInfo);
             JSONObject weatherJson = JSON.parseObject(weatherInfo);
             
             temp = "" + weatherJson.getJSONArray("list").getJSONObject(0)
