@@ -18,6 +18,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -74,6 +75,7 @@ public class LocationReport extends AppCompatActivity {
                     return;
                 }
                 HttpConnector hc = new HttpConnector();
+
                 hc.execute(new String[]{start_date,end_date,"44"});
 
             }
@@ -118,21 +120,23 @@ public class LocationReport extends AppCompatActivity {
             uri = uri + "/" + startingDate + "/" + endingDate + "/" + String.valueOf(student_id);
             System.out.println(uri);
             String info = "";
+            /*
             try {
                 info = HttpUtil.get("Profile", uri);
             } catch (IOException e) {
                 e.printStackTrace();
             }
             Log.i("visitiFrequency", info);
-
+            */
             return info;
-        }
 
+        }
         @Override
         protected void onPostExecute(String info) {
+            /*
             JSONArray json_data = JSON.parseArray(info);
 
-            ArrayList<BarEntry> entries = new ArrayList<BarEntry>();
+
             ArrayList<String> labels = new ArrayList<>();
             for(int i = 0 ; i < json_data.size(); i++ ){
                 JSONObject obj = json_data.getJSONObject(i);
@@ -141,7 +145,11 @@ public class LocationReport extends AppCompatActivity {
                 entries.add(new BarEntry(i, frequency));
                 labels.add(loc_name);
             }
-
+            */
+            ArrayList<BarEntry> entries = new ArrayList<BarEntry>();
+            for(int i = 0 ; i < 6 ; i++){
+                entries.add(new BarEntry(i, i));
+            }
             BarDataSet dataset = new BarDataSet(entries, "visiting frequency");
             dataset.setColors(ColorTemplate.COLORFUL_COLORS);
             ArrayList<IBarDataSet> dataSets = new ArrayList<>();
@@ -149,6 +157,9 @@ public class LocationReport extends AppCompatActivity {
             BarData barData = new BarData(dataset);
             barChart.setData(barData);
             barChart.animateY(2000);
+            Description desc = new Description();
+            desc.setText("");
+            barChart.setDescription(desc);
         }
     }
 

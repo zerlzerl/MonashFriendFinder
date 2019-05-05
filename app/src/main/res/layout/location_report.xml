@@ -39,7 +39,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="input"/>
-
                 <EditText
                     android:id="@+id/et_start_date"
                     android:layout_width="wrap_content"
@@ -57,19 +56,13 @@
                     android:ems="10"
                     android:inputType="textPersonName"
                     android:hint="ending date" />
-
             </TableRow>
-
         </TableLayout>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">
-
-
-
         </RelativeLayout>
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -80,8 +73,6 @@
                 android:layout_height="match_parent"
                 />
         </RelativeLayout>
-
-
     </LinearLayout>
 
 
