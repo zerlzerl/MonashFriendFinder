@@ -61,7 +61,8 @@
         <activity
             android:name=".activity.Searching"
             android:label="@string/title_activity_searching"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden"/>
         <activity
             android:name=".activity.Subscription"
             android:label="@string/title_activity_subscription"

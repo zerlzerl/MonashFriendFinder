@@ -27,10 +27,12 @@ import java.io.IOException;
 import edu.monashsuzhou.friendfinder.R;
 
 import edu.monashsuzhou.friendfinder.MainActivity;
+import edu.monashsuzhou.friendfinder.litepalbean.DatabaseHelper;
+import edu.monashsuzhou.friendfinder.litepalbean.MiniStudent;
+import edu.monashsuzhou.friendfinder.litepalbean.StudentProfile;
 import edu.monashsuzhou.friendfinder.util.HttpUtil;
 import edu.monashsuzhou.friendfinder.util.LoadingDialog;
 import edu.monashsuzhou.friendfinder.util.MD5Util;
-import edu.monashsuzhou.friendfinder.util.RestClient;
 import edu.monashsuzhou.friendfinder.util.SharedPreferencesUtils;
 
 public class Login extends AppCompatActivity
@@ -88,6 +90,60 @@ public class Login extends AppCompatActivity
         initViews();
         setupEvents();
         initData();
+        //initDatabase();
+
+    }
+    private void initDatabase(){
+        SQLiteDatabase db = LitePal.getDatabase();
+        DatabaseHelper dh = new DatabaseHelper();
+
+        StudentProfile sp = new StudentProfile();
+        sp.setStudentId(2);
+        sp.setFirstName("zhp");
+        dh.insertStudent(sp);
+
+
+        MiniStudent ms_1 = new MiniStudent();
+        ms_1.setStudentid(2);
+        ms_1.setLongtude(10);
+        ms_1.setLatitude(10);
+        ms_1.setFirstname("my");
+        dh.insertMatchingStudent(ms_1);
+
+        ms_1 = new MiniStudent();
+        ms_1.setStudentid(3);
+        ms_1.setLongtude(15);
+        ms_1.setLatitude(15);
+        ms_1.setFirstname("cool");
+        dh.insertFriend(ms_1,10,10);
+
+        ms_1 = new MiniStudent();
+        ms_1.setStudentid(4);
+        ms_1.setLongtude(9);
+        ms_1.setLatitude(10);
+        ms_1.setFirstname("cool");
+        dh.insertFriend(ms_1,10,10);
+
+        ms_1 = new MiniStudent();
+        ms_1.setStudentid(5);
+        ms_1.setLongtude(15);
+        ms_1.setLatitude(20);
+        ms_1.setFirstname("cool");
+        dh.insertFriend(ms_1,10,10);
+
+        ms_1 = new MiniStudent();
+        ms_1.setStudentid(6);
+        ms_1.setLongtude(21);
+        ms_1.setLatitude(30);
+        ms_1.setFirstname("cool");
+        dh.insertFriend(ms_1,10,10);
+
+        MiniStudent ms_2 = new MiniStudent();
+        ms_2.setStudentid(3);
+        ms_2.setLongtude(50);
+        ms_2.setLatitude(120);
+        ms_2.setFirstname("not cool");
+        dh.insertMatchingStudent (ms_2);
 
     }
 

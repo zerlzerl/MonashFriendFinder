@@ -1,186 +1,115 @@
 package edu.monashsuzhou.friendfinder.activity;
 
+import android.app.DatePickerDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Point;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
+import android.text.Layout;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
+
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.baoyz.swipemenulistview.SwipeMenu;
-import com.baoyz.swipemenulistview.SwipeMenuCreator;
-import com.baoyz.swipemenulistview.SwipeMenuItem;
-import com.baoyz.swipemenulistview.SwipeMenuListView;
-import com.ferfalk.simplesearchview.SimpleSearchView;
-import com.ferfalk.simplesearchview.utils.DimensUtils;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import edu.monashsuzhou.friendfinder.R;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 import edu.monashsuzhou.friendfinder.MainActivity;
 
 
 public class Searching extends AppCompatActivity {
-    private static final String TAG = "Searching";
-    public static final int EXTRA_REVEAL_CENTER_PADDING = 40;
-    private SimpleSearchView searchView;
-    private TabLayout tabLayout;
+    private static ViewPager viewPager;
 
-    private SwipeMenuCreator creator = new SwipeMenuCreator() {
-
-        @Override
-        public void create(SwipeMenu menu) {
-            // create "open" item
-            SwipeMenuItem openItem = new SwipeMenuItem(
-                    getApplicationContext());
-            // set item background
-            openItem.setBackground(new ColorDrawable(Color.rgb(0x00, 0x66,
-                    0xff)));
-            // set item width
-            openItem.setWidth(170);
-            // set item title
-            openItem.setTitle("Detail");
-            // set item title fontsize
-            openItem.setTitleSize(18);
-            // set item title font color
-            openItem.setTitleColor(Color.WHITE);
-            // add to menu
-            menu.addMenuItem(openItem);
-
-            // create "delete" item
-            SwipeMenuItem deleteItem = new SwipeMenuItem(
-                    getApplicationContext());
-            // set item background
-            deleteItem.setBackground(new ColorDrawable(Color.rgb(0xF9,
-                    0x3F, 0x25)));
-            // set item width
-            deleteItem.setWidth(170);
-            // set a icon
-//            deleteItem.setIcon(R.drawable.ic_delete_24px);
-            deleteItem.setTitle("Add");
-            deleteItem.setTitleSize(18);
-            // set item title font color
-            deleteItem.setTitleColor(Color.WHITE);
-            // add to menu
-            menu.addMenuItem(deleteItem);
-        }
-    };
-
+    private static String searchCriteria = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.searching);
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        searchView = findViewById(R.id.searchView);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        tabLayout.addTab(tabLayout.newTab().setText("Filter"));
+        tabLayout.addTab(tabLayout.newTab().setText("Result"));
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        searchView.setOnSearchViewListener(new SimpleSearchView.SearchViewListener() {
+        viewPager = (ViewPager) findViewById(R.id.pager);
+        final PagerAdapter adapter = new PagerAdapter
+                (getSupportFragmentManager(), tabLayout.getTabCount());
+        viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onSearchViewShown() {
-                // 搜索框展示之后触发
-                Log.d("SimpleSearchView", "onSearchViewShown");
-                SwipeMenuListView listView = (SwipeMenuListView) findViewById(R.id.listView);
-                ArrayList<String> list = new ArrayList<>();
+            public void onPageScrolled(int i, float v, int i1) {
 
-                ArrayAdapter adapter = new ArrayAdapter(Searching.this, android.R.layout.simple_list_item_1, list);
-                listView.setAdapter(adapter);
-
-                listView.setMenuCreator(creator);
             }
 
             @Override
-            public void onSearchViewClosed() {
-                // 搜索框结束之后触发
-                Log.d("SimpleSearchView", "onSearchViewClosed");
-                //test SwipeMenuListView
-                SwipeMenuListView listView = (SwipeMenuListView) findViewById(R.id.listView);
-                ArrayList<String> list = new ArrayList<>();
-                list.add("Micheal");
-                list.add("Monica");
-                list.add("Dylan");
-                list.add("Charice");
-
-                ArrayAdapter adapter = new ArrayAdapter(Searching.this, android.R.layout.simple_list_item_1, list);
-                listView.setAdapter(adapter);
-
-
-                listView.setMenuCreator(creator);
-
-                listView.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
-                        switch (index) {
-                            case 0:
-                                Log.d(TAG, "onMenuItemClick: clicked item " + index);
-                                showDetailDialog();
-                                break;
-                            case 1:
-                                Log.d(TAG, "onMenuItemClick: clicked item " + index);
-                                break;
-                        }
-                        // false : close the menu; true : not close the menu
-                        return false;
-                    }
-                });
+            public void onPageSelected(int position) {
+                if (position == 0){
+                    //选中filter页面时不需要做操作
+                } else{
+                    //切换到search页面的时候去做搜索和渲染工作
+                    View currentView = viewPager.getChildAt(position);
+                    ((TextView)currentView.findViewById(R.id.search_result)).setText(Searching.searchCriteria);
+                }
             }
 
             @Override
-            public void onSearchViewShownAnimation() {
-                // 搜索动画展示之后触发
-                Log.d("SimpleSearchView", "onSearchViewShownAnimation");
-            }
+            public void onPageScrollStateChanged(int i) {
 
-            @Override
-            public void onSearchViewClosedAnimation() {
-                // 搜索框动画结束之后触发
-                Log.d("SimpleSearchView", "onSearchViewClosedAnimation");
             }
         });
 
-        tabLayout = findViewById(R.id.tabLayout);
-//        tabLayout.getTabAt(1)
+        //手动点击Tab时的事件
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
 
     }
 
-    public void showDetailDialog(){
-        // 1. Instantiate an AlertDialog.Builder with its constructor
-        AlertDialog.Builder builder = new AlertDialog.Builder(Searching.this);
-
-        // 2. Chain together various setter methods to set the dialog characteristics
-        builder.setMessage("这是一个消息")
-                        .setTitle("这是标题");
-
-        // 3. Get the AlertDialog from create()
-        AlertDialog dialog = builder.create();
-    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
-
-        setupSearchView(menu);
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.toolbar_items, menu);
         return true;
     }
 
@@ -192,7 +121,7 @@ public class Searching extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.search_action_home) {
+        if (id == R.id.action_home) {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             return true;
@@ -200,81 +129,338 @@ public class Searching extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-    private void setupSearchView(Menu menu) {
-        MenuItem item = menu.findItem(R.id.action_search);
-        searchView.setMenuItem(item);
-        searchView.setTabLayout(tabLayout);
 
-        // Adding padding to the animation because of the hidden menu item
-        Point revealCenter = searchView.getRevealAnimationCenter();
-        revealCenter.x -= DimensUtils.convertDpToPx(EXTRA_REVEAL_CENTER_PADDING, this);
+    public static ViewPager getViewPager(){
+        return viewPager;
     }
 
-    @Override
-    public void onBackPressed() {
-        if (searchView.onBackPressed()) {
-            Log.i(TAG, "===========");
+    //page adapter for filter and result page
+    public static class PagerAdapter extends FragmentStatePagerAdapter {
+        int mNumOfTabs;
 
-            return;
-        }
-
-        super.onBackPressed();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (searchView.onActivityResult(requestCode, resultCode, data)) {
-            Log.i(TAG, "===========");
-            return;
-        }
-
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    private int dp2px(int dp) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
-                getResources().getDisplayMetrics());
-    }
-
-    public static class PlaceholderFragment extends Fragment {
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        public PlaceholderFragment() {
-            // Empty
-        }
-
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.search_fregment, container, false);
-//            TextView textView = rootView.findViewById(R.id.section_label_1);
-            // 设置查询历史
-//            textView.setText("查询历史");
-            return rootView;
-        }
-    }
-
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        SectionsPagerAdapter(FragmentManager fm) {
+        public PagerAdapter(FragmentManager fm, int NumOfTabs) {
             super(fm);
+            this.mNumOfTabs = NumOfTabs;
         }
 
         @Override
         public Fragment getItem(int position) {
-            return PlaceholderFragment.newInstance(position + 1);
+
+            switch (position) {
+                case 0:
+                    FilterFragment tab1 = new FilterFragment();
+                    return tab1;
+                case 1:
+                    ResultFragment tab2 = new ResultFragment();
+                    return tab2;
+                default:
+                    return null;
+            }
         }
 
         @Override
         public int getCount() {
-            return 3;
+            return mNumOfTabs;
+        }
+    }
+
+    public static class ResultFragment extends Fragment {
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            View view = inflater.inflate(R.layout.result_fragment, container, false);
+//            Button switch2filterBtn = view.findViewById(R.id.searchBtn);
+//            Log.i("onCreateView","跳转到ResultFragment");
+//            switch2filterBtn.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    Searching.getViewPager().setCurrentItem(0);
+//                }
+//            });
+            return view;
+        }
+    }
+
+    public static class FilterFragment extends Fragment {
+        private List<Integer> mSelectedItems; //已选中条件
+        private boolean[] selectedItems; //已选中条件的布尔值
+        private String[] criterias; // 所有条件
+
+        private EditText courseSelector;
+        private List<Integer> cSelectedItems;
+        private boolean[] cselectedItems;
+
+        private DatePickerDialog datePicker;
+        private EditText dateOfBirth;
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            View view = inflater.inflate(R.layout.filter_fragment, container, false);
+//            EditText filterContent = view.findViewById(R.id.filterContent);
+
+            //状态操作变量初始化
+            criterias = getResources().getStringArray(R.array.criteria);
+            mSelectedItems = new ArrayList();
+            selectedItems = new boolean[criterias.length];
+
+            //set birthday picker
+            dateOfBirth = (EditText) view.findViewById(R.id.filter_dateOfBirth);
+            dateOfBirth.setInputType(InputType.TYPE_NULL);
+            dateOfBirth.setOnClickListener(view12 -> {
+                final Calendar cldr = Calendar.getInstance();
+                int day = cldr.get(Calendar.DAY_OF_MONTH);
+                int month = cldr.get(Calendar.MONTH);
+                int year = cldr.get(Calendar.YEAR);
+                // date picker dialog
+                datePicker = new DatePickerDialog(getActivity(),
+                        (view1, year1, monthOfYear, dayOfMonth) -> dateOfBirth.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year1), year, month, day);
+                datePicker.show();
+            });
+
+            //set course selector
+            cSelectedItems = new ArrayList();  // Where we track the selected items
+            cselectedItems = new boolean[getResources().getStringArray(R.array.units).length];
+            courseSelector = (EditText) view.findViewById(R.id.filter_course_multi_selector);
+            courseSelector.setInputType(InputType.TYPE_NULL);
+            courseSelector.setOnClickListener(view1 -> {
+                // 1. Instantiate an AlertDialog.Builder with its constructor
+                Log.i(Subscription.class.getName(), "Click Course Selector");
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User clicked OK button
+                        String courseSelectorContent = "";
+                        for (Integer item : cSelectedItems){
+                            cselectedItems[item] = true;
+                            courseSelectorContent += getResources().getStringArray(R.array.units)[item] + ",";
+                        }
+                        Log.i(Subscription.class.getName(), courseSelectorContent);
+                        ((TextView)view.findViewById(R.id.filter_course_multi_selector)).setText(courseSelectorContent);
+                    }
+                });
+                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                    }
+                });
+                // 2. Chain together various setter methods to set the dialog characteristics
+//                selectedItems = new boolean[getResources().getStringArray(R.array.units).length];
+//                for (Integer item : mSelectedItems){
+//                    selectedItems[item] = true;
+//                }
+                builder.setTitle(R.string.course_select)
+                        .setMultiChoiceItems(R.array.units, cselectedItems, new DialogInterface.OnMultiChoiceClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int which, boolean isChecked) {
+                                if (isChecked) {
+                                    // If the user checked the item, add it to the selected items
+                                    cSelectedItems.add(which);
+                                } else if (cSelectedItems.contains(which)) {
+                                    // Else, if the item is already in the array, remove it
+                                    cSelectedItems.remove(Integer.valueOf(which));
+                                }
+                            }
+                        });
+
+                // 3. Get the AlertDialog from create()
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            });
+
+
+            //set add criteria button
+            EditText addCriteriaButtion = (EditText) view.findViewById(R.id.criteria_select);
+            addCriteriaButtion.setInputType(InputType.TYPE_NULL);
+            addCriteriaButtion.setOnClickListener(view1 -> {
+                // 1. Instantiate an AlertDialog.Builder with its constructor
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+                // 2. Chain together various setter methods to set the dialog characteristics
+                builder.setTitle("Select Criteria");
+                //set choices
+                builder.setMultiChoiceItems(R.array.criteria, selectedItems,
+                        (dialog, which, isChecked) -> {
+                            if (isChecked) {
+                                // If the user checked the item, add it to the selected items
+                                mSelectedItems.add(which);
+                            } else if (mSelectedItems.contains(which)) {
+                                // Else, if the item is already in the array, remove it
+                                mSelectedItems.remove(Integer.valueOf(which));
+                            }
+                        });
+
+                // Add the buttons
+                builder.setPositiveButton(R.string.ok, (dialog, id) -> {
+                    // User clicked OK button
+                    for (Integer item : mSelectedItems){
+                        selectedItems[item] = true;
+                    }
+                    // set selected criteria
+                    int selectedCriterias = mSelectedItems.size();
+                    if (selectedCriterias == 0){
+                        ((EditText) view1.findViewById(R.id.criteria_select)).setText("");
+                    } else {
+                        ((EditText) view1.findViewById(R.id.criteria_select))
+                                .setText("Selected " + selectedCriterias + " Criterias as Following");
+                    }
+
+
+                    //根据选中的项动态显示或隐藏筛选条件
+                    for (int i = 0; i < selectedItems.length; i++){
+                        if (selectedItems[i]){
+                            //当前选中
+                            showCriteria(view, i);
+                        } else {
+                            //当前未选中
+                            goneCriteria(view, i);
+                        }
+                    }
+
+
+
+                });
+                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                    }
+                });
+
+                // 3. Get the AlertDialog from create()
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            });
+            Log.i("onCreateView","跳转到FilterFragment");
+            Button switch2resultBtn = view.findViewById(R.id.searchBtn);
+            switch2resultBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+//                    Searching.searchCriteria = filterContent.getText().toString();
+                    InputMethodManager imm = (InputMethodManager) view.getContext()
+                            .getSystemService(Context.INPUT_METHOD_SERVICE);
+                    if( imm != null){
+                        imm.hideSoftInputFromWindow(view.getWindowToken(),0);
+                    }
+                    ViewPager viewPager = Searching.getViewPager();
+                    viewPager.setCurrentItem(1);
+                }
+            });
+            return view;
+        }
+
+        private void goneCriteria(View view, int i) {
+            //根据index选择对应的控件清空并隐藏
+            switch (i){
+                case 0:
+                {
+                    ((EditText)view.findViewById(R.id.filter_dateOfBirth)).setText("");
+                    view.findViewById(R.id.filter_dateOfBirth_layout).setVisibility(View.GONE);
+                    break;
+                }
+                case 1:
+                {
+                    ((EditText)view.findViewById(R.id.filter_course_multi_selector)).setText("");
+                    view.findViewById(R.id.course_multi_selector_layout).setVisibility(View.GONE);
+                    break;
+                }
+                case 2:
+                {
+                    ((EditText)view.findViewById(R.id.filter_favor_sport_text)).setText("");
+                    view.findViewById(R.id.filter_favor_sport_text_layout).setVisibility(View.GONE);
+                    break;
+                }
+                case 3:
+                {
+                    ((EditText)view.findViewById(R.id.filter_favor_movie_text)).setText("");
+                    view.findViewById(R.id.filter_favor_movie_text_layout).setVisibility(View.GONE);
+                    break;
+                }
+                case 4:
+                {
+                    ((Spinner)view.findViewById(R.id.filter_favor_unit_spinner)).setSelection(0);
+                    view.findViewById(R.id.filter_favor_unit_spinner_layout).setVisibility(View.GONE);
+                    break;
+                }
+                case 5:
+                {
+                    ((Spinner)view.findViewById(R.id.filter_nation_spinner)).setSelection(0);
+                    ((Spinner)view.findViewById(R.id.filter_language_spinner)).setSelection(0);
+                    view.findViewById(R.id.filter_nation_language_spinner_layout).setVisibility(View.GONE);
+                    break;
+                }
+                case 6:
+                {
+                    ((RadioButton)view.findViewById(R.id.filter_radio_part_time)).setChecked(false);
+                    ((RadioButton)view.findViewById(R.id.filter_radio_full_time)).setChecked(false);
+                    view.findViewById(R.id.filter_radio_mode_layout).setVisibility(View.GONE);
+                    break;
+                }
+                case 7:
+                {
+                    ((EditText)view.findViewById(R.id.filter_address_text)).setText("");
+                    view.findViewById(R.id.filter_address_text_layout).setVisibility(View.GONE);
+                    break;
+                }
+                case 8:
+                {
+                    ((EditText)view.findViewById(R.id.filter_current_job)).setText("");
+                    view.findViewById(R.id.filter_current_job_layout).setVisibility(View.GONE);
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
+
+        private void showCriteria(View view, int i) {
+            //根据index选中对应的控件显示
+            switch (i){
+                case 0:
+                {
+                    view.findViewById(R.id.filter_dateOfBirth_layout).setVisibility(View.VISIBLE);
+                    break;
+                }
+                case 1:
+                {
+                    view.findViewById(R.id.course_multi_selector_layout).setVisibility(View.VISIBLE);
+                    break;
+                }
+                case 2:
+                {
+                    view.findViewById(R.id.filter_favor_sport_text_layout).setVisibility(View.VISIBLE);
+                    break;
+                }
+                case 3:
+                {
+                    view.findViewById(R.id.filter_favor_movie_text_layout).setVisibility(View.VISIBLE);
+                    break;
+                }
+                case 4:
+                {
+                    view.findViewById(R.id.filter_favor_unit_spinner_layout).setVisibility(View.VISIBLE);
+                    break;
+                }
+                case 5:
+                {
+                    view.findViewById(R.id.filter_nation_language_spinner_layout).setVisibility(View.VISIBLE);
+                    break;
+                }
+                case 6:
+                {
+                    view.findViewById(R.id.filter_radio_mode_layout).setVisibility(View.VISIBLE);
+                    break;
+                }
+                case 7:
+                {
+                    view.findViewById(R.id.filter_address_text_layout).setVisibility(View.VISIBLE);
+                    break;
+                }
+                case 8:
+                {
+                    view.findViewById(R.id.filter_current_job_layout).setVisibility(View.VISIBLE);
+                    break;
+                }
+                default:
+                    break;
+            }
         }
     }
 }
