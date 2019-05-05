@@ -80,6 +80,9 @@ public class MyFriends extends AppCompatActivity {
         students = new ArrayList<>();
         students.add(new Student("Monny", R.drawable.female, "Suzhou", "Haha"));
         students.add(new Student("Tom", R.drawable.male, "Hangzhou", "Ha"));
+        students.add(new Student("Tim", R.drawable.female, "Hangzhou", "Ha"));
+        students.add(new Student("Puppy", R.drawable.male, "Hangzhou", "Ha"));
+        students.add(new Student("Puppy", R.drawable.male, "Hangzhou", "Ha"));
     }
 
     @Override

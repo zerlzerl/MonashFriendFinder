@@ -61,10 +61,10 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.MyView
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         holder.tv_fName.setText(students.get(i).fName);
-        holder.tv_fSuburb.setText(students.get(i).fSuburb);
-        holder.tv_fMovie.setText(students.get(i).fMovie);
         holder.iv_fGender.setImageResource(students.get(i).fGender);
-        holder.tv_fName.setText(students.get(i).fName);
+        holder.tv_fSuburb.setText("  Suburb: " + students.get(i).fSuburb);
+        holder.tv_fMovie.setText("  Movie: " + students.get(i).fMovie);
+
 
     }
 
