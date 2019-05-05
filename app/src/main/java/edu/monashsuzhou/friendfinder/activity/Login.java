@@ -35,11 +35,9 @@ import edu.monashsuzhou.friendfinder.MainActivity;
 import edu.monashsuzhou.friendfinder.litepalbean.DatabaseHelper;
 import edu.monashsuzhou.friendfinder.litepalbean.MiniStudent;
 import edu.monashsuzhou.friendfinder.litepalbean.StudentProfile;
-import edu.monashsuzhou.friendfinder.litepalbean.StudentProfile;
 import edu.monashsuzhou.friendfinder.util.HttpUtil;
 import edu.monashsuzhou.friendfinder.util.LoadingDialog;
 import edu.monashsuzhou.friendfinder.util.MD5Util;
-import edu.monashsuzhou.friendfinder.util.RestClient;
 import edu.monashsuzhou.friendfinder.util.SharedPreferencesUtils;
 
 public class Login extends AppCompatActivity
@@ -422,10 +420,6 @@ public class Login extends AppCompatActivity
      */
     public String getPassword() {
         return et_password.getText().toString().trim();//去掉空格
-    }
-
-    public static int getCurrentId(){
-        return 2;
     }
 
 

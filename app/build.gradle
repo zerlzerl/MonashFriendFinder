@@ -42,6 +42,7 @@ dependencies {
     // add for SwipeMenuListView
     implementation 'com.squareup.okhttp3:okhttp:3.14.1'
     implementation 'com.alibaba:fastjson:1.2.57'
+    implementation 'org.litepal.android:java:3.0.0'
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.1'
 
 }
