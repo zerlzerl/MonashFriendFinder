@@ -54,5 +54,9 @@
     <string name="course_select">Select Your Course</string>
     <string name="title_activity_edit_profile">Edit Profile</string>
 
+    <!-- searching -->
+    <string name="search_filter_btn">Filter</string>
+    <string name="search_result_btn">result</string>
+
 
 </resources>

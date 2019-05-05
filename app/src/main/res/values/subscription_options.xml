@@ -49,4 +49,17 @@
     </string-array>
     <string name="nation">Select Your Nationality</string>
     <string name="language">Select Your Language</string>
+
+    <!-- -->
+    <string-array name="criteria">
+        <item>Birthday</item>
+        <item>Course</item>
+        <item>Favourite Sport</item>
+        <item>Favourite Movie</item>
+        <item>Favourite Unit</item>
+        <item>Nationality &amp; Native Language</item>
+        <item>Study Mode</item>
+        <item>Address</item>
+        <item>Current Job</item>
+    </string-array>
 </resources>
