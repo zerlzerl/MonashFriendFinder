@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -37,7 +39,7 @@ public class MyFriends extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
-
+    private FloatingActionButton fab_map;
     private List<Student> students;
 
     @Override
@@ -60,7 +62,7 @@ public class MyFriends extends AppCompatActivity {
         initData();
 
         recyclerView = (RecyclerView) findViewById(R.id.rv_studentsCards);
-
+        fab_map = (FloatingActionButton) findViewById(R.id.fab_map);
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         recyclerView.setHasFixedSize(true);
@@ -72,6 +74,49 @@ public class MyFriends extends AppCompatActivity {
         // specify an adapter (see also next example)
         mAdapter = new StudentsAdapter(students);
         recyclerView.setAdapter(mAdapter);
+//        recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+//            @Override
+//            public boolean onInterceptTouchEvent(@NonNull RecyclerView recyclerView, @NonNull MotionEvent motionEvent) {
+//                return false;
+//            }
+//
+//            @Override
+//            public void onTouchEvent(@NonNull RecyclerView recyclerView, @NonNull MotionEvent motionEvent) {
+//
+//            }
+//
+//            @Override
+//            public void onRequestDisallowInterceptTouchEvent(boolean b) {
+//
+//            }
+//        });
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy >0) {
+                    // Scroll Down
+                    if (fab_map.isShown()) {
+                        fab_map.hide();
+                    }
+                }
+                else if (dy <0) {
+                    // Scroll Up
+                    if (!fab_map.isShown()) {
+                        fab_map.show();
+                    }
+                }
+            }
+        });
+        fab_map.setOnClickListener(view -> {
+            Intent intent = new Intent();
+            intent.setClass(MyFriends.this, Map.class);
+            startActivity(intent);
+        });
 
     }
 
@@ -81,6 +126,7 @@ public class MyFriends extends AppCompatActivity {
         students.add(new Student("Monny", R.drawable.female, "Suzhou", "Haha"));
         students.add(new Student("Tom", R.drawable.male, "Hangzhou", "Ha"));
         students.add(new Student("Tim", R.drawable.female, "Hangzhou", "Ha"));
+        students.add(new Student("Monny", R.drawable.female, "Suzhou", "Haha"));
         students.add(new Student("Puppy", R.drawable.male, "Hangzhou", "Ha"));
         students.add(new Student("Puppy", R.drawable.male, "Hangzhou", "Ha"));
     }
