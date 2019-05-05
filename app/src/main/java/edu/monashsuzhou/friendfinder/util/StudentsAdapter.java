@@ -1,5 +1,6 @@
 package edu.monashsuzhou.friendfinder.util;
 
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -73,4 +74,6 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.MyView
     public int getItemCount() {
         return students.size();
     }
+
+
 }

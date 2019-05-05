@@ -47,10 +47,10 @@
             <!--</com.baoyz.swipemenulistview.SwipeMenuListView>-->
 
             <android.support.design.widget.FloatingActionButton
-                android:id="@+id/fab_addFriend"
+                android:id="@+id/fab_map"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_add_white_24px"
+                android:src="@drawable/ic_baseline_location_on_24px"
                 tools:layout_editor_absoluteY="455dp"
                 tools:layout_editor_absoluteX="328dp"
                 app:layout_constraintBottom_toBottomOf="parent"
