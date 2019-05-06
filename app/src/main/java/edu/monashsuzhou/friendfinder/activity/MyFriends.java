@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -22,25 +23,32 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import edu.monashsuzhou.friendfinder.R;
 
 import edu.monashsuzhou.friendfinder.MainActivity;
+import edu.monashsuzhou.friendfinder.util.FriendsAdapter;
+import edu.monashsuzhou.friendfinder.util.HttpUtil;
+import edu.monashsuzhou.friendfinder.util.StringUtils;
 import edu.monashsuzhou.friendfinder.util.StudentsAdapter;
 
 public class MyFriends extends AppCompatActivity {
-    private RecyclerView recyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private static RecyclerView recyclerView;
+    private static RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private FloatingActionButton fab_map;
-    private List<Student> students;
+    private static List<Friends> students;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,20 +57,9 @@ public class MyFriends extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.friends_toolbar);
         setSupportActionBar(toolbar);
 
-//        FloatingActionButton fab = findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-
-
-        initData();
-
         recyclerView = (RecyclerView) findViewById(R.id.rv_studentsCards);
         fab_map = (FloatingActionButton) findViewById(R.id.fab_map);
+
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         recyclerView.setHasFixedSize(true);
@@ -71,9 +68,11 @@ public class MyFriends extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        // specify an adapter (see also next example)
-        mAdapter = new StudentsAdapter(students);
-        recyclerView.setAdapter(mAdapter);
+        //执行根据ID查找朋友的方法
+        FriendsShownTask friendsShownTask = new FriendsShownTask();
+        friendsShownTask.execute(Login.getCurrentId());
+
+
 //        recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
 //            @Override
 //            public boolean onInterceptTouchEvent(@NonNull RecyclerView recyclerView, @NonNull MotionEvent motionEvent) {
@@ -121,15 +120,7 @@ public class MyFriends extends AppCompatActivity {
     }
 
 
-    private void initData() {
-        students = new ArrayList<>();
-        students.add(new Student("Monny", R.drawable.female, "Suzhou", "Haha", ""));
-        students.add(new Student("Tom", R.drawable.male, "Hangzhou", "Ha", ""));
-        students.add(new Student("Tim", R.drawable.female, "Hangzhou", "Ha", ""));
-        students.add(new Student("Monny", R.drawable.female, "Suzhou", "Haha", ""));
-        students.add(new Student("Puppy", R.drawable.male, "Hangzhou", "Ha", ""));
-        students.add(new Student("Puppy", R.drawable.male, "Hangzhou", "Ha", ""));
-    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -167,6 +158,75 @@ public class MyFriends extends AppCompatActivity {
             this.fSuburb = fSuburb;
             this.fMovie = fMovie;
             this.info = info;
+        }
+    }
+
+    public static class Friends {
+        public String fName;
+        public int fGender;
+        public String fSuburb;
+        public String fMovie;
+        public String info;
+        public String friendshipInfo;
+        Friends(String fName, int fGender, String fSuburb, String fMovie, String info, String friendshipInfo) {
+            this.fName = fName;
+            this.fGender = fGender;
+            this.fSuburb = fSuburb;
+            this.fMovie = fMovie;
+            this.info = info;
+            this.friendshipInfo = friendshipInfo;
+        }
+    }
+    public static class FriendsShownTask extends AsyncTask<Integer, Integer, String>{
+
+        @Override
+        protected String doInBackground(Integer... integers) {
+            Integer currentId = integers[0];
+            String friendsStr;
+            try {
+                friendsStr = HttpUtil.get("Friendship","findByStuId/" + currentId);
+                Log.i(MyFriends.class.getName(), friendsStr);
+                return friendsStr;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            // specify an adapter (see also next example)
+            if (s != null){
+                //没有网络错误
+                JSONArray friendList = JSON.parseArray(s);
+                if (friendList.size() == 0){
+                    //没有朋友
+                } else {
+                    //渲染朋友
+                    students = new ArrayList<>();
+                    for (Object i : friendList) {
+                        String endDate = ((JSONObject) i).getString("endDate");
+                        if (StringUtils.isBlank(endDate)) {
+                            JSONObject friendship = (JSONObject) i;
+                            Integer fsid = friendship.getInteger("friendshipId");
+                            JSONObject friend = friendship.getJSONObject("friendId");
+                            String fname = friend.getString("firstName");
+                            String gender = friend.getString("gender");
+                            String suburb = friend.getString("suburb");
+                            String fMovie = friend.getString("favouriteMovie");
+                            Integer sid = friend.getInteger("studentId");
+                            int genderPicture = R.drawable.male;
+                            if (gender != null)
+                                genderPicture = gender.equals("female") ? R.drawable.female : R.drawable.male;
+                            students.add(new MyFriends.Friends(fname, genderPicture, suburb, fMovie,
+                                    JSON.toJSONString(friend), JSON.toJSONString(friendship)));
+                        }
+                    }
+                }
+            }
+            mAdapter = new FriendsAdapter(students);
+            recyclerView.setAdapter(mAdapter);
+            super.onPostExecute(s);
         }
     }
 }
