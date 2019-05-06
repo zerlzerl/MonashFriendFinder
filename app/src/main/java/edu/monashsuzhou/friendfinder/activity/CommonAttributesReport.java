@@ -1,6 +1,7 @@
 package edu.monashsuzhou.friendfinder.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -42,8 +43,9 @@ public class CommonAttributesReport extends AppCompatActivity {
         setContentView(R.layout.common_attributes_report);
         Toolbar toolbar = findViewById(R.id.report_toolbar);
         setSupportActionBar(toolbar);
-
-        stu_id = Login.getCurrentId();
+        SharedPreferences userSettings= getSharedPreferences("login", 0);
+        stu_id = userSettings.getInt("loginId",-1);
+        Log.i("common_stuid", String.valueOf(stu_id));
         mChart = (PieChart) findViewById(R.id.pie_chart);
         getUnitFrequency();
         showChart(pieData);
@@ -98,9 +100,10 @@ public class CommonAttributesReport extends AppCompatActivity {
         mChart.setEntryLabelColor(Color.BLACK);
 
         Legend l = mChart.getLegend();
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.CENTER);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
-        l.setOrientation(Legend.LegendOrientation.VERTICAL);
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
+        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        l.setWordWrapEnabled(true);
         l.setDrawInside(false);
         l.setXEntrySpace(7f);
         l.setYEntrySpace(0f);

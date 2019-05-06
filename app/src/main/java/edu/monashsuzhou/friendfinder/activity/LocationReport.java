@@ -1,6 +1,7 @@
 package edu.monashsuzhou.friendfinder.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -55,7 +56,9 @@ public class LocationReport extends AppCompatActivity {
         btn = (Button) findViewById(R.id.btn_input_date);
         et_start_date = (EditText) findViewById(R.id.et_start_date);
         et_end_date = (EditText) findViewById(R.id.et_end_date);
-        mStu_id = Login.getCurrentId();
+        SharedPreferences userSettings= getSharedPreferences("login", 0);
+        mStu_id = userSettings.getInt("loginId",-1);
+        Log.i("location_stuid", String.valueOf(mStu_id));
         initAddUnitListeners();
 
        // barChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(stored_lab));
@@ -139,20 +142,16 @@ public class LocationReport extends AppCompatActivity {
             }
             ArrayList<BarEntry> entries = new ArrayList<BarEntry>();
             ArrayList<String> labels = new ArrayList<>();
-//            JSONArray json_data = JSON.parseArray(info);
+            JSONArray json_data = JSON.parseArray(info);
 
-//            for(int i = 0 ; i < json_data.size(); i++ ){
-//                JSONObject obj = json_data.getJSONObject(i);
-//                Float frequency = obj.getFloat("frequency");
-//                String loc_name = obj.getString("loc_name");
-//                entries.add(new BarEntry(i, frequency));
-//                labels.add(loc_name);
-//            }
-
-            for(int i = 0 ; i < 6 ; i++){
-                entries.add(new BarEntry(i, i));
-                labels.add("Test " + i);
+            for(int i = 0 ; i < json_data.size(); i++ ){
+                JSONObject obj = json_data.getJSONObject(i);
+                Float frequency = obj.getFloat("frequency");
+                String loc_name = obj.getString("locName");
+                entries.add(new BarEntry(i, frequency));
+                labels.add(loc_name);
             }
+            System.out.println(labels);
 
             BarDataSet dataset = new BarDataSet(entries, "visiting frequency");
             dataset.setColors(ColorTemplate.COLORFUL_COLORS);

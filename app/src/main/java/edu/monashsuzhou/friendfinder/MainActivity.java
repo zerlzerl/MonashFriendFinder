@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         setupMenu();
 
         initTextViews();
-/*
+
         //显示地点和温度
         SharedPreferences setting = getSharedPreferences("quickresume", 0);
         Boolean user_first = setting.getBoolean("FIRST",true);
@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
             iv_weather.setImageResource(weatherR);
         }
 
-*/
+
         //显示日期和时间
         mHandler = new Handler();
         if (true) {
@@ -117,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
+        System.out.println(city);
         tv_city.setText(city);
         tv_uName.setText("Welcome, " + uName + "!");
         weatherR = getImageIcon(icon);
@@ -246,6 +247,10 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String weatherInfo) {
             super.onPostExecute(weatherInfo);
 //            Log.i("Weather", weatherInfo);
+            if(weatherInfo == null){
+                Log.d("weatherinfo","null");
+                return;
+            }
             JSONObject weatherJson = JSON.parseObject(weatherInfo);
             
             temp = "" + weatherJson.getJSONArray("list").getJSONObject(0)

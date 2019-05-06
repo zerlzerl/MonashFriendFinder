@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
@@ -40,6 +41,7 @@ import edu.monashsuzhou.friendfinder.entity.StudentProfile;
 import edu.monashsuzhou.friendfinder.litepalbean.DatabaseHelper;
 import edu.monashsuzhou.friendfinder.litepalbean.MiniStudent;
 import edu.monashsuzhou.friendfinder.util.HttpUtil;
+import edu.monashsuzhou.friendfinder.util.SharedPreferencesUtils;
 
 public class GoogleMaps extends FragmentActivity implements OnMapReadyCallback,  GoogleMap.OnMarkerClickListener {
 
@@ -70,8 +72,10 @@ public class GoogleMaps extends FragmentActivity implements OnMapReadyCallback, 
         if(map_type == null){
             map_type = "friend";
         }
-        Log.i("map_type",map_type);
-        stu_id = Login.getCurrentId();
+
+        SharedPreferences userSettings= getSharedPreferences("login", 0);
+        stu_id = userSettings.getInt("loginId",-1);
+        Log.i("map_stuid", String.valueOf(stu_id));
         dh = new DatabaseHelper();
         myStu = dh.getMiniStudent(String.valueOf(stu_id));
         if (map_type.equals("friend")){
@@ -127,7 +131,7 @@ public class GoogleMaps extends FragmentActivity implements OnMapReadyCallback, 
         this.btn.setOnClickListener(new Button.OnClickListener(){
             public void  onClick(View v){
                 mMap.clear();
-                LatLng my_loc = new LatLng(myStu.getLatitude(),myStu.getLongtude());
+                LatLng my_loc = new LatLng(myStu.getLongtude(),myStu.getLatitude());
                 Marker my_loc_marker = mMap.addMarker(new MarkerOptions().position(my_loc).title("My location"));
                 my_loc_marker.setSnippet("name :" + myStu.getFirstname());
                 my_loc_marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
@@ -165,7 +169,7 @@ public class GoogleMaps extends FragmentActivity implements OnMapReadyCallback, 
                     String name = ms.getFirstname();
                     double longtitude = ms.getLongtude();
                     double latitude = ms.getLatitude();
-                    LatLng friend_loc = new LatLng(latitude,longtitude);
+                    LatLng friend_loc = new LatLng(longtitude, latitude);
                     double dis_between = CalculationByDistance(my_loc, friend_loc);
                     if(dis_between > distance && !all){
                         continue;
@@ -175,7 +179,6 @@ public class GoogleMaps extends FragmentActivity implements OnMapReadyCallback, 
                     friend_loc_marker.setSnippet("name : " + name);
                     Log.i("stu_id",String.valueOf(stu_id));
                     Log.i("friend_id",String.valueOf(ms_stu_id));
-                    friend_loc_marker.setTag(ms_stu_id);
                 }
             }
         });
@@ -197,7 +200,9 @@ public class GoogleMaps extends FragmentActivity implements OnMapReadyCallback, 
         // get my info
         double longtitude = ms.getLongtude();
         double latitude = ms.getLatitude();
-        LatLng my_loc = new LatLng(latitude,longtitude);
+        System.out.println(longtitude);
+        System.out.println(latitude);
+        LatLng my_loc = new LatLng(longtitude, latitude);
         Marker my_loc_marker = mMap.addMarker(new MarkerOptions().position(my_loc).title("My location"));
         my_loc_marker.setSnippet("name :" + ms.getFirstname());
         my_loc_marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
@@ -222,7 +227,7 @@ public class GoogleMaps extends FragmentActivity implements OnMapReadyCallback, 
             String name = ms.getFirstname();
             longtitude = ms.getLongtude();
             latitude = ms.getLatitude();
-            LatLng friend_loc = new LatLng(latitude,longtitude);
+            LatLng friend_loc = new LatLng(longtitude, latitude);
             Marker friend_loc_marker =  mMap.addMarker(new MarkerOptions().position(friend_loc).title("Student : " + name));
             friend_loc_marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED ));
             friend_loc_marker.setSnippet("name : " + name);

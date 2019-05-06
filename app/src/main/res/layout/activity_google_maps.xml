@@ -28,7 +28,8 @@
             android:id="@+id/ll1_map"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:background="@android:color/transparent" >
             <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -57,9 +58,6 @@
 
 
         </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
             <fragment xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:map="http://schemas.android.com/apk/res-auto"
                 xmlns:tools="http://schemas.android.com/tools"
@@ -68,7 +66,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 tools:context=".activity.GoogleMaps" />
-        </LinearLayout>
 
 
     </LinearLayout>

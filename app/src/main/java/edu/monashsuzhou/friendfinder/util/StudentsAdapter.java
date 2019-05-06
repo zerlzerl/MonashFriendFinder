@@ -182,17 +182,17 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.MyView
 
             String name = stuInfo.getString("firstName") + " " + stuInfo.getString("surname") + "\n";
             String location = stuInfo.getString("suburb") + " " + stuInfo.getString("address") + "\n";
-            String email = stuInfo.getString("email") + "\n";
-            String gender =  stuInfo.getString("gender") + "\n";
-            String birthday = stuInfo.getString("birthday") + "\n";
-            String nation = stuInfo.getString("nationality") + "\n";
-            String lang = stuInfo.getString("nativeLanguage") + "\n";
-            String fSport = stuInfo.getString("favouriteSport") + "\n";
-            String fUnit = stuInfo.getString("favouriteUnit") + "\n";
-            String fMovie = stuInfo.getString("favouriteMovie") + "\n";
-            String currentJob = stuInfo.getString("currentJob") + "\n";
-            String studyMode = "Study Mode:\t" + stuInfo.getString("currentJob") + "\n";
-            String course = "Course:\t" + stuInfo.getString("currentJob") + "\n";
+            String email = stuInfo.getString("email");
+            String gender =  stuInfo.getString("gender");
+            String birthday = stuInfo.getString("birthday");
+            String nation = stuInfo.getString("nationality");
+            String lang = stuInfo.getString("nativeLanguage");
+            String fSport = stuInfo.getString("favouriteSport");
+            String fUnit = stuInfo.getString("favouriteUnit");
+            String fMovie = stuInfo.getString("favouriteMovie");
+            String currentJob = stuInfo.getString("currentJob");
+            String studyMode = stuInfo.getString("studyMode");
+            String course = stuInfo.getString("course");
 
             //封装属性
             LayoutInflater inflater = LayoutInflater.from(view.getContext());

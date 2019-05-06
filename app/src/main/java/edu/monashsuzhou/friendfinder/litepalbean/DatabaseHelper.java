@@ -1,5 +1,7 @@
 package edu.monashsuzhou.friendfinder.litepalbean;
 
+import android.util.Log;
+
 import org.litepal.LitePal;
 
 import java.util.List;
@@ -30,6 +32,8 @@ public class DatabaseHelper {
     public MiniStudent getMiniStudent(String stuid){
         List<MiniStudent> ms = LitePal.where("studentid = ?" ,stuid).find(MiniStudent.class);
         if (ms.size() > 0){
+            Log.i("get mini stu",String.valueOf(ms.get(0).getStudentid()));
+
             return ms.get(0);
         } else {
             return null;

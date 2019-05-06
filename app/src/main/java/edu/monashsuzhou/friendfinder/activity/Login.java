@@ -1,6 +1,7 @@
 package edu.monashsuzhou.friendfinder.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -105,100 +106,6 @@ public class Login extends AppCompatActivity
     private void initDatabase(){
         SQLiteDatabase db = LitePal.getDatabase();
         LitePal.deleteAll(MiniStudent.class);
-//
-//        DatabaseHelper dh = new DatabaseHelper();
-//        StudentProfile sp = new StudentProfile();
-//        sp.setStudentId(2);
-//        sp.setFirstName("zhp");
-//        dh.insertStudent(sp);
-//
-//        MiniStudent ms_1 = new MiniStudent();
-//        ms_1.setStudentid(2);
-//        ms_1.setLongtude(10);
-//        ms_1.setLatitude(10);
-//        ms_1.setFirstname("my");
-//        dh.insertMiniStudent(ms_1);
-//
-//
-//        ms_1 = new MiniStudent();
-//        ms_1.setStudentid(62);
-//        ms_1.setLongtude(12);
-//        ms_1.setLatitude(12);
-//        ms_1.setFirstname("my");
-//        dh.insertMiniStudent(ms_1);
-//
-//        ms_1 = new MiniStudent();
-//        ms_1.setStudentid(64);
-//        ms_1.setLongtude(15);
-//        ms_1.setLatitude(15);
-//        ms_1.setFirstname("test");
-//        dh.insertMiniStudent(ms_1);
-//
-//
-//        ms_1 = new MiniStudent();
-//        ms_1.setStudentid(3);
-//        ms_1.setLongtude(10.6);
-//        ms_1.setLatitude(10.5);
-//        ms_1.setFirstname("cool");
-//        ms_1.setFriendMarker(1);
-//        dh.insertMiniStudent(ms_1);
-//
-//        ms_1 = new MiniStudent();
-//        ms_1.setStudentid(4);
-//        ms_1.setLongtude(9.8);
-//        ms_1.setLatitude(10.7);
-//        ms_1.setFirstname("cool");
-//        ms_1.setFriendMarker(1);
-//        dh.insertMiniStudent(ms_1);
-//
-//        ms_1 = new MiniStudent();
-//        ms_1.setStudentid(5);
-//        ms_1.setLongtude(10.75);
-//        ms_1.setLatitude(13.2);
-//        ms_1.setFirstname("cool");
-//        ms_1.setFriendMarker(1);
-//        dh.insertMiniStudent(ms_1);
-//
-//        ms_1 = new MiniStudent();
-//        ms_1.setStudentid(6);
-//        ms_1.setLongtude(21);
-//        ms_1.setLatitude(30);
-//        ms_1.setFirstname("cool");
-//        ms_1.setFriendMarker(1);
-//        dh.insertMiniStudent(ms_1);
-//
-//        MiniStudent ms_2 = new MiniStudent();
-//        ms_2.setStudentid(3);
-//        ms_2.setLongtude(12);
-//        ms_2.setLatitude(12);
-//        ms_2.setFirstname("not cool");
-//        ms_1.setFriendMarker(1);
-//        dh.insertMiniStudent(ms_1);
-//
-//        ms_1 = new MiniStudent();
-//        ms_1.setStudentid(4);
-//        ms_1.setLongtude(9.8);
-//        ms_1.setLatitude(10.7);
-//        ms_1.setFirstname("cool");
-//        ms_1.setFriendMarker(1);
-//        dh.insertMiniStudent(ms_1);
-//
-//        ms_1 = new MiniStudent();
-//        ms_1.setStudentid(5);
-//        ms_1.setLongtude(10.75);
-//        ms_1.setLatitude(13.2);
-//        ms_1.setFirstname("cool");
-//        ms_1.setFriendMarker(1);
-//        dh.insertMiniStudent(ms_1);
-//
-//        ms_1 = new MiniStudent();
-//        ms_1.setStudentid(6);
-//        ms_1.setLongtude(21);
-//        ms_1.setLatitude(30);
-//        ms_1.setFirstname("cool");
-//        ms_1.setMatchingMarker(1);
-//        dh.insertMiniStudent(ms_1);
-
     }
 
     private void initData() {
@@ -368,6 +275,12 @@ public class Login extends AppCompatActivity
                 JSONObject prof = profList.getJSONObject(0);
                 String pswd = prof.getString("password");
                 id = prof.getInteger("studentId");
+                SharedPreferences userSettings = getSharedPreferences("login", 0);
+                SharedPreferences.Editor editor = userSettings.edit();
+                editor.putInt("loginId",id);
+                editor.commit();
+
+                Log.i("put studentid", String.valueOf(id));
                 MiniStudent ms = new MiniStudent();
                 ms.setStudentid(id);
                 ms.setFirstname(prof.getString("firstName"));
@@ -415,8 +328,9 @@ public class Login extends AppCompatActivity
                     e.printStackTrace();
                 }
 
+                Log.i("md5",MD5Util.GetMD5Code(getPassword()));
                 //判断账号和密码，输入的密码经MD5加密后是否和服务器端存储的一致
-                if (MD5Util.GetMD5Code(getPassword()).equals(getServerPassword())) {
+                if (MD5Util.GetMD5Code(getPassword().toLowerCase()).equals(getServerPassword().toLowerCase())) {
                     showToast("Login successfully!");
                     loadCheckBoxState(checkBox_rem, checkBox_skip);//记录下当前用户记住密码和自动登录的状态;
 
