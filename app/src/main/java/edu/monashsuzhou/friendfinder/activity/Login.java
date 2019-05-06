@@ -332,12 +332,12 @@ public class Login extends AppCompatActivity
     private void login() {
         //先做一些基本的判断，比如输入的用户命为空，密码为空，网络不可用多大情况，都不需要去链接服务器了，而是直接返回提示错误
         if (getAccount().isEmpty()){
-            showToast("你输入的账号为空！");
+            showToast("E-mail is empty!");
             return;
         }
 
         if (getPassword().isEmpty()){
-            showToast("你输入的密码为空！");
+            showToast("Password is empty!");
             return;
         }
         //登录一般都是请求服务器来判断密码是否正确，要请求网络，要子线程
@@ -359,13 +359,13 @@ public class Login extends AppCompatActivity
 
                 //判断账号和密码，输入的密码经MD5加密后是否和服务器端存储的一致
                 if (MD5Util.GetMD5Code(getPassword()).equals(getServerPassword())) {
-                    showToast("登录成功");
+                    showToast("Login successfully!");
                     loadCheckBoxState(checkBox_rem, checkBox_skip);//记录下当前用户记住密码和自动登录的状态;
 
                     startActivity(new Intent(Login.this, MainActivity.class));
                     finish();//关闭页面
                 } else {
-                    showToast("输入的登录账号或密码不正确");
+                    showToast("Incorrect e-mail or password!");
                 }
 
                 setLoginBtnClickable(true);  //这里解放登录按钮，设置为可以点击

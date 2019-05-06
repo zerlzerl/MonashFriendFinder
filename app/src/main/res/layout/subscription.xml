@@ -91,7 +91,7 @@
                     android:layout_marginEnd="@dimen/margin_normal"
                     android:ems="10"
                     android:inputType="textEmailAddress"
-                    android:hint="Email..."/>
+                    android:hint="E-mail..."/>
             </LinearLayout>
 
             <LinearLayout
@@ -402,7 +402,7 @@
                     <RadioButton android:id="@+id/radio_part_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/margin_large"
+                        android:layout_marginStart="@dimen/margin_normal"
                         android:layout_marginEnd="@dimen/margin_normal"
                         android:text="@string/part_time"/>
                     <RadioButton android:id="@+id/radio_full_time"
