@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import edu.monashsuzhou.friendfinder.Constant;
-import edu.monashsuzhou.friendfinder.activity.Map;
+import edu.monashsuzhou.friendfinder.activity.GoogleMaps;
 import edu.monashsuzhou.friendfinder.entity.StudentProfile;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;

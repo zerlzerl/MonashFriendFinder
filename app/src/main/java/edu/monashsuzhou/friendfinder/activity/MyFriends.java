@@ -25,6 +25,7 @@ import android.widget.LinearLayout;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
@@ -38,6 +39,8 @@ import java.util.List;
 import edu.monashsuzhou.friendfinder.R;
 
 import edu.monashsuzhou.friendfinder.MainActivity;
+import edu.monashsuzhou.friendfinder.litepalbean.DatabaseHelper;
+import edu.monashsuzhou.friendfinder.litepalbean.MiniStudent;
 import edu.monashsuzhou.friendfinder.util.FriendsAdapter;
 import edu.monashsuzhou.friendfinder.util.HttpUtil;
 import edu.monashsuzhou.friendfinder.util.StringUtils;
@@ -50,13 +53,15 @@ public class MyFriends extends AppCompatActivity {
     private FloatingActionButton fab_map;
     private static List<Friends> students;
 
+    private static JSONArray currentShownStudnt;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_friends);
         Toolbar toolbar = findViewById(R.id.friends_toolbar);
         setSupportActionBar(toolbar);
-
+        //currentShownStudnt = new JSONArray();
         recyclerView = (RecyclerView) findViewById(R.id.rv_studentsCards);
         fab_map = (FloatingActionButton) findViewById(R.id.fab_map);
 
@@ -112,14 +117,27 @@ public class MyFriends extends AppCompatActivity {
             }
         });
         fab_map.setOnClickListener(view -> {
-            Intent intent = new Intent();
-            intent.setClass(MyFriends.this, Map.class);
+            Intent intent = new Intent(getApplicationContext() , GoogleMaps.class);
+            intent.putExtra("map_type","friend");
+            MyFriends.insertMiniStu();
             startActivity(intent);
         });
 
     }
 
-
+    public static void insertMiniStu(){
+        DatabaseHelper dh = new DatabaseHelper();
+        for(int i = 0 ; i < currentShownStudnt.size(); i ++){
+            JSONObject obj = currentShownStudnt.getJSONObject(i);
+            MiniStudent ms = new MiniStudent();
+            ms.setFriendMarker(1);
+            ms.setFirstname(obj.getString("firstName"));
+            ms.setStudentid(obj.getInteger("studentId"));
+            dh.insertMiniStudent(ms);
+            SearchLocationTask st = new SearchLocationTask();
+            st.execute(new String[]{obj.getString("studentId")});
+        }
+    }
 
 
     @Override
@@ -199,6 +217,7 @@ public class MyFriends extends AppCompatActivity {
             if (s != null){
                 //没有网络错误
                 JSONArray friendList = JSON.parseArray(s);
+                currentShownStudnt = new JSONArray();
                 if (friendList.size() == 0){
                     //没有朋友
                 } else {
@@ -210,6 +229,7 @@ public class MyFriends extends AppCompatActivity {
                             JSONObject friendship = (JSONObject) i;
                             Integer fsid = friendship.getInteger("friendshipId");
                             JSONObject friend = friendship.getJSONObject("friendId");
+                            currentShownStudnt.add(friend);
                             String fname = friend.getString("firstName");
                             String gender = friend.getString("gender");
                             String suburb = friend.getString("suburb");
@@ -227,6 +247,45 @@ public class MyFriends extends AppCompatActivity {
             mAdapter = new FriendsAdapter(students);
             recyclerView.setAdapter(mAdapter);
             super.onPostExecute(s);
+        }
+    }
+
+
+    public static class SearchLocationTask extends AsyncTask<String, Void, String[]>{
+        @Override
+        public String[] doInBackground(String... params){
+            int student_id = Integer.parseInt(params[0]);
+            String uri = "findByStuId" + "/" + String.valueOf(student_id);
+            String info = "";
+            try {
+                info = HttpUtil.get("Location", uri);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Log.i("firends", info);
+            String [] str_list = new String[2];
+            str_list[0] = info;
+            str_list[1] = String.valueOf(student_id);
+            return str_list;
+        }
+
+        @Override
+        public void onPostExecute(String[] str_list){
+            try{
+                String info = str_list[0];
+                String stu_id = str_list[1];
+                JSONArray jsonArray = JSON.parseArray(info);
+                if( jsonArray.size() > 0){
+                    JSONObject obj = jsonArray.getJSONObject(0);
+                    MiniStudent ms = new MiniStudent();
+                    ms.setLatitude(obj.getDouble("latitude"));
+                    ms.setLongtude(obj.getDouble("longitude"));
+                    ms.setLocname(obj.getString("locName"));
+                    ms.updateAll("studentid = ?",stu_id);
+                }
+            } catch (JSONException e){
+                e.printStackTrace();
+            }
         }
     }
 }
