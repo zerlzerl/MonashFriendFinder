@@ -62,12 +62,12 @@
                 android:src="@drawable/ic_baseline_dehaze_24px"/>
 
             <ImageButton
-                android:id="@+id/iv_add"
+                android:id="@+id/iv_delete"
                 android:layout_marginStart="@dimen/margin_medium"
                 android:layout_marginTop="9dp"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/ic_baseline_person_add_24px"/>
+                android:src="@drawable/ic_baseline_person_delete_24px"/>
 
         </LinearLayout>
 

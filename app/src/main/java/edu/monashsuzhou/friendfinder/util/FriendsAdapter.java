@@ -35,8 +35,8 @@ import edu.monashsuzhou.friendfinder.activity.MyFriends;
 import edu.monashsuzhou.friendfinder.activity.Searching;
 import edu.monashsuzhou.friendfinder.activity.Subscription;
 
-public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.MyViewHolder> {
-    List<MyFriends.Student> students;
+public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.MyViewHolder> {
+    List<MyFriends.Friends> students;
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
@@ -48,7 +48,7 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.MyView
         TextView tv_fMovie;
         ImageView iv_fGender;
         ImageButton iv_detail;
-        ImageButton iv_add;
+        ImageButton iv_delete;
 
 
         public MyViewHolder(View v) {
@@ -59,22 +59,22 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.MyView
             tv_fMovie = (TextView) v.findViewById(R.id.tv_fMovie);
             iv_fGender = (ImageView) v.findViewById(R.id.iv_fGender);
             iv_detail = (ImageButton) v.findViewById(R.id.iv_detail);
-            iv_add = (ImageButton) v.findViewById(R.id.iv_add);
+            iv_delete = (ImageButton) v.findViewById(R.id.iv_delete);
         }
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public StudentsAdapter(List<MyFriends.Student> students) {
+    public FriendsAdapter(List<MyFriends.Friends> students) {
         this.students = students;
     }
 
     // Create new views (invoked by the layout manager)
     @Override
-    public StudentsAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
-                                                          int viewType) {
+    public FriendsAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
+                                                           int viewType) {
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.student_card, parent, false);
+                .inflate(R.layout.friend_card, parent, false);
 //        TextView v = (TextView) LayoutInflater.from(parent.getContext())
 //                .inflate(R.layout.student_card, parent, false);
 //        ...
@@ -102,7 +102,7 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.MyView
             }
         });
 
-        holder.iv_add.setOnClickListener(new View.OnClickListener() {
+        holder.iv_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -110,7 +110,7 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.MyView
                 AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
 
                 // 2. Chain together various setter methods to set the dialog characteristics
-                builder.setTitle("Add a new friend").setMessage("Are you sure you want to add " + students.get(i).fName + " as your friend");
+                builder.setTitle("Delete friend").setMessage("Are you sure you want to delete " + students.get(i).fName + "!");
 
                 builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -121,9 +121,9 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.MyView
                 builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         Log.i("==========","服务器通信");
-                        String friendInfo = students.get(i).info;
-                        AddFriendTask addFriendTask = new AddFriendTask();
-                        addFriendTask.execute(friendInfo, view);
+                        String fsInfo = students.get(i).friendshipInfo;
+                        DeleteFriendTask addFriendTask = new DeleteFriendTask();
+                        addFriendTask.execute(fsInfo, view);
                         // User clicked OK button
                     }
                 });
@@ -165,7 +165,7 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.MyView
             }
 
             View view = (View) objects[1];
-             return view;
+            return view;
         }
 
         @Override
@@ -266,39 +266,26 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.MyView
         }
     }
 
-    public static class AddFriendTask extends AsyncTask<Object, Integer, Object>{
-        String friendInfo;
-        String myInfo;
+    public static class DeleteFriendTask extends AsyncTask<Object, Integer, Object>{
+        String fsInfo;
         boolean state;
         @Override
         protected Object doInBackground(Object... objs) {
-            friendInfo = (String) objs[0];
-            Integer currentLoginUserId = Login.getCurrentId();
-            myInfo = null;
+            fsInfo = (String) objs[0];
+            JSONObject friendship = JSON.parseObject(fsInfo);
+            String currentTime = new SimpleDateFormat("yyyy-MM-dd/HH:mm:ss").format(new Date()) + "+08:00";
+            currentTime = currentTime.replace("/","T");
+
+            friendship.put("endDate", currentTime);
 
             try {
-                myInfo = HttpUtil.get("Profile","" + currentLoginUserId);
+                HttpUtil.put("Friendship", "" + friendship.getInteger("friendshipId"), friendship);
+                state = true;
             } catch (IOException e) {
+                state = false;
                 e.printStackTrace();
             }
 
-            if (myInfo != null){
-                //没有出现网络错误
-                JSONObject newFriedShip = new JSONObject();
-                newFriedShip.put("friendId",JSON.parse(friendInfo));
-                newFriedShip.put("studentId",JSON.parse(myInfo));
-                String currentTime = new SimpleDateFormat("yyyy-MM-dd/HH:mm:ss").format(new Date()) + "+08:00";
-                currentTime = currentTime.replace("/","T");
-                newFriedShip.put("startingDate", currentTime);
-                Log.i("",newFriedShip.toJSONString());
-                try {
-                    HttpUtil.post("Friendship", "", newFriedShip);
-                    state = true;
-                } catch (IOException e) {
-                    state = false;
-                    e.printStackTrace();
-                }
-            }
             return objs[1];
         }
 
@@ -309,12 +296,12 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.MyView
             if (state){
                 //执行成功
                 AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-                builder.setMessage("Add Success!");
+                builder.setMessage("Delete Success!");
                 builder.show();
             } else {
                 //执行出错
                 AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-                builder.setMessage("Add Failure!");
+                builder.setMessage("Delete Failure!");
                 builder.show();
             }
         }

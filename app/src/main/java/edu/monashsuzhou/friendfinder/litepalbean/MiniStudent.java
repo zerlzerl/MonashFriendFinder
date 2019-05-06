@@ -2,11 +2,13 @@ package edu.monashsuzhou.friendfinder.litepalbean;
 
 import org.litepal.crud.LitePalSupport;
 
+
+
 public class MiniStudent extends LitePalSupport {
     private int studentid;
-    private String email;
+    private String email;//
     private String firstname;
-    private String lastname;
+    private String lastname;//
     private double latitude;
     private double longtude;
     private double distance;

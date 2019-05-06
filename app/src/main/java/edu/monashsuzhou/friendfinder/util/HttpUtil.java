@@ -133,6 +133,8 @@ public class HttpUtil {
 //    public static JSONArray postJson(String table, String uri, Object obj) throws IOException {
 //        return com.alibaba.fastjson.JSON.parseArray(post(table, uri, obj));
 //    }
+
+
     public static void main(String[] args) throws ParseException {
         try {
             //Examples

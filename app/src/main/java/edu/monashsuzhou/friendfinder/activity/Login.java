@@ -2,6 +2,7 @@ package edu.monashsuzhou.friendfinder.activity;
 
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -17,15 +18,18 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 
 import org.litepal.LitePal;
 
 import java.io.IOException;
+import java.util.List;
 
 import edu.monashsuzhou.friendfinder.R;
 
@@ -33,9 +37,11 @@ import edu.monashsuzhou.friendfinder.MainActivity;
 import edu.monashsuzhou.friendfinder.litepalbean.DatabaseHelper;
 import edu.monashsuzhou.friendfinder.litepalbean.MiniStudent;
 import edu.monashsuzhou.friendfinder.litepalbean.StudentProfile;
+import edu.monashsuzhou.friendfinder.litepalbean.StudentProfile;
 import edu.monashsuzhou.friendfinder.util.HttpUtil;
 import edu.monashsuzhou.friendfinder.util.LoadingDialog;
 import edu.monashsuzhou.friendfinder.util.MD5Util;
+import edu.monashsuzhou.friendfinder.util.RestClient;
 import edu.monashsuzhou.friendfinder.util.SharedPreferencesUtils;
 
 public class Login extends AppCompatActivity
@@ -52,7 +58,7 @@ public class Login extends AppCompatActivity
     private LoadingDialog mLoadingDialog; //显示正在加载的对话框
 
     private Toolbar toolbar;
-    private static int id = -1;
+    private static int id = 4;
 
     //测试数据：email为2@2，密码为1，经加密为c4ca4238a0b923820dcc509a6f75849b
 
@@ -93,60 +99,105 @@ public class Login extends AppCompatActivity
         initViews();
         setupEvents();
         initData();
-        //initDatabase();
+        initDatabase();
 
     }
     private void initDatabase(){
         SQLiteDatabase db = LitePal.getDatabase();
-        DatabaseHelper dh = new DatabaseHelper();
-
-        StudentProfile sp = new StudentProfile();
-        sp.setStudentId(2);
-        sp.setFirstName("zhp");
-        dh.insertStudent(sp);
-
-
-        MiniStudent ms_1 = new MiniStudent();
-        ms_1.setStudentid(2);
-        ms_1.setLongtude(10);
-        ms_1.setLatitude(10);
-        ms_1.setFirstname("my");
-        dh.insertMatchingStudent(ms_1);
-
-        ms_1 = new MiniStudent();
-        ms_1.setStudentid(3);
-        ms_1.setLongtude(15);
-        ms_1.setLatitude(15);
-        ms_1.setFirstname("cool");
-        dh.insertFriend(ms_1,10,10);
-
-        ms_1 = new MiniStudent();
-        ms_1.setStudentid(4);
-        ms_1.setLongtude(9);
-        ms_1.setLatitude(10);
-        ms_1.setFirstname("cool");
-        dh.insertFriend(ms_1,10,10);
-
-        ms_1 = new MiniStudent();
-        ms_1.setStudentid(5);
-        ms_1.setLongtude(15);
-        ms_1.setLatitude(20);
-        ms_1.setFirstname("cool");
-        dh.insertFriend(ms_1,10,10);
-
-        ms_1 = new MiniStudent();
-        ms_1.setStudentid(6);
-        ms_1.setLongtude(21);
-        ms_1.setLatitude(30);
-        ms_1.setFirstname("cool");
-        dh.insertFriend(ms_1,10,10);
-
-        MiniStudent ms_2 = new MiniStudent();
-        ms_2.setStudentid(3);
-        ms_2.setLongtude(50);
-        ms_2.setLatitude(120);
-        ms_2.setFirstname("not cool");
-        dh.insertMatchingStudent (ms_2);
+        LitePal.deleteAll(MiniStudent.class);
+//
+//        DatabaseHelper dh = new DatabaseHelper();
+//        StudentProfile sp = new StudentProfile();
+//        sp.setStudentId(2);
+//        sp.setFirstName("zhp");
+//        dh.insertStudent(sp);
+//
+//        MiniStudent ms_1 = new MiniStudent();
+//        ms_1.setStudentid(2);
+//        ms_1.setLongtude(10);
+//        ms_1.setLatitude(10);
+//        ms_1.setFirstname("my");
+//        dh.insertMiniStudent(ms_1);
+//
+//
+//        ms_1 = new MiniStudent();
+//        ms_1.setStudentid(62);
+//        ms_1.setLongtude(12);
+//        ms_1.setLatitude(12);
+//        ms_1.setFirstname("my");
+//        dh.insertMiniStudent(ms_1);
+//
+//        ms_1 = new MiniStudent();
+//        ms_1.setStudentid(64);
+//        ms_1.setLongtude(15);
+//        ms_1.setLatitude(15);
+//        ms_1.setFirstname("test");
+//        dh.insertMiniStudent(ms_1);
+//
+//
+//        ms_1 = new MiniStudent();
+//        ms_1.setStudentid(3);
+//        ms_1.setLongtude(10.6);
+//        ms_1.setLatitude(10.5);
+//        ms_1.setFirstname("cool");
+//        ms_1.setFriendMarker(1);
+//        dh.insertMiniStudent(ms_1);
+//
+//        ms_1 = new MiniStudent();
+//        ms_1.setStudentid(4);
+//        ms_1.setLongtude(9.8);
+//        ms_1.setLatitude(10.7);
+//        ms_1.setFirstname("cool");
+//        ms_1.setFriendMarker(1);
+//        dh.insertMiniStudent(ms_1);
+//
+//        ms_1 = new MiniStudent();
+//        ms_1.setStudentid(5);
+//        ms_1.setLongtude(10.75);
+//        ms_1.setLatitude(13.2);
+//        ms_1.setFirstname("cool");
+//        ms_1.setFriendMarker(1);
+//        dh.insertMiniStudent(ms_1);
+//
+//        ms_1 = new MiniStudent();
+//        ms_1.setStudentid(6);
+//        ms_1.setLongtude(21);
+//        ms_1.setLatitude(30);
+//        ms_1.setFirstname("cool");
+//        ms_1.setFriendMarker(1);
+//        dh.insertMiniStudent(ms_1);
+//
+//        MiniStudent ms_2 = new MiniStudent();
+//        ms_2.setStudentid(3);
+//        ms_2.setLongtude(12);
+//        ms_2.setLatitude(12);
+//        ms_2.setFirstname("not cool");
+//        ms_1.setFriendMarker(1);
+//        dh.insertMiniStudent(ms_1);
+//
+//        ms_1 = new MiniStudent();
+//        ms_1.setStudentid(4);
+//        ms_1.setLongtude(9.8);
+//        ms_1.setLatitude(10.7);
+//        ms_1.setFirstname("cool");
+//        ms_1.setFriendMarker(1);
+//        dh.insertMiniStudent(ms_1);
+//
+//        ms_1 = new MiniStudent();
+//        ms_1.setStudentid(5);
+//        ms_1.setLongtude(10.75);
+//        ms_1.setLatitude(13.2);
+//        ms_1.setFirstname("cool");
+//        ms_1.setFriendMarker(1);
+//        dh.insertMiniStudent(ms_1);
+//
+//        ms_1 = new MiniStudent();
+//        ms_1.setStudentid(6);
+//        ms_1.setLongtude(21);
+//        ms_1.setLatitude(30);
+//        ms_1.setFirstname("cool");
+//        ms_1.setMatchingMarker(1);
+//        dh.insertMiniStudent(ms_1);
 
     }
 
@@ -317,6 +368,13 @@ public class Login extends AppCompatActivity
                 JSONObject prof = profList.getJSONObject(0);
                 String pswd = prof.getString("password");
                 id = prof.getInteger("studentId");
+                MiniStudent ms = new MiniStudent();
+                ms.setStudentid(id);
+                ms.setFirstname(prof.getString("firstName"));
+                ms.setEmail(account);
+                ms.save();
+                LoginTask lt = new LoginTask();
+                lt.execute(new String[]{String.valueOf(id)});
                 return pswd;
             }
         }
@@ -419,6 +477,7 @@ public class Login extends AppCompatActivity
     public String getPassword() {
         return et_password.getText().toString().trim();//去掉空格
     }
+
 
 
     /**
@@ -555,6 +614,45 @@ public class Login extends AppCompatActivity
 
     public static void setCurrentId(int _id) {
         id = _id;
+    }
+
+    private static class LoginTask extends AsyncTask<String, Void, String[]> {
+        @Override
+        public String[] doInBackground(String... params){
+            int student_id = Integer.parseInt(params[0]);
+            String uri = "findByStuId" + "/" + String.valueOf(student_id);
+            String info = "";
+            try {
+                info = HttpUtil.get("Location", uri);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Log.i("Login", info);
+            String [] str_list = new String[2];
+            str_list[0] = info;
+            str_list[1] = String.valueOf(student_id);
+            return str_list;
+        }
+
+        @Override
+        public void onPostExecute(String[] str_list){
+            try{
+                String info = str_list[0];
+                String stu_id = str_list[1];
+                JSONArray jsonArray = JSON.parseArray(info);
+                if( jsonArray.size() > 0){
+                    JSONObject obj = jsonArray.getJSONObject(0);
+                    MiniStudent ms = new MiniStudent();
+                    ms.setLatitude(obj.getDouble("latitude") + 1.23);
+                    ms.setLongtude(obj.getDouble("longitude") + 1.23);
+                    ms.setLocname(obj.getString("locName"));
+                    Log.i("login",stu_id);
+                    ms.updateAll("studentid = ?",stu_id);
+                }
+            } catch (JSONException e){
+                e.printStackTrace();
+            }
+        }
     }
 
 }
