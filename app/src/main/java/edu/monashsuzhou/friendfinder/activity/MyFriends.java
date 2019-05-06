@@ -123,12 +123,12 @@ public class MyFriends extends AppCompatActivity {
 
     private void initData() {
         students = new ArrayList<>();
-        students.add(new Student("Monny", R.drawable.female, "Suzhou", "Haha"));
-        students.add(new Student("Tom", R.drawable.male, "Hangzhou", "Ha"));
-        students.add(new Student("Tim", R.drawable.female, "Hangzhou", "Ha"));
-        students.add(new Student("Monny", R.drawable.female, "Suzhou", "Haha"));
-        students.add(new Student("Puppy", R.drawable.male, "Hangzhou", "Ha"));
-        students.add(new Student("Puppy", R.drawable.male, "Hangzhou", "Ha"));
+        students.add(new Student("Monny", R.drawable.female, "Suzhou", "Haha", ""));
+        students.add(new Student("Tom", R.drawable.male, "Hangzhou", "Ha", ""));
+        students.add(new Student("Tim", R.drawable.female, "Hangzhou", "Ha", ""));
+        students.add(new Student("Monny", R.drawable.female, "Suzhou", "Haha", ""));
+        students.add(new Student("Puppy", R.drawable.male, "Hangzhou", "Ha", ""));
+        students.add(new Student("Puppy", R.drawable.male, "Hangzhou", "Ha", ""));
     }
 
     @Override
@@ -160,12 +160,13 @@ public class MyFriends extends AppCompatActivity {
         public int fGender;
         public String fSuburb;
         public String fMovie;
-
-        Student(String fName, int fGender, String fSuburb, String fMovie) {
+        public String info;
+        Student(String fName, int fGender, String fSuburb, String fMovie, String info) {
             this.fName = fName;
             this.fGender = fGender;
             this.fSuburb = fSuburb;
             this.fMovie = fMovie;
+            this.info = info;
         }
     }
 }

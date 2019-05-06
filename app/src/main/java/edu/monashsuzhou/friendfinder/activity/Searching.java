@@ -34,6 +34,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
@@ -44,6 +45,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import edu.monashsuzhou.friendfinder.MainActivity;
@@ -63,6 +65,9 @@ public class Searching extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager;
 
     private static StudentProfile searchCriteria = null;
+
+    private JSONArray currentShownStudnt;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -654,11 +659,24 @@ public class Searching extends AppCompatActivity {
             if (search_result != null){
                 //没有网络错误
                 JSONArray results = JSON.parseArray(search_result);
+                currentShownStudnt = results;
                 if (results.size() == 0){
                     // 无符合条件的对象
                 } else {
                     // 对结果进行渲染
                     Log.i("results", JSON.toJSONString(results));
+                    List<MyFriends.Student> students = new ArrayList<>();
+                    for (Object stu : results){
+                        String fname = ((JSONObject) stu).getString("firstName");
+                        String gender = ((JSONObject) stu).getString("gender");
+                        String suburb = ((JSONObject) stu).getString("suburb");
+                        String fMovie = ((JSONObject) stu).getString("favouriteMovie");
+                        Integer sid = ((JSONObject) stu).getInteger("studentId");
+                        int genderPicture = R.drawable.male;
+                        if (gender != null)
+                            genderPicture = gender.equals("female") ? R.drawable.female : R.drawable.male;
+                        students.add(new MyFriends.Student(fname, genderPicture, suburb, fMovie, JSON.toJSONString(stu)));
+                    }
 
                     recyclerView = (RecyclerView) resultFragmentView.findViewById(R.id.search_result_view);
 
@@ -671,12 +689,6 @@ public class Searching extends AppCompatActivity {
                     recyclerView.setLayoutManager(layoutManager);
 
                     // specify an adapter (see also next example)
-                    List<MyFriends.Student> students = new ArrayList<>();
-                    students.add(new MyFriends.Student("Monny", R.drawable.female, "Suzhou", "Haha"));
-                    students.add(new MyFriends.Student("Tom", R.drawable.male, "Hangzhou", "Ha"));
-                    students.add(new MyFriends.Student("Tim", R.drawable.female, "Hangzhou", "Ha"));
-                    students.add(new MyFriends.Student("Puppy", R.drawable.male, "Hangzhou", "Ha"));
-                    students.add(new MyFriends.Student("Puppy", R.drawable.male, "Hangzhou", "Ha"));
                     mAdapter = new StudentsAdapter(students);
                     recyclerView.setAdapter(mAdapter);
                 }
