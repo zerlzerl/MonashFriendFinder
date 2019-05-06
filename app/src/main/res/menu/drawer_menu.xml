@@ -14,7 +14,7 @@
             android:title="Searching" />
         <item
             android:id="@+id/menu_mf"
-            android:icon="@drawable/ic_baseline_email_24px"
+            android:icon="@drawable/ic_baseline_friend_24px"
             android:title="MyFriends" />
         <item
             android:id="@+id/menu_map"

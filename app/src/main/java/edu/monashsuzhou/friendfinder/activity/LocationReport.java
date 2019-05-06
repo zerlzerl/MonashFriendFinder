@@ -44,6 +44,7 @@ public class LocationReport extends AppCompatActivity {
     private EditText et_start_date;
     private EditText et_end_date;
     private String[] stored_lab;
+    private int mStu_id;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +55,7 @@ public class LocationReport extends AppCompatActivity {
         btn = (Button) findViewById(R.id.btn_input_date);
         et_start_date = (EditText) findViewById(R.id.et_start_date);
         et_end_date = (EditText) findViewById(R.id.et_end_date);
+        mStu_id = Login.getCurrentId();
         initAddUnitListeners();
 
        // barChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(stored_lab));
@@ -75,8 +77,7 @@ public class LocationReport extends AppCompatActivity {
                     return;
                 }
                 HttpConnector hc = new HttpConnector();
-
-                hc.execute(new String[]{start_date,end_date,"44"});
+                hc.execute(new String[]{start_date,end_date, String.valueOf(mStu_id)});
 
             }
         });
@@ -120,36 +121,39 @@ public class LocationReport extends AppCompatActivity {
             uri = uri + "/" + startingDate + "/" + endingDate + "/" + String.valueOf(student_id);
             System.out.println(uri);
             String info = "";
-            /*
             try {
                 info = HttpUtil.get("Profile", uri);
             } catch (IOException e) {
                 e.printStackTrace();
             }
             Log.i("visitiFrequency", info);
-            */
+
             return info;
 
         }
         @Override
         protected void onPostExecute(String info) {
-            /*
-            JSONArray json_data = JSON.parseArray(info);
-
-
-            ArrayList<String> labels = new ArrayList<>();
-            for(int i = 0 ; i < json_data.size(); i++ ){
-                JSONObject obj = json_data.getJSONObject(i);
-                Float frequency = obj.getFloat("frequency");
-                String loc_name = obj.getString("loc_name");
-                entries.add(new BarEntry(i, frequency));
-                labels.add(loc_name);
+            if (info == null){
+                Log.d("info","null");
+                return;
             }
-            */
             ArrayList<BarEntry> entries = new ArrayList<BarEntry>();
+            ArrayList<String> labels = new ArrayList<>();
+//            JSONArray json_data = JSON.parseArray(info);
+
+//            for(int i = 0 ; i < json_data.size(); i++ ){
+//                JSONObject obj = json_data.getJSONObject(i);
+//                Float frequency = obj.getFloat("frequency");
+//                String loc_name = obj.getString("loc_name");
+//                entries.add(new BarEntry(i, frequency));
+//                labels.add(loc_name);
+//            }
+
             for(int i = 0 ; i < 6 ; i++){
                 entries.add(new BarEntry(i, i));
+                labels.add("Test " + i);
             }
+
             BarDataSet dataset = new BarDataSet(entries, "visiting frequency");
             dataset.setColors(ColorTemplate.COLORFUL_COLORS);
             ArrayList<IBarDataSet> dataSets = new ArrayList<>();
@@ -160,6 +164,7 @@ public class LocationReport extends AppCompatActivity {
             Description desc = new Description();
             desc.setText("");
             barChart.setDescription(desc);
+            barChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(labels));
         }
     }
 

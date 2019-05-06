@@ -62,23 +62,26 @@ public class GoogleMaps extends FragmentActivity implements OnMapReadyCallback, 
                 .findFragmentById(R.id.map);
 
         spinner = (Spinner) findViewById(R.id.spinner_map);
-        //spinner.setVisibility(View.INVISIBLE);
         tv = (TextView) findViewById(R.id.tv_map);
         btn = (Button) findViewById(R.id.btn_map);
 
         Intent intent = getIntent();
         map_type = intent.getStringExtra("map_type");
-        map_type = "friend";
-
+        if(map_type == null){
+            map_type = "friend";
+        }
+        Log.i("map_type",map_type);
         stu_id = Login.getCurrentId();
         dh = new DatabaseHelper();
         myStu = dh.getMiniStudent(String.valueOf(stu_id));
-        if (map_type == "friend"){
+        if (map_type.equals("friend")){
 
-        }
-        if( map_type == "match"){
+        } else if( map_type.equals("match")){
+            Log.i("match" , "in");
             ll = (LinearLayout) findViewById(R.id.ll1_map);
             ll.setVisibility(View.INVISIBLE);
+        } else{
+            map_type = "friend";
         }
 
         initDialogBuild();

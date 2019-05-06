@@ -27,33 +27,6 @@ public class DatabaseHelper {
         }
     }
 
-    public void insertMatchingStudent(MiniStudent ms){
-        ms.setMatchingMarker(1);
-        MiniStudent new_ms = this.getMiniStudent(String.valueOf(ms.getStudentid()));
-        if (new_ms == null) {
-            ms.save();
-        } else {
-            ms.setFriendMarker(new_ms.getFriendMarker());
-            ms.updateAll("studentid = ?",String.valueOf(ms.getStudentid()));
-        }
-    }
-
-    public void insertFriend(MiniStudent ms,double mLongtitude, double mLatitude){
-        ms.setFriendMarker(1);
-        double longtitude = ms.getLongtude();
-        double latitude = ms.getLatitude();
-        double distance = Math.pow((longtitude - mLongtitude),2) + Math.pow((latitude - mLatitude),2);
-        distance = Math.sqrt(distance);
-        ms.setDistance(distance);
-        MiniStudent new_ms = this.getMiniStudent(String.valueOf(ms.getStudentid()));
-        if (new_ms == null) {
-            ms.save();
-        } else {
-            ms.setMatchingMarker(new_ms.getMatchingMarker());
-            ms.updateAll("studentid = ?",String.valueOf(ms.getStudentid()));
-        }
-    }
-
     public MiniStudent getMiniStudent(String stuid){
         List<MiniStudent> ms = LitePal.where("studentid = ?" ,stuid).find(MiniStudent.class);
         if (ms.size() > 0){

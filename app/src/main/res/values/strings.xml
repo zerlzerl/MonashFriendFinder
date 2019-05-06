@@ -62,4 +62,9 @@
         <item>ALL</item>
     </string-array>
 
+    <!-- searching -->
+    <string name="search_filter_btn">Filter</string>
+    <string name="search_result_btn">result</string>
+
+
 </resources>
