@@ -374,7 +374,7 @@ public class EditProfile extends AppCompatActivity {
                 ((EditText)findViewById(R.id.Surname_text)).setText(surname);
 
                 String gender = studentJson.getString("gender");
-                Log.i("========gender========" , gender);
+//                Log.i("========gender========" , gender);
                 if (gender == null){
                     //do nothing
                 }

@@ -196,7 +196,7 @@
                     android:layout_marginStart="@dimen/margin_normal"
                     android:layout_marginEnd="@dimen/margin_normal"
                     android:ems="10"
-                    android:hint="Tap Here to Add Other Criteria..."
+                    android:hint="Tap Here to Add ..."
                     android:inputType="text" />
             </LinearLayout>
 
