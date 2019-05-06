@@ -180,8 +180,8 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.MyView
 //                builder.setMessage(students.get(i).info);
             StringBuilder sb = new StringBuilder();
 
-            String name = stuInfo.getString("firstName") + " " + stuInfo.getString("surname") + "\n";
-            String location = stuInfo.getString("suburb") + " " + stuInfo.getString("address") + "\n";
+            String name = stuInfo.getString("firstName") + " " + stuInfo.getString("surname");
+            String location = stuInfo.getString("suburb") + " " + stuInfo.getString("address");
             String email = stuInfo.getString("email");
             String gender =  stuInfo.getString("gender");
             String birthday = stuInfo.getString("birthday");
