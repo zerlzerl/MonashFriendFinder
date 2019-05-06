@@ -2,7 +2,7 @@ package edu.monashsuzhou.friendfinder;
 
 public interface Constant {
 //    String SEVER_HOST = "192.168.1.100";
-    String SEVER_HOST = "192.168.0.103";
+    String SEVER_HOST = "172.16.157.204";
     String SEVER_PORT = "8080";
     String SEVER_NAME = "5183_A1";
 
