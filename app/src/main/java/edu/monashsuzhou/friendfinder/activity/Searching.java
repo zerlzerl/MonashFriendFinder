@@ -35,6 +35,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
@@ -52,6 +53,8 @@ import java.util.List;
 import edu.monashsuzhou.friendfinder.MainActivity;
 import edu.monashsuzhou.friendfinder.R;
 import edu.monashsuzhou.friendfinder.entity.StudentProfile;
+import edu.monashsuzhou.friendfinder.litepalbean.DatabaseHelper;
+import edu.monashsuzhou.friendfinder.litepalbean.MiniStudent;
 import edu.monashsuzhou.friendfinder.util.HttpUtil;
 import edu.monashsuzhou.friendfinder.util.StringUtils;
 import edu.monashsuzhou.friendfinder.util.StudentsAdapter;
@@ -64,10 +67,10 @@ public class Searching extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
-
+    private Context mContext;
     private static StudentProfile searchCriteria = null;
 
-    private JSONArray currentShownStudnt;
+    private static JSONArray currentShownStudnt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,12 +78,11 @@ public class Searching extends AppCompatActivity {
         setContentView(R.layout.searching);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText("Filter"));
         tabLayout.addTab(tabLayout.newTab().setText("Result"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-
+        mContext = this;
         viewPager = (ViewPager) findViewById(R.id.pager);
         final PagerAdapter adapter = new PagerAdapter
                 (getSupportFragmentManager(), tabLayout.getTabCount());
@@ -129,6 +131,7 @@ public class Searching extends AppCompatActivity {
 
             }
         });
+
 
 
     }
@@ -190,8 +193,21 @@ public class Searching extends AppCompatActivity {
             return mNumOfTabs;
         }
     }
-
+    public static void insertMiniStu(){
+        DatabaseHelper dh = new DatabaseHelper();
+        for(int i = 0 ; i < currentShownStudnt.size(); i ++){
+            JSONObject obj = currentShownStudnt.getJSONObject(i);
+            MiniStudent ms = new MiniStudent();
+            ms.setMatchingMarker(1);
+            ms.setFirstname(obj.getString("firstName"));
+            ms.setStudentid(obj.getInteger("studentId"));
+            dh.insertMiniStudent(ms);
+            SearchLocationTask st = new SearchLocationTask();
+            st.execute(new String[]{obj.getString("studentId")});
+        }
+    }
     public static class ResultFragment extends Fragment {
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View view = inflater.inflate(R.layout.result_fragment, container, false);
@@ -209,6 +225,11 @@ public class Searching extends AppCompatActivity {
                 public void onClick(View view) {
                     //跳转
                     Log.i("===========","跳转到Map");
+                    Intent intent = new Intent(getActivity().getApplicationContext() , GoogleMaps.class);
+                    intent.putExtra("map_type","match");
+                    Searching.insertMiniStu();
+                    startActivity(intent);
+
                 }
             });
             Searching.resultFragmentView = view;
@@ -646,6 +667,44 @@ public class Searching extends AppCompatActivity {
         }
     };
 
+
+    public static class SearchLocationTask extends AsyncTask<String, Void, String[]>{
+        @Override
+        public String[] doInBackground(String... params){
+            int student_id = Integer.parseInt(params[0]);
+            String uri = "findByStuId" + "/" + String.valueOf(student_id);
+            String info = "";
+            try {
+                info = HttpUtil.get("Location", uri);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Log.i("Locationdata", info);
+            String [] str_list = new String[2];
+            str_list[0] = info;
+            str_list[1] = String.valueOf(student_id);
+            return str_list;
+        }
+
+        @Override
+        public void onPostExecute(String[] str_list){
+            try{
+                String info = str_list[0];
+                String stu_id = str_list[1];
+                JSONArray jsonArray = JSON.parseArray(info);
+                if( jsonArray.size() > 0){
+                    JSONObject obj = jsonArray.getJSONObject(0);
+                    MiniStudent ms = new MiniStudent();
+                    ms.setLatitude(obj.getDouble("latitude"));
+                    ms.setLongtude(obj.getDouble("longitude"));
+                    ms.setLocname(obj.getString("locName"));
+                    ms.updateAll("studentid = ?",stu_id);
+                }
+            } catch (JSONException e){
+                e.printStackTrace();
+            }
+        }
+    }
 
     public class SearchAndRenderTask extends AsyncTask<StudentProfile, Integer, String>{
 
