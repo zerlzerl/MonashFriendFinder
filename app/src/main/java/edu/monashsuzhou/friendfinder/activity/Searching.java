@@ -706,4 +706,5 @@ public class Searching extends AppCompatActivity {
             super.onPostExecute(search_result);
         }
     }
+
 }

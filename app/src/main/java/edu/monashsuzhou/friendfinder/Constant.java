@@ -10,4 +10,6 @@ public interface Constant {
     String APPID = "79badf94102e008963c2d50b6cfa43f2";
     String UNITS = "metric";
     Integer N_DAYS = 1;
+
+    String MOVIE_HOST = "http://www.omdbapi.com/?apikey=a98c3027&t=";
 }
