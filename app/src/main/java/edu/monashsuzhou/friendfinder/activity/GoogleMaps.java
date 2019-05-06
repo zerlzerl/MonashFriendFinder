@@ -213,11 +213,9 @@ public class GoogleMaps extends FragmentActivity implements OnMapReadyCallback, 
         if (map_type.equals("friend")){
             ms_list = dh.getFriend();
         }
-
         if( map_type.equals("match")){
             ms_list = dh.getMatchingStudent();
         }
-
         for(int i = 0 ; i < ms_list.size(); i++){
             ms = ms_list.get(i);
             int ms_stu_id = ms.getStudentid();

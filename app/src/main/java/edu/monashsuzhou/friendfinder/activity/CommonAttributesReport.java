@@ -105,6 +105,7 @@ public class CommonAttributesReport extends AppCompatActivity {
         l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
         l.setWordWrapEnabled(true);
         l.setDrawInside(false);
+        l.setTextSize(15);
         l.setXEntrySpace(7f);
         l.setYEntrySpace(0f);
         l.setYOffset(0f);
@@ -128,7 +129,6 @@ public class CommonAttributesReport extends AppCompatActivity {
             } else {
                 reuslt_map.put(unit_name,reuslt_map.get(unit_name) + frequency);
             }
-            total_cnt += frequency;
         }
         ArrayList<PieEntry> entries = new ArrayList<>();
         for (String unit_name : reuslt_map.keySet()) {
@@ -136,9 +136,8 @@ public class CommonAttributesReport extends AppCompatActivity {
 
             entries.add(new PieEntry(f_num, unit_name));
         }
-
-        //y轴的集合
-        PieDataSet pieDataSet = new PieDataSet(entries, "Favourite units pie graph"/*显示在比例图上*/);
+        PieDataSet pieDataSet = new PieDataSet(entries, ""/*显示在比例图上*/);
+        pieDataSet.setValueTextSize(20);
         pieDataSet.setSliceSpace(0f); //设置个饼状图之间的距离
         ArrayList<Integer> colors = new ArrayList<>();
 
