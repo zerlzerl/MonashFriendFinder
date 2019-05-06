@@ -180,8 +180,8 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.MyView
 //                builder.setMessage(students.get(i).info);
             StringBuilder sb = new StringBuilder();
 
-            String name = stuInfo.getString("firstName") + " " + stuInfo.getString("surname") + "\n";
-            String location = stuInfo.getString("suburb") + " " + stuInfo.getString("address") + "\n";
+            String name = stuInfo.getString("firstName") + " " + stuInfo.getString("surname");
+            String location = stuInfo.getString("suburb") + " " + stuInfo.getString("address");
             String email = stuInfo.getString("email");
             String gender =  stuInfo.getString("gender");
             String birthday = stuInfo.getString("birthday");
@@ -193,7 +193,8 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.MyView
             String currentJob = stuInfo.getString("currentJob");
             String studyMode = stuInfo.getString("studyMode");
             String course = stuInfo.getString("course");
-
+            String movieDesp = "Director: " + movie.getString("Director") + "\nWriter: " +
+                    movie.getString("Writer") + "\nPlot: " + movie.getString("Plot");
             //封装属性
             LayoutInflater inflater = LayoutInflater.from(view.getContext());
             View imgEntryView = inflater.inflate(R.layout.detail_dialog, null);
@@ -211,6 +212,7 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.MyView
             ((TextView) imgEntryView.findViewById(R.id.detail_fSport)).setText(fSport);
             ((TextView) imgEntryView.findViewById(R.id.detail_fUnit)).setText(fUnit);
             ((TextView) imgEntryView.findViewById(R.id.detail_fMovie)).setText(fMovie);
+            ((TextView) imgEntryView.findViewById(R.id.detail_fMovie_desp)).setText(movieDesp);
             ImageView img = (ImageView) imgEntryView.findViewById(R.id.detail_movie_poster);
             img.setImageBitmap(poster);
             ((TextView) imgEntryView.findViewById(R.id.detail_currentJob)).setText(currentJob);
