@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -202,6 +203,14 @@ public class Searching extends AppCompatActivity {
 //                    Searching.getViewPager().setCurrentItem(0);
 //                }
 //            });
+            FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.search2map);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //跳转
+                    Log.i("===========","跳转到Map");
+                }
+            });
             Searching.resultFragmentView = view;
             return view;
         }
