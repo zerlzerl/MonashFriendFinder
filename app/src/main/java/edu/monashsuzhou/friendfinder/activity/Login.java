@@ -56,7 +56,7 @@ public class Login extends AppCompatActivity
     private LoadingDialog mLoadingDialog; //显示正在加载的对话框
 
     private Toolbar toolbar;
-    private static int id = -1;
+    private static int id = 63;
 
     //测试数据：email为2@2，密码为1，经加密为c4ca4238a0b923820dcc509a6f75849b
 
@@ -97,7 +97,7 @@ public class Login extends AppCompatActivity
         initViews();
         setupEvents();
         initData();
-        //initDatabase();
+        initDatabase();
 
     }
     private void initDatabase(){
@@ -105,50 +105,50 @@ public class Login extends AppCompatActivity
         DatabaseHelper dh = new DatabaseHelper();
 
         StudentProfile sp = new StudentProfile();
-        sp.setStudentId(2);
+        sp.setStudentId(62);
         sp.setFirstName("zhp");
         dh.insertStudent(sp);
 
 
         MiniStudent ms_1 = new MiniStudent();
-        ms_1.setStudentid(2);
+        ms_1.setStudentid(62);
         ms_1.setLongtude(10);
         ms_1.setLatitude(10);
         ms_1.setFirstname("my");
-        dh.insertMatchingStudent(ms_1);
+        dh.insertMiniStudent(ms_1);
 
         ms_1 = new MiniStudent();
-        ms_1.setStudentid(3);
-        ms_1.setLongtude(15);
-        ms_1.setLatitude(15);
+        ms_1.setStudentid(63);
+        ms_1.setLongtude(10.6);
+        ms_1.setLatitude(10.5);
         ms_1.setFirstname("cool");
         dh.insertFriend(ms_1,10,10);
 
         ms_1 = new MiniStudent();
-        ms_1.setStudentid(4);
-        ms_1.setLongtude(9);
-        ms_1.setLatitude(10);
+        ms_1.setStudentid(64);
+        ms_1.setLongtude(9.8);
+        ms_1.setLatitude(10.7);
         ms_1.setFirstname("cool");
         dh.insertFriend(ms_1,10,10);
 
         ms_1 = new MiniStudent();
-        ms_1.setStudentid(5);
-        ms_1.setLongtude(15);
-        ms_1.setLatitude(20);
+        ms_1.setStudentid(65);
+        ms_1.setLongtude(10.75);
+        ms_1.setLatitude(13.2);
         ms_1.setFirstname("cool");
         dh.insertFriend(ms_1,10,10);
 
         ms_1 = new MiniStudent();
-        ms_1.setStudentid(6);
+        ms_1.setStudentid(66);
         ms_1.setLongtude(21);
         ms_1.setLatitude(30);
         ms_1.setFirstname("cool");
         dh.insertFriend(ms_1,10,10);
 
         MiniStudent ms_2 = new MiniStudent();
-        ms_2.setStudentid(3);
-        ms_2.setLongtude(50);
-        ms_2.setLatitude(120);
+        ms_2.setStudentid(63);
+        ms_2.setLongtude(12);
+        ms_2.setLatitude(12);
         ms_2.setFirstname("not cool");
         dh.insertMatchingStudent (ms_2);
 
@@ -424,9 +424,6 @@ public class Login extends AppCompatActivity
         return et_password.getText().toString().trim();//去掉空格
     }
 
-    public static int getCurrentId(){
-        return 2;
-    }
 
 
     /**

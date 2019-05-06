@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         setupMenu();
 
         initTextViews();
-
+/*
         //显示地点和温度
         SharedPreferences setting = getSharedPreferences("quickresume", 0);
         Boolean user_first = setting.getBoolean("FIRST",true);
@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
             iv_weather.setImageResource(weatherR);
         }
 
+*/
         //显示日期和时间
         mHandler = new Handler();
         if (true) {

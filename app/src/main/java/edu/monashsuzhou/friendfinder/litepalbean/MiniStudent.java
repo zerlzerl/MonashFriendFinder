@@ -2,6 +2,8 @@ package edu.monashsuzhou.friendfinder.litepalbean;
 
 import org.litepal.crud.LitePalSupport;
 
+
+
 public class MiniStudent extends LitePalSupport {
     private int studentid;
     private String email;

@@ -34,6 +34,7 @@ public class CommonAttributesReport extends AppCompatActivity {
 
     private PieChart mChart;
     private PieData pieData;
+    private int stu_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +43,7 @@ public class CommonAttributesReport extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.report_toolbar);
         setSupportActionBar(toolbar);
 
+        stu_id = Login.getCurrentId();
         mChart = (PieChart) findViewById(R.id.pie_chart);
         getUnitFrequency();
         showChart(pieData);
@@ -167,14 +169,14 @@ public class CommonAttributesReport extends AppCompatActivity {
     public java.util.Map<String, Integer> getUnitFrequency() {
         java.util.Map<String, Integer> resultMap = new HashMap<String, Integer>();
         HttpConnector hc = new HttpConnector();
-        hc.execute(new String[]{"1"});
+        hc.execute(new String[]{String.valueOf(stu_id)});
 
         return resultMap;
     }
 
-    private class HttpConnector extends AsyncTask<String, Void, PieData> {
+    private class HttpConnector extends AsyncTask<String, Void, String> {
         @Override
-        protected PieData doInBackground(String... params) {
+        protected String doInBackground(String... params) {
             int student_id = Integer.parseInt(params[0]);;
             String info = "";
             try {
@@ -182,18 +184,16 @@ public class CommonAttributesReport extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            System.out.println(info);
             Log.i("unitFrequency", info);
 
-            JSONArray data = JSON.parseArray(info);
-            PieData mPieData = getPieData(data);
-            return mPieData;
+            return info;
         }
 
         @Override
-        protected void onPostExecute(PieData result) {
-            pieData = result;
-            showChart(result);
+        protected void onPostExecute(String info) {
+            JSONArray data = JSON.parseArray(info);
+            PieData mPieData = getPieData(data);
+            showChart(mPieData);
         }
     }
 }

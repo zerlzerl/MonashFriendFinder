@@ -19,12 +19,23 @@ public class DatabaseHelper {
 
 
     public void insertMiniStudent(MiniStudent ms){
-        ms.save();
+        MiniStudent new_ms = this.getMiniStudent(String.valueOf(ms.getStudentid()));
+        if (new_ms == null) {
+            ms.save();
+        } else {
+            ms.updateAll("studentid = ?",String.valueOf(ms.getStudentid()));
+        }
     }
 
     public void insertMatchingStudent(MiniStudent ms){
         ms.setMatchingMarker(1);
-        ms.save();
+        MiniStudent new_ms = this.getMiniStudent(String.valueOf(ms.getStudentid()));
+        if (new_ms == null) {
+            ms.save();
+        } else {
+            ms.setFriendMarker(new_ms.getFriendMarker());
+            ms.updateAll("studentid = ?",String.valueOf(ms.getStudentid()));
+        }
     }
 
     public void insertFriend(MiniStudent ms,double mLongtitude, double mLatitude){
@@ -34,7 +45,13 @@ public class DatabaseHelper {
         double distance = Math.pow((longtitude - mLongtitude),2) + Math.pow((latitude - mLatitude),2);
         distance = Math.sqrt(distance);
         ms.setDistance(distance);
-        ms.save();
+        MiniStudent new_ms = this.getMiniStudent(String.valueOf(ms.getStudentid()));
+        if (new_ms == null) {
+            ms.save();
+        } else {
+            ms.setMatchingMarker(new_ms.getMatchingMarker());
+            ms.updateAll("studentid = ?",String.valueOf(ms.getStudentid()));
+        }
     }
 
     public MiniStudent getMiniStudent(String stuid){
