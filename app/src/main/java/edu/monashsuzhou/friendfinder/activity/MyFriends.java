@@ -113,7 +113,7 @@ public class MyFriends extends AppCompatActivity {
         });
         fab_map.setOnClickListener(view -> {
             Intent intent = new Intent();
-            intent.setClass(MyFriends.this, Map.class);
+            intent.setClass(MyFriends.this, GoogleMaps.class);
             startActivity(intent);
         });
 
