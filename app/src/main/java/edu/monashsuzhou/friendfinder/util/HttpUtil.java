@@ -1,21 +1,14 @@
 package edu.monashsuzhou.friendfinder.util;
 
-import android.util.Log;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import edu.monashsuzhou.friendfinder.Constant;
-import edu.monashsuzhou.friendfinder.activity.Map;
 import edu.monashsuzhou.friendfinder.entity.StudentProfile;
-import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
