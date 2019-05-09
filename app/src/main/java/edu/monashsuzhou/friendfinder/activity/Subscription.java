@@ -1,12 +1,20 @@
 package edu.monashsuzhou.friendfinder.activity;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.ResultReceiver;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -33,7 +41,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
+import edu.monashsuzhou.friendfinder.Constant;
 import edu.monashsuzhou.friendfinder.R;
 
 import edu.monashsuzhou.friendfinder.MainActivity;
@@ -43,6 +53,8 @@ import edu.monashsuzhou.friendfinder.util.MD5Util;
 import edu.monashsuzhou.friendfinder.util.StringUtils;
 
 public class Subscription extends AppCompatActivity {
+    private static String TAG = Subscription.class.getName();
+
     private DatePickerDialog datePicker;
     private EditText dateOfBirth;
 
@@ -327,4 +339,7 @@ public class Subscription extends AppCompatActivity {
             }
         }
     }
+
+
+
 }

@@ -65,6 +65,10 @@
     <!-- searching -->
     <string name="search_filter_btn">Filter</string>
     <string name="search_result_btn">result</string>
+    <string name="service_not_available">service not available</string>
+    <string name="no_address_found">no address found</string>
+    <string name="invalid_lat_long_used">invalid lat long used</string>
+    <string name="address_found">address found</string>
 
 
 </resources>

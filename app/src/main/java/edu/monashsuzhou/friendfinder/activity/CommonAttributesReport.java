@@ -3,6 +3,7 @@ package edu.monashsuzhou.friendfinder.activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -32,7 +33,7 @@ import edu.monashsuzhou.friendfinder.R;
 import edu.monashsuzhou.friendfinder.util.HttpUtil;
 
 public class CommonAttributesReport extends AppCompatActivity {
-
+    private static String TAG = CommonAttributesReport.class.getName();
     private PieChart mChart;
     private PieData pieData;
     private int stu_id;
@@ -117,8 +118,6 @@ public class CommonAttributesReport extends AppCompatActivity {
     }
 
     private PieData getPieData(JSONArray data) {
-
-        int total_cnt = 0;
         java.util.Map<String, Float> reuslt_map =  new HashMap<String,Float>();
         for(int i = 0 ; i < data.size(); i++ ){
             JSONObject obj = data.getJSONObject(i);
@@ -182,17 +181,22 @@ public class CommonAttributesReport extends AppCompatActivity {
             int student_id = Integer.parseInt(params[0]);;
             String info = "";
             try {
-                info = HttpUtil.get("Profile", "unitFrequency");
+                info = HttpUtil.get("Profile", "friendUnitFrequency/" + student_id);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            Log.i("unitFrequency", info);
+            Log.i("friendUnitFrequency", info);
+
 
             return info;
         }
 
         @Override
         protected void onPostExecute(String info) {
+            if( info == null){
+                Log.i(TAG,"info is null");
+                return;
+            }
             JSONArray data = JSON.parseArray(info);
             PieData mPieData = getPieData(data);
             showChart(mPieData);

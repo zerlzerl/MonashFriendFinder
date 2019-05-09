@@ -1,11 +1,14 @@
 package edu.monashsuzhou.friendfinder.activity;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.icu.util.Calendar;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,6 +49,7 @@ public class LocationReport extends AppCompatActivity {
     private EditText et_end_date;
     private String[] stored_lab;
     private int mStu_id;
+    private DatePickerDialog datePicker;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,8 +58,40 @@ public class LocationReport extends AppCompatActivity {
         setSupportActionBar(toolbar);
         barChart = (BarChart) findViewById(R.id.barChart1);
         btn = (Button) findViewById(R.id.btn_input_date);
+
+        //set datepicker
         et_start_date = (EditText) findViewById(R.id.et_start_date);
+        et_start_date.setInputType(InputType.TYPE_NULL);
+        et_start_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Calendar cldr = Calendar.getInstance();
+                int day = cldr.get(Calendar.DAY_OF_MONTH);
+                int month = cldr.get(Calendar.MONTH);
+                int year = cldr.get(Calendar.YEAR);
+                // date picker dialog
+                datePicker = new DatePickerDialog(LocationReport.this,
+                        (view1, year1, monthOfYear, dayOfMonth) -> et_start_date.setText(year1 + "-" + (monthOfYear + 1) + "-" + dayOfMonth), year, month, day);
+                datePicker.show();
+            }
+        });
+
         et_end_date = (EditText) findViewById(R.id.et_end_date);
+        et_end_date.setInputType(InputType.TYPE_NULL);
+        et_end_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Calendar cldr = Calendar.getInstance();
+                int day = cldr.get(Calendar.DAY_OF_MONTH);
+                int month = cldr.get(Calendar.MONTH);
+                int year = cldr.get(Calendar.YEAR);
+                // date picker dialog
+                datePicker = new DatePickerDialog(LocationReport.this,
+                        (view1, year1, monthOfYear, dayOfMonth) -> et_end_date.setText(year1 + "-" + (monthOfYear + 1) + "-" + dayOfMonth), year, month, day);
+                datePicker.show();
+            }
+        });
+
         SharedPreferences userSettings= getSharedPreferences("login", 0);
         mStu_id = userSettings.getInt("loginId",-1);
         Log.i("location_stuid", String.valueOf(mStu_id));

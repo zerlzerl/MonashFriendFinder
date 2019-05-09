@@ -207,8 +207,6 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.MyViewHo
             AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
 
 
-
-
             ((TextView) imgEntryView.findViewById(R.id.detail_name)).setText(name);
             ((TextView) imgEntryView.findViewById(R.id.detail_location)).setText(location);
             ((TextView) imgEntryView.findViewById(R.id.detail_email)).setText(email);

@@ -1,12 +1,18 @@
 package edu.monashsuzhou.friendfinder.activity;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
@@ -47,7 +53,8 @@ import edu.monashsuzhou.friendfinder.util.SharedPreferencesUtils;
 
 public class Login extends AppCompatActivity
         implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
-
+    private static String TAG = Login.class.getName();
+    private LocationManager lm;
     private EditText et_account;
     private EditText et_password;
     private Button mLoginBtn;
@@ -103,6 +110,8 @@ public class Login extends AppCompatActivity
         initDatabase();
 
     }
+
+
     private void initDatabase(){
         SQLiteDatabase db = LitePal.getDatabase();
         LitePal.deleteAll(MiniStudent.class);
@@ -269,7 +278,7 @@ public class Login extends AppCompatActivity
             JSONArray profList = JSON.parseArray(info);
             if(profList.size() == 0){
                 //没有这个用户
-                return null;
+                return "";
             }else{
                 //查到了用户
                 JSONObject prof = profList.getJSONObject(0);
@@ -557,8 +566,8 @@ public class Login extends AppCompatActivity
                 if( jsonArray.size() > 0){
                     JSONObject obj = jsonArray.getJSONObject(0);
                     MiniStudent ms = new MiniStudent();
-                    ms.setLatitude(obj.getDouble("latitude") + 1.23);
-                    ms.setLongtude(obj.getDouble("longitude") + 1.23);
+                    ms.setLatitude(obj.getDouble("latitude") );
+                    ms.setLongtude(obj.getDouble("longitude"));
                     ms.setLocname(obj.getString("locName"));
                     Log.i("login",stu_id);
                     ms.updateAll("studentid = ?",stu_id);
