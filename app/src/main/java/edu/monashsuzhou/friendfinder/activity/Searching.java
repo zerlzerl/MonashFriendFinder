@@ -48,7 +48,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import edu.monashsuzhou.friendfinder.MainActivity;
 import edu.monashsuzhou.friendfinder.R;
@@ -64,13 +66,24 @@ public class Searching extends AppCompatActivity {
     private static View resultFragmentView;
     private static ViewPager viewPager;
 
-    private RecyclerView recyclerView;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager layoutManager;
+    private static RecyclerView recyclerView;
+    private static RecyclerView.Adapter mAdapter;
+    private static RecyclerView.LayoutManager layoutManager;
     private Context mContext;
+
+    public static StudentProfile getSearchCriteria() {
+        return searchCriteria;
+    }
+
     private static StudentProfile searchCriteria = null;
 
-    private static JSONArray currentShownStudnt;
+    private static JSONArray currentShownStudnt = new JSONArray();
+
+    private static Set<Integer> friendsList;
+
+    public static void addFriendId(Integer i){
+        friendsList.add(i);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +105,6 @@ public class Searching extends AppCompatActivity {
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i1) {
-
             }
 
             @Override
@@ -110,7 +122,6 @@ public class Searching extends AppCompatActivity {
 
             @Override
             public void onPageScrollStateChanged(int i) {
-
             }
         });
 
@@ -132,7 +143,9 @@ public class Searching extends AppCompatActivity {
             }
         });
 
-
+        //后台去搜索朋友列表
+        SearchMyfriendsTask searchMyfriendsTask = new SearchMyfriendsTask();
+        searchMyfriendsTask.execute();
 
     }
 
@@ -626,46 +639,7 @@ public class Searching extends AppCompatActivity {
         }
     }
 
-    //滑动栏的创建者类
-    private SwipeMenuCreator creator = new SwipeMenuCreator() {
 
-        @Override
-        public void create(SwipeMenu menu) {
-            // create "open" item
-            SwipeMenuItem openItem = new SwipeMenuItem(
-                    getApplicationContext());
-            // set item background
-            openItem.setBackground(new ColorDrawable(Color.rgb(0x00, 0x66,
-                    0xff)));
-            // set item width
-            openItem.setWidth(170);
-            // set item title
-            openItem.setTitle("Detail");
-            // set item title fontsize
-            openItem.setTitleSize(18);
-            // set item title font color
-            openItem.setTitleColor(Color.WHITE);
-            // add to menu
-            menu.addMenuItem(openItem);
-
-            // create "delete" item
-            SwipeMenuItem deleteItem = new SwipeMenuItem(
-                    getApplicationContext());
-            // set item background
-            deleteItem.setBackground(new ColorDrawable(Color.rgb(0xF9,
-                    0x3F, 0x25)));
-            // set item width
-            deleteItem.setWidth(170);
-            // set a icon
-//            deleteItem.setIcon(R.drawable.ic_delete_24px);
-            deleteItem.setTitle("Add");
-            deleteItem.setTitleSize(18);
-            // set item title font color
-            deleteItem.setTitleColor(Color.WHITE);
-            // add to menu
-            menu.addMenuItem(deleteItem);
-        }
-    };
 
 
     public static class SearchLocationTask extends AsyncTask<String, Void, String[]>{
@@ -706,13 +680,14 @@ public class Searching extends AppCompatActivity {
         }
     }
 
-    public class SearchAndRenderTask extends AsyncTask<StudentProfile, Integer, String>{
+    public static class SearchAndRenderTask extends AsyncTask<StudentProfile, Integer, String>{
 
 
         @Override
         protected String doInBackground(StudentProfile... studentProfiles) {
             StudentProfile criteria = studentProfiles[0];
             String search_result = null;
+            currentShownStudnt = new JSONArray();
             try {
                 search_result = HttpUtil.post("Profile", "findByAnyAttr", criteria);
                 return search_result;
@@ -727,23 +702,26 @@ public class Searching extends AppCompatActivity {
             if (search_result != null){
                 //没有网络错误
                 JSONArray results = JSON.parseArray(search_result);
-                currentShownStudnt = results;
+                List<MyFriends.Student> students = new ArrayList<>();
                 if (results.size() == 0){
                     // 无符合条件的对象
                 } else {
                     // 对结果进行渲染
                     Log.i("results", JSON.toJSONString(results));
-                    List<MyFriends.Student> students = new ArrayList<>();
                     for (Object stu : results){
-                        String fname = ((JSONObject) stu).getString("firstName");
-                        String gender = ((JSONObject) stu).getString("gender");
-                        String suburb = ((JSONObject) stu).getString("suburb");
-                        String fMovie = ((JSONObject) stu).getString("favouriteMovie");
-                        Integer sid = ((JSONObject) stu).getInteger("studentId");
-                        int genderPicture = R.drawable.male;
-                        if (gender != null)
-                            genderPicture = gender.equals("female") ? R.drawable.female : R.drawable.male;
-                        students.add(new MyFriends.Student(fname, genderPicture, suburb, fMovie, JSON.toJSONString(stu)));
+                        JSONObject student = (JSONObject) stu;
+                        Integer sid = student.getInteger("studentId");
+                        if (sid != Login.getCurrentId() && !isMyFriend(sid)) { //当前人不是自己，也不是已有的朋友
+                            currentShownStudnt.add(student);
+                            String fname = student.getString("firstName");
+                            String gender = student.getString("gender");
+                            String suburb = student.getString("suburb");
+                            String fMovie = student.getString("favouriteMovie");
+                            int genderPicture = R.drawable.male;
+                            if (gender != null)
+                                genderPicture = gender.equals("female") ? R.drawable.female : R.drawable.male;
+                            students.add(new MyFriends.Student(fname, genderPicture, suburb, fMovie, JSON.toJSONString(stu)));
+                        }
                     }
 
                     recyclerView = (RecyclerView) resultFragmentView.findViewById(R.id.search_result_view);
@@ -753,7 +731,7 @@ public class Searching extends AppCompatActivity {
                     recyclerView.setHasFixedSize(true);
 
                     // use a linear layout manager
-                    layoutManager = new LinearLayoutManager(Searching.this);
+                    layoutManager = new LinearLayoutManager(resultFragmentView.getContext());
                     recyclerView.setLayoutManager(layoutManager);
 
                     // specify an adapter (see also next example)
@@ -766,4 +744,64 @@ public class Searching extends AppCompatActivity {
         }
     }
 
+    private static boolean isMyFriend(Integer sid) {
+        //是朋友返回true，不是朋友返回false
+        if (friendsList.size() == 0){
+            return false;
+        } else {
+            for (int i : friendsList){
+                if (i == sid)
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    public static class SearchMyfriendsTask extends AsyncTask<Object, Integer, Object>{
+
+        @Override
+        protected Object doInBackground(Object... objects) {
+            Log.i("SearchMyfriendsTask", "Searching friends in background");
+            Integer currentLoginId = Login.getCurrentId();
+            friendsList = new HashSet<>();
+            String friendsStr_1 = null;
+            String friendsStr_2 = null;
+            try {
+                friendsStr_1 = HttpUtil.get("Friendship","findByStuId/" + currentLoginId);
+                Log.i(MyFriends.class.getName(), friendsStr_1);
+                friendsStr_2 = HttpUtil.get("Friendship","findByfriendId/" + currentLoginId);
+                Log.i(MyFriends.class.getName(), friendsStr_2);
+                Log.i("SearchMyfriendsTask", "Search my friends successful");
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.i("SearchMyfriendsTask", "Http Exception");
+            }
+
+            if (friendsStr_1 != null){
+                JSONArray array = JSON.parseArray(friendsStr_1);
+                if (array.size() > 0){
+                    for (Object s : array){
+                        if (StringUtils.isBlank(((JSONObject) s).getString("endDate"))){
+                            JSONObject friend = ((JSONObject) s).getJSONObject("friendId");
+                            friendsList.add(friend.getInteger("studentId"));
+                        }
+                    }
+                }
+            }
+
+            if (friendsStr_2 != null){
+                JSONArray array = JSON.parseArray(friendsStr_2);
+                if (array.size() > 0){
+                    for (Object s : array){
+                        if (StringUtils.isBlank(((JSONObject) s).getString("endDate"))){
+                            JSONObject friend = ((JSONObject) s).getJSONObject("studentId");
+                            friendsList.add(friend.getInteger("studentId"));
+                        }
+                    }
+                }
+            }
+
+            return "success";
+        }
+    }
 }

@@ -1,10 +1,16 @@
 package edu.monashsuzhou.friendfinder.util;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -29,6 +35,7 @@ import java.util.Date;
 import java.util.List;
 
 import edu.monashsuzhou.friendfinder.Constant;
+import edu.monashsuzhou.friendfinder.MainActivity;
 import edu.monashsuzhou.friendfinder.R;
 import edu.monashsuzhou.friendfinder.activity.Login;
 import edu.monashsuzhou.friendfinder.activity.MyFriends;
@@ -271,6 +278,7 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.MyView
     public static class AddFriendTask extends AsyncTask<Object, Integer, Object>{
         String friendInfo;
         String myInfo;
+        int friendId;
         boolean state;
         @Override
         protected Object doInBackground(Object... objs) {
@@ -287,8 +295,16 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.MyView
             if (myInfo != null){
                 //没有出现网络错误
                 JSONObject newFriedShip = new JSONObject();
-                newFriedShip.put("friendId",JSON.parse(friendInfo));
-                newFriedShip.put("studentId",JSON.parse(myInfo));
+                JSONObject friend = JSON.parseObject(friendInfo);
+                JSONObject me = JSON.parseObject(myInfo);
+                friendId = friend.getInteger("studentId");
+                if(me.getInteger("studentId") < friendId){
+                    newFriedShip.put("friendId",JSON.parse(friendInfo));
+                    newFriedShip.put("studentId",JSON.parse(myInfo));
+                } else {
+                    newFriedShip.put("studentId", JSON.parse(friendInfo));
+                    newFriedShip.put("friendId", JSON.parse(myInfo));
+                }
                 String currentTime = new SimpleDateFormat("yyyy-MM-dd/HH:mm:ss").format(new Date()) + "+08:00";
                 currentTime = currentTime.replace("/","T");
                 newFriedShip.put("startingDate", currentTime);
@@ -311,14 +327,39 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.MyView
             if (state){
                 //执行成功
                 AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-                builder.setMessage("Add Success!");
-                builder.show();
+                builder.setMessage("Delete Success!");
+
+                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialogInterface) {
+                        //重绘页面
+                        Searching.addFriendId(friendId);
+                        Searching.SearchAndRenderTask searchAndRenderTask = new Searching.SearchAndRenderTask();
+                        searchAndRenderTask.execute(Searching.getSearchCriteria());
+                    }
+                });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        dialog.dismiss();
+                    }
+                }, 1000);
+
+
+
             } else {
                 //执行出错
                 AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
                 builder.setMessage("Add Failure!");
                 builder.show();
+
             }
         }
+
+
     }
 }

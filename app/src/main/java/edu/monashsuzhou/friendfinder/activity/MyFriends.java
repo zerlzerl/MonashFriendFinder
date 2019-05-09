@@ -196,15 +196,18 @@ public class MyFriends extends AppCompatActivity {
         }
     }
     public static class FriendsShownTask extends AsyncTask<Integer, Integer, String>{
-
+        String friendsStr_1;
+        String friendsStr_2;
         @Override
         protected String doInBackground(Integer... integers) {
             Integer currentId = integers[0];
-            String friendsStr;
+
             try {
-                friendsStr = HttpUtil.get("Friendship","findByStuId/" + currentId);
-                Log.i(MyFriends.class.getName(), friendsStr);
-                return friendsStr;
+                friendsStr_1 = HttpUtil.get("Friendship","findByStuId/" + currentId);
+                Log.i(MyFriends.class.getName(), friendsStr_1);
+                friendsStr_2 = HttpUtil.get("Friendship","findByfriendId/" + currentId);
+                Log.i(MyFriends.class.getName(), friendsStr_2);
+                return "success";
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -214,21 +217,47 @@ public class MyFriends extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             // specify an adapter (see also next example)
-            if (s != null){
+            if (s.equals("success")){
                 //没有网络错误
-                JSONArray friendList = JSON.parseArray(s);
+                students = new ArrayList<>();
+                JSONArray friendList_1 = JSON.parseArray(friendsStr_1);
+                JSONArray friendList_2 = JSON.parseArray(friendsStr_2);
                 currentShownStudnt = new JSONArray();
-                if (friendList.size() == 0){
+                if (friendList_1.size() == 0){
                     //没有朋友
                 } else {
                     //渲染朋友
-                    students = new ArrayList<>();
-                    for (Object i : friendList) {
+                    for (Object i : friendList_1) {
                         String endDate = ((JSONObject) i).getString("endDate");
                         if (StringUtils.isBlank(endDate)) {
                             JSONObject friendship = (JSONObject) i;
                             Integer fsid = friendship.getInteger("friendshipId");
                             JSONObject friend = friendship.getJSONObject("friendId");
+                            currentShownStudnt.add(friend);
+                            String fname = friend.getString("firstName");
+                            String gender = friend.getString("gender");
+                            String suburb = friend.getString("suburb");
+                            String fMovie = friend.getString("favouriteMovie");
+                            Integer sid = friend.getInteger("studentId");
+                            int genderPicture = R.drawable.male;
+                            if (gender != null)
+                                genderPicture = gender.equals("female") ? R.drawable.female : R.drawable.male;
+                            students.add(new MyFriends.Friends(fname, genderPicture, suburb, fMovie,
+                                    JSON.toJSONString(friend), JSON.toJSONString(friendship)));
+                        }
+                    }
+                }
+
+                if (friendList_2.size() == 0){
+                    //没有朋友
+                } else {
+                    //渲染朋友
+                    for (Object i : friendList_2) {
+                        String endDate = ((JSONObject) i).getString("endDate");
+                        if (StringUtils.isBlank(endDate)) {
+                            JSONObject friendship = (JSONObject) i;
+                            Integer fsid = friendship.getInteger("friendshipId");
+                            JSONObject friend = friendship.getJSONObject("studentId");
                             currentShownStudnt.add(friend);
                             String fname = friend.getString("firstName");
                             String gender = friend.getString("gender");
