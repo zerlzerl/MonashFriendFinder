@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
     private Handler mHandler;
 
 
-    @SuppressWarnings("static-access")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -231,8 +230,7 @@ public class MainActivity extends AppCompatActivity {
             JSONObject studentObj = JSON.parseObject(studentInfo);
             city = studentObj.getString("suburb");
             uName = studentObj.getString("firstName");
-            tv_city.setText(city);
-            tv_uName.setText("Welcome, " + uName + "!");
+
             try {
                 String weatherInfo = HttpUtil.get(Constant.WEATHER_HOST + "?q=" + city + "&APPID=" + Constant.APPID
                         + "&units=" + Constant.UNITS + "&cnt=" + Constant.N_DAYS);
@@ -263,7 +261,8 @@ public class MainActivity extends AppCompatActivity {
             tv_temp.setText(temp);
             tv_descrip.setText(descrip);
             iv_weather.setImageResource(weatherR);
-
+            tv_city.setText(city);
+            tv_uName.setText("Welcome, " + uName + "!");
 
         }
     }
