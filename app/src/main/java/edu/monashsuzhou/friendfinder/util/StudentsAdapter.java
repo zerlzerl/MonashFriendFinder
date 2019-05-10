@@ -41,6 +41,8 @@ import edu.monashsuzhou.friendfinder.activity.Login;
 import edu.monashsuzhou.friendfinder.activity.MyFriends;
 import edu.monashsuzhou.friendfinder.activity.Searching;
 import edu.monashsuzhou.friendfinder.activity.Subscription;
+import edu.monashsuzhou.friendfinder.litepalbean.DatabaseHelper;
+import edu.monashsuzhou.friendfinder.litepalbean.MiniStudent;
 
 public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.MyViewHolder> {
     List<MyFriends.Student> students;
@@ -279,6 +281,7 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.MyView
         String friendInfo;
         String myInfo;
         int friendId;
+        String friendName;
         boolean state;
         @Override
         protected Object doInBackground(Object... objs) {
@@ -298,6 +301,7 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.MyView
                 JSONObject friend = JSON.parseObject(friendInfo);
                 JSONObject me = JSON.parseObject(myInfo);
                 friendId = friend.getInteger("studentId");
+                friendName = friend.getString("firstName");
                 if(me.getInteger("studentId") < friendId){
                     newFriedShip.put("friendId",JSON.parse(friendInfo));
                     newFriedShip.put("studentId",JSON.parse(myInfo));
@@ -332,6 +336,14 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.MyView
                 builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialogInterface) {
+                        //修改数据库
+                        DatabaseHelper dh = new DatabaseHelper();
+                        MiniStudent ms = new MiniStudent();
+                        ms.setFriendMarker(1);
+                        ms.setMatchingMarker(0);
+                        ms.setFirstname(friendName);
+                        ms.setStudentid(friendId);
+                        dh.insertMiniStudent(ms);
                         //重绘页面
                         Searching.addFriendId(friendId);
                         Searching.SearchAndRenderTask searchAndRenderTask = new Searching.SearchAndRenderTask();
