@@ -24,6 +24,7 @@ import okhttp3.Response;
 
 public class HttpUtil {
     private static OkHttpClient client = new OkHttpClient.Builder()
+            .retryOnConnectionFailure(true)
             .readTimeout(10, TimeUnit.SECONDS)
             .connectTimeout(15, TimeUnit.SECONDS)
             .addInterceptor(chain -> {
@@ -31,6 +32,7 @@ public class HttpUtil {
                         .newBuilder()
                         .addHeader("Content-Type", "application/json")
                         .addHeader("Accept", "application/json")
+                        .header("Connection","close")
                         .build();
                 return chain.proceed(request);
             })
