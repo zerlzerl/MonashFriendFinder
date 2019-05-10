@@ -131,6 +131,7 @@ public class MyFriends extends AppCompatActivity {
             JSONObject obj = currentShownStudnt.getJSONObject(i);
             MiniStudent ms = new MiniStudent();
             ms.setFriendMarker(1);
+            ms.setMatchingMarker(0);
             ms.setFirstname(obj.getString("firstName"));
             ms.setStudentid(obj.getInteger("studentId"));
             dh.insertMiniStudent(ms);

@@ -212,6 +212,7 @@ public class Searching extends AppCompatActivity {
             JSONObject obj = currentShownStudnt.getJSONObject(i);
             MiniStudent ms = new MiniStudent();
             ms.setMatchingMarker(1);
+            ms.setFriendMarker(0);
             ms.setFirstname(obj.getString("firstName"));
             ms.setStudentid(obj.getInteger("studentId"));
             dh.insertMiniStudent(ms);

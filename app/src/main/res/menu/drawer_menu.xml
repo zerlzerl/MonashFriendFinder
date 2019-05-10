@@ -16,10 +16,10 @@
             android:id="@+id/menu_mf"
             android:icon="@drawable/ic_baseline_friend_24px"
             android:title="MyFriends" />
-        <item
-            android:id="@+id/menu_map"
-            android:icon="@drawable/ic_baseline_location_on_24px"
-            android:title="GoogleMaps" />
+        <!--<item-->
+            <!--android:id="@+id/menu_map"-->
+            <!--android:icon="@drawable/ic_baseline_location_on_24px"-->
+            <!--android:title="GoogleMaps" />-->
         <item
             android:id="@+id/menu_rep"
             android:icon="@drawable/ic_baseline_bar_chart_24px"

@@ -40,6 +40,8 @@ import edu.monashsuzhou.friendfinder.activity.Login;
 import edu.monashsuzhou.friendfinder.activity.MyFriends;
 import edu.monashsuzhou.friendfinder.activity.Searching;
 import edu.monashsuzhou.friendfinder.activity.Subscription;
+import edu.monashsuzhou.friendfinder.litepalbean.DatabaseHelper;
+import edu.monashsuzhou.friendfinder.litepalbean.MiniStudent;
 
 public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.MyViewHolder> {
     List<MyFriends.Friends> students;
@@ -275,11 +277,20 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.MyViewHo
 
     public static class DeleteFriendTask extends AsyncTask<Object, Integer, Object>{
         String fsInfo;
+        String studentName;
+        int studentId;
         boolean state;
         @Override
         protected Object doInBackground(Object... objs) {
             fsInfo = (String) objs[0];
             JSONObject friendship = JSON.parseObject(fsInfo);
+            JSONObject stuJson = friendship.getJSONObject("studentId");
+            JSONObject friendJson = friendship.getJSONObject("friendId");
+            if (friendJson.getInteger("studentId") == Login.getCurrentId())
+                friendJson = stuJson;
+            studentId = friendJson.getInteger("studentId");
+            studentName = friendJson.getString("firstname");
+
             String currentTime = new SimpleDateFormat("yyyy-MM-dd/HH:mm:ss").format(new Date()) + "+08:00";
             currentTime = currentTime.replace("/","T");
 
@@ -308,6 +319,14 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.MyViewHo
                 builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialogInterface) {
+                        //修改数据库
+                        DatabaseHelper dh = new DatabaseHelper();
+                        MiniStudent ms = new MiniStudent();
+                        ms.setFriendMarker(0);
+                        ms.setMatchingMarker(1);
+                        ms.setFirstname(studentName);
+                        ms.setStudentid(studentId);
+                        dh.insertMiniStudent(ms);
                         //重绘页面
                         Activity currentActivity = getActivity(view);
                         currentActivity.finish();

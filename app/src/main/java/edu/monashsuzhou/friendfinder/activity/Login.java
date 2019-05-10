@@ -285,6 +285,9 @@ public class Login extends AppCompatActivity
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            if (info == null)
+                return null;
+
             JSONArray profList = JSON.parseArray(info);
             if(profList.size() == 0){
                 //没有这个用户
