@@ -24,7 +24,6 @@ import okhttp3.Response;
 
 public class HttpUtil {
     private static OkHttpClient client = new OkHttpClient.Builder()
-            .retryOnConnectionFailure(true)
             .readTimeout(10, TimeUnit.SECONDS)
             .connectTimeout(15, TimeUnit.SECONDS)
             .addInterceptor(chain -> {
@@ -32,7 +31,6 @@ public class HttpUtil {
                         .newBuilder()
                         .addHeader("Content-Type", "application/json")
                         .addHeader("Accept", "application/json")
-                        .header("Connection","close")
                         .build();
                 return chain.proceed(request);
             })
@@ -54,7 +52,7 @@ public class HttpUtil {
      */
     public static String get(String url) throws IOException {
         Request request = new Request.Builder()
-                .url(url).header("Connection", "close")
+                .url(url)
                 .build();
 
         Response response = client.newCall(request).execute();
