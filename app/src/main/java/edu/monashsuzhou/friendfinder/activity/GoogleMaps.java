@@ -115,8 +115,8 @@ public class GoogleMaps extends FragmentActivity implements OnMapReadyCallback, 
 
         initDialogBuild();
         initBtnListener();
-        mLastKnownLocation = getLocation();
-        startIntentService();
+        //mLastKnownLocation = getLocation();
+        //startIntentService();
         mapFragment.getMapAsync(this);
 
     }
@@ -135,19 +135,22 @@ public class GoogleMaps extends FragmentActivity implements OnMapReadyCallback, 
         mMap = googleMap;
        //get current location
 
-        if(mLastKnownLocation == null){
-            Log.d(TAG,"Location is null");
-            return;
-        }
-        // get my info
-        double latitude = mLastKnownLocation.getLatitude();
-        double longtitude = mLastKnownLocation.getLongitude();
-        MiniStudent ms = dh.getMiniStudent(String.valueOf(stu_id));
-        ms.setLatitude(latitude);
-        ms.setLongtude(longtitude);
-        dh.insertMiniStudent(ms);
-        myStu = ms;
-        LatLng my_loc = new LatLng(latitude, longtitude);
+//        if(mLastKnownLocation == null){
+//            Log.d(TAG,"Location is null");
+//            return;
+//        }
+//        // get my info
+//        double latitude = mLastKnownLocation.getLatitude();
+//        double longtitude = mLastKnownLocation.getLongitude();
+        myStu = dh.getMiniStudent(String.valueOf(stu_id));
+
+//        ms.setLatitude(latitude);
+//        ms.setLongtude(longtitude);
+        //dh.insertMiniStudent(ms);
+        MiniStudent ms = myStu;
+        double latitude = ms.getLatitude();
+        double longtitude = ms.getLongtude();
+        LatLng my_loc = new LatLng(ms.getLatitude(), ms.getLongtude());
         Marker my_loc_marker = mMap.addMarker(new MarkerOptions().position(my_loc).title("My location"));
         my_loc_marker.setSnippet("name :" + ms.getFirstname());
         my_loc_marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
@@ -300,6 +303,7 @@ public class GoogleMaps extends FragmentActivity implements OnMapReadyCallback, 
                 }
                 List<MiniStudent> ms_list =  new ArrayList<>();
                 ms_list = dh.getFriend();
+                Log.i(TAG,"ms_list " + ms_list.size());
                 for(int i = 0 ; i < ms_list.size(); i++){
                     MiniStudent ms = ms_list.get(i);
                     int ms_stu_id = ms.getStudentid();
@@ -309,6 +313,7 @@ public class GoogleMaps extends FragmentActivity implements OnMapReadyCallback, 
                     String name = ms.getFirstname();
                     double longtitude = ms.getLongtude();
                     double latitude = ms.getLatitude();
+                    Log.i(TAG + " friend location","long : " + longtitude + "lat : " + latitude);
                     LatLng friend_loc = new LatLng(latitude, longtitude);
                     double dis_between = CalculationByDistance(my_loc, friend_loc);
                     if(dis_between > distance && !all){

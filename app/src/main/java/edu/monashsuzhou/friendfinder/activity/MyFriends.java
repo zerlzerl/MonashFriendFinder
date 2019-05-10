@@ -47,6 +47,7 @@ import edu.monashsuzhou.friendfinder.util.StringUtils;
 import edu.monashsuzhou.friendfinder.util.StudentsAdapter;
 
 public class MyFriends extends AppCompatActivity {
+    private static String TAG = MyFriends.class.getName();
     private static RecyclerView recyclerView;
     private static RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
@@ -127,6 +128,7 @@ public class MyFriends extends AppCompatActivity {
 
     public static void insertMiniStu(){
         DatabaseHelper dh = new DatabaseHelper();
+        Log.d(TAG , "  " + currentShownStudnt.size());
         for(int i = 0 ; i < currentShownStudnt.size(); i ++){
             JSONObject obj = currentShownStudnt.getJSONObject(i);
             MiniStudent ms = new MiniStudent();
@@ -136,6 +138,7 @@ public class MyFriends extends AppCompatActivity {
             ms.setStudentid(obj.getInteger("studentId"));
             dh.insertMiniStudent(ms);
             SearchLocationTask st = new SearchLocationTask();
+            Log.d(TAG , " friend id in main : " + obj.getString("studentId"));
             st.execute(new String[]{obj.getString("studentId")});
         }
     }
@@ -285,6 +288,7 @@ public class MyFriends extends AppCompatActivity {
         @Override
         public String[] doInBackground(String... params){
             int student_id = Integer.parseInt(params[0]);
+            Log.d( TAG, "MyFriends id in asy : " + student_id);
             String uri = "findByStuId" + "/" + String.valueOf(student_id);
             String info = "";
             try {
@@ -292,7 +296,7 @@ public class MyFriends extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            Log.i("firends", info);
+            Log.i(TAG, "firends" + info);
             String [] str_list = new String[2];
             str_list[0] = info;
             str_list[1] = String.valueOf(student_id);
@@ -312,6 +316,7 @@ public class MyFriends extends AppCompatActivity {
                     ms.setLongtude(obj.getDouble("longitude"));
                     ms.setLocname(obj.getString("locName"));
                     ms.updateAll("studentid = ?",stu_id);
+                    Log.d(TAG, "MyFriends update sql local"  + obj.getDouble("latitude"));
                 }
             } catch (JSONException e){
                 e.printStackTrace();
