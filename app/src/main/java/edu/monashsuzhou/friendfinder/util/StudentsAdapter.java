@@ -327,7 +327,7 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.MyView
             if (state){
                 //执行成功
                 AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-                builder.setMessage("Delete Success!");
+                builder.setMessage("Add Success!");
 
                 builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override

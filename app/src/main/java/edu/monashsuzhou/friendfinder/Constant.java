@@ -12,4 +12,14 @@ public interface Constant {
     Integer N_DAYS = 1;
 
     String MOVIE_HOST = "http://www.omdbapi.com/?apikey=a98c3027&t=";
+
+    int SUCCESS_RESULT = 0;
+    int FAILURE_RESULT = 1;
+    String PACKAGE_NAME =
+            "com.zhp.googlemaptutorial.MapsActivity";
+    String RECEIVER = PACKAGE_NAME + ".RECEIVER";
+    String RESULT_DATA_KEY = PACKAGE_NAME +
+            ".RESULT_DATA_KEY";
+    String LOCATION_DATA_EXTRA = PACKAGE_NAME +
+            ".LOCATION_DATA_EXTRA";
 }
