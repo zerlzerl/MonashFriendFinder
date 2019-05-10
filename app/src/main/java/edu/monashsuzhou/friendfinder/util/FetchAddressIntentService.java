@@ -59,8 +59,8 @@ public class FetchAddressIntentService extends IntentService {
         }
 
         String errorMessage = "";
-
-        Geocoder geocoder = new Geocoder(this, Locale.forLanguageTag("en-US"));
+        int maxResult = 5;
+        Geocoder geocoder = new Geocoder(this, Locale.ENGLISH);
         Bundle parameters = intent.getExtras();
 
         receiver = parameters.getParcelable(Constant.RECEIVER);
@@ -70,7 +70,7 @@ public class FetchAddressIntentService extends IntentService {
         List<Address> addresses = null;
 
         try{
-            addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(),1);
+            addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(),maxResult);
         } catch (IOException ioException){
             errorMessage = getString(R.string.service_not_available);
             Log.e(TAG, errorMessage, ioException);
@@ -89,28 +89,37 @@ public class FetchAddressIntentService extends IntentService {
             }
             deliverResultToReceiver(Constant.FAILURE_RESULT, errorMessage);
         } else {
-            Address address = addresses.get(0);
-            ArrayList<String> addressFragments = new ArrayList<String>();
+            for(int cnt = 0; cnt < maxResult; cnt++){
+                Address address = addresses.get(cnt);
+                ArrayList<String> addressFragments = new ArrayList<String>();
 
-            for(int i = 0; i <= address.getMaxAddressLineIndex(); i ++){
-                addressFragments.add(address.getAddressLine(i));
+                for(int i = 0; i <= address.getMaxAddressLineIndex(); i ++){
+                    addressFragments.add(address.getAddressLine(i));
+                }
+                Log.i(TAG, getString(R.string.address_found));
+                String msg = TextUtils.join(System.getProperty("line.separator"),addressFragments);
+                Log.i(TAG,msg);
+                JSONObject address_json = new JSONObject();
+                String[] msg_list = msg.split(",");
+                if(msg_list.length < 5){
+                    continue;
+                }
+                String county = msg_list[1].trim().split(" ")[0];
+                address_json.put("county", county);
+                String city = msg_list[2].trim().split(" ")[0];
+                address_json.put("city",city);
+                String province = msg_list[3].trim().split(" ")[0];
+                address_json.put("province",province);
+                String country = msg_list[4].trim().split(" ")[0];
+                address_json.put("country",country);
+
+                address_json.put("latitude",location.getLatitude());
+
+                address_json.put("longitude",location.getLongitude());
+                address_json.toJSONString();
+                deliverResultToReceiver(Constant.SUCCESS_RESULT,address_json.toJSONString());
             }
-            Log.i(TAG, getString(R.string.address_found));
-            String msg = TextUtils.join(System.getProperty("line.separator"),addressFragments);
-            JSONObject address_json = new JSONObject();
-            String[] msg_list = msg.split(",");
-            String county = msg_list[1].trim().split(" ")[0];
-            address_json.put("county", county);
-            String city = msg_list[2].trim().split(" ")[0];
-            address_json.put("city",city);
-            String province = msg_list[3].trim().split(" ")[0];
-            address_json.put("province",province);
-            String country = msg_list[4].trim().split(" ")[0];
-            address_json.put("country",country);
-            address_json.put("latitude",location.getLatitude());
-            address_json.put("longitude",location.getLongitude());
-            address_json.toJSONString();
-            deliverResultToReceiver(Constant.SUCCESS_RESULT,address_json.toJSONString());
+
         }
     }
 
