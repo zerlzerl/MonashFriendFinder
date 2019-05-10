@@ -85,6 +85,9 @@
         <service
             android:name=".util.FetchAddressIntentService"
             android:exported="false"/>
+        <service
+            android:name=".util.FethLatLongIntentservice"
+            android:exported="false"/>
     </application>
 
 </manifest>

@@ -241,7 +241,7 @@ public class Searching extends AppCompatActivity {
                     Intent intent = new Intent(getActivity().getApplicationContext() , GoogleMaps.class);
                     intent.putExtra("map_type","match");
                     Searching.insertMiniStu();
-                    startActivity(intent);
+
 
                 }
             });

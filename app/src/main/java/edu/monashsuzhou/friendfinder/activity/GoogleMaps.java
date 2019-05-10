@@ -394,12 +394,10 @@ public class GoogleMaps extends FragmentActivity implements OnMapReadyCallback, 
                     setLocDate(currentTime).setLocTime(currentTime);
             GoogleMapLocationAsy gma = new GoogleMapLocationAsy();
             gma.execute(new Object[]{sl});
-
         }
     }
 
     private class GoogleMapLocationAsy extends AsyncTask<Object, Integer, Boolean>{
-
 
         @Override
         protected Boolean doInBackground(Object... objs) {

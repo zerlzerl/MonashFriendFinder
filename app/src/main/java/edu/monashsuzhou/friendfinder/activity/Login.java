@@ -10,6 +10,8 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.ResultReceiver;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -36,15 +38,21 @@ import com.alibaba.fastjson.JSONObject;
 import org.litepal.LitePal;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
+import edu.monashsuzhou.friendfinder.Constant;
 import edu.monashsuzhou.friendfinder.R;
 
 import edu.monashsuzhou.friendfinder.MainActivity;
+import edu.monashsuzhou.friendfinder.entity.StudentLocation;
 import edu.monashsuzhou.friendfinder.litepalbean.DatabaseHelper;
 import edu.monashsuzhou.friendfinder.litepalbean.MiniStudent;
 import edu.monashsuzhou.friendfinder.litepalbean.StudentProfile;
 import edu.monashsuzhou.friendfinder.litepalbean.StudentProfile;
+import edu.monashsuzhou.friendfinder.util.FethLatLongIntentservice;
 import edu.monashsuzhou.friendfinder.util.HttpUtil;
 import edu.monashsuzhou.friendfinder.util.LoadingDialog;
 import edu.monashsuzhou.friendfinder.util.MD5Util;
@@ -66,7 +74,9 @@ public class Login extends AppCompatActivity
     private LoadingDialog mLoadingDialog; //显示正在加载的对话框
 
     private Toolbar toolbar;
+    protected ResultReceiver mResultReceiver;
     private static int id = 4;
+    private String suburb;
 
     //测试数据：email为2@2，密码为1，经加密为c4ca4238a0b923820dcc509a6f75849b
 
@@ -287,8 +297,8 @@ public class Login extends AppCompatActivity
                 SharedPreferences userSettings = getSharedPreferences("login", 0);
                 SharedPreferences.Editor editor = userSettings.edit();
                 editor.putInt("loginId",id);
+                editor.putString("suburb",prof.getString("suburb"));
                 editor.commit();
-
                 Log.i("put studentid", String.valueOf(id));
                 MiniStudent ms = new MiniStudent();
                 ms.setStudentid(id);
@@ -323,7 +333,6 @@ public class Login extends AppCompatActivity
         //登录一般都是请求服务器来判断密码是否正确，要请求网络，要子线程
         showLoading();//显示加载框
         Thread loginRunnable = new Thread() {
-
             @Override
             public void run() {
                 super.run();
@@ -342,7 +351,8 @@ public class Login extends AppCompatActivity
                 if (MD5Util.GetMD5Code(getPassword().toLowerCase()).equals(getServerPassword().toLowerCase())) {
                     showToast("Login successfully!");
                     loadCheckBoxState(checkBox_rem, checkBox_skip);//记录下当前用户记住密码和自动登录的状态;
-
+                    //insert location profile
+                    //startIntentService(suburb);
                     startActivity(new Intent(Login.this, MainActivity.class));
                     finish();//关闭页面
                 } else {
@@ -357,7 +367,6 @@ public class Login extends AppCompatActivity
 
 
     }
-
 
     /**
      * 保存用户账号
@@ -539,6 +548,14 @@ public class Login extends AppCompatActivity
         id = _id;
     }
 
+    protected void startIntentService(String city) {
+        Intent intent = new Intent(this, FethLatLongIntentservice.class);
+        mResultReceiver = new AddressResultReceiver(new Handler());
+        intent.putExtra(Constant.RECEIVER, mResultReceiver);
+        intent.putExtra(Constant.LOCATION_NAME_EXTRA, city);
+        startService(intent);
+    }
+
     private static class LoginTask extends AsyncTask<String, Void, String[]> {
         @Override
         public String[] doInBackground(String... params){
@@ -577,5 +594,82 @@ public class Login extends AppCompatActivity
             }
         }
     }
+
+    private class AddressResultReceiver extends ResultReceiver {
+        public AddressResultReceiver(Handler handler){
+            super(handler);
+        }
+
+        @Override
+        protected void onReceiveResult(int resultCode, Bundle resultData){
+            if(resultData == null){
+                Log.i(TAG,"result data is null");
+                return;
+            }
+            String addressOutput = resultData.getString(Constant.RESULT_DATA_KEY);
+            if(addressOutput == null){
+                addressOutput = "";
+            }
+            JSONObject address_json = JSON.parseObject(addressOutput);
+            Log.i(TAG,address_json.toJSONString());
+            StudentLocation sl = new StudentLocation();
+            String currentTime = new SimpleDateFormat("yyyy-MM-dd/HH:mm:ss").format(new Date()) + "+08:00";
+            currentTime = currentTime.replace("/","T");
+            BigDecimal longitude_bd = new BigDecimal(address_json.getFloat("longitude"));
+            longitude_bd.setScale(6, BigDecimal.ROUND_HALF_DOWN);
+            BigDecimal latitude_bd = new BigDecimal(address_json.getFloat("latitude"));
+            longitude_bd.setScale(6, BigDecimal.ROUND_HALF_DOWN);
+            sl.setLongitude(longitude_bd).
+                    setLatitude(latitude_bd).
+                    setLocName(address_json.getString("city")).
+                    setLocDate(currentTime).setLocTime(currentTime);
+            LoginLocationAsy gma = new LoginLocationAsy();
+            gma.execute(new Object[]{sl});
+
+        }
+    }
+
+    private class LoginLocationAsy extends AsyncTask<Object, Integer, Boolean>{
+
+        @Override
+        protected Boolean doInBackground(Object... objs) {
+            Log.i("New Location Subscription:", JSON.toJSONString(objs[0]));
+            String json_obj = JSON.toJSONString(objs[0]);
+
+            String myInfo = null;
+            boolean state = false;
+            try {
+                myInfo = HttpUtil.get("Profile","" + id);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if (myInfo != null){
+                //没有出现网络错误
+                JSONObject student_location_obj = JSON.parseObject(JSON.toJSONString(objs[0]));
+                student_location_obj.put("studentId",JSON.parse(myInfo));
+
+                Log.i(TAG,student_location_obj.toJSONString());
+                try {
+                    HttpUtil.post("Location", "", student_location_obj);
+                    state = true;
+                } catch (IOException e) {
+                    state = false;
+                    e.printStackTrace();
+                }
+            }
+            return state;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean isSuccess) {
+            if(isSuccess){
+                Log.i(TAG,"insert location success");
+            } else {
+                Log.d(TAG,"insert failed");
+            }
+        }
+    }
+
 
 }

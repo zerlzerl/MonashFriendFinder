@@ -12,6 +12,7 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.ResultReceiver;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -26,6 +27,8 @@ import android.widget.Toast;
 
 import edu.monashsuzhou.friendfinder.R;
 import edu.monashsuzhou.friendfinder.activity.Login;
+import edu.monashsuzhou.friendfinder.entity.StudentLocation;
+import edu.monashsuzhou.friendfinder.util.FethLatLongIntentservice;
 import edu.monashsuzhou.friendfinder.util.HttpUtil;
 
 import com.alibaba.fastjson.JSON;
@@ -36,12 +39,15 @@ import com.mxn.soul.flowingdrawer_core.FlowingDrawer;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static String TAG = MainActivity.class.getName();
+    protected ResultReceiver mResultReceiver;
     private FlowingDrawer mDrawer;
     private String  temp;
     private String city = "Suzhou"; //默认的城市
@@ -59,7 +65,8 @@ public class MainActivity extends AppCompatActivity {
     private ImageView iv_weather;
 
     private Handler mHandler;
-
+    private int stu_id;
+    private String suburb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +81,14 @@ public class MainActivity extends AppCompatActivity {
         initTextViews();
 
         //显示地点和温度
+
         SharedPreferences setting = getSharedPreferences("quickresume", 0);
+        SharedPreferences userSettings= getSharedPreferences("login", 0);
+        suburb = userSettings.getString("suburb","null");
+        stu_id = userSettings.getInt("loginId",-1);
+        Log.i(TAG,"suburb " + suburb);
+        startIntentService(suburb);
+
         Boolean user_first = setting.getBoolean("FIRST",true);
         if(user_first){ //第一次onCreate
             WeatherDisplayTask weatherDisplayTask = new WeatherDisplayTask();
@@ -264,6 +278,90 @@ public class MainActivity extends AppCompatActivity {
             tv_city.setText(city);
             tv_uName.setText("Welcome, " + uName + "!");
 
+        }
+    }
+
+    protected void startIntentService(String city) {
+        Intent intent = new Intent(this, FethLatLongIntentservice.class);
+        mResultReceiver = new AddressResultReceiver(new Handler());
+        intent.putExtra(Constant.RECEIVER, mResultReceiver);
+        intent.putExtra(Constant.LOCATION_NAME_EXTRA, city);
+        startService(intent);
+    }
+
+    private class AddressResultReceiver extends ResultReceiver {
+        public AddressResultReceiver(Handler handler){
+            super(handler);
+        }
+
+        @Override
+        protected void onReceiveResult(int resultCode, Bundle resultData){
+            if(resultData == null){
+                Log.i(TAG,"result data is null");
+                return;
+            }
+            String addressOutput = resultData.getString(Constant.RESULT_DATA_KEY);
+            if(addressOutput == null){
+                addressOutput = "";
+            }
+            JSONObject address_json = JSON.parseObject(addressOutput);
+            Log.i(TAG,address_json.toJSONString());
+            StudentLocation sl = new StudentLocation();
+            String currentTime = new SimpleDateFormat("yyyy-MM-dd/HH:mm:ss").format(new Date()) + "+08:00";
+            currentTime = currentTime.replace("/","T");
+            BigDecimal longitude_bd = new BigDecimal(address_json.getFloat("longitude"));
+            longitude_bd.setScale(6, BigDecimal.ROUND_HALF_DOWN);
+            BigDecimal latitude_bd = new BigDecimal(address_json.getFloat("latitude"));
+            longitude_bd.setScale(6, BigDecimal.ROUND_HALF_DOWN);
+            sl.setLongitude(longitude_bd).
+                    setLatitude(latitude_bd).
+                    setLocName(address_json.getString("city")).
+                    setLocDate(currentTime).setLocTime(currentTime);
+            MainLocationAsy gma = new MainLocationAsy();
+            gma.execute(new Object[]{sl});
+
+        }
+    }
+
+    private class MainLocationAsy extends AsyncTask<Object, Integer, Boolean>{
+
+        @Override
+        protected Boolean doInBackground(Object... objs) {
+            Log.i("New Location Subscription:", JSON.toJSONString(objs[0]));
+            String json_obj = JSON.toJSONString(objs[0]);
+
+            String myInfo = null;
+            boolean state = false;
+            try {
+                myInfo = HttpUtil.get("Profile","" + stu_id);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if (myInfo != null){
+                //没有出现网络错误
+                JSONObject student_location_obj = JSON.parseObject(JSON.toJSONString(objs[0]));
+                student_location_obj.put("studentId",JSON.parse(myInfo));
+
+                Log.i(TAG,student_location_obj.toJSONString());
+                try {
+                    HttpUtil.post("Location", "", student_location_obj);
+                    state = true;
+                } catch (IOException e) {
+                    state = false;
+                    e.printStackTrace();
+                }
+            }
+            return state;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean isSuccess) {
+            if(isSuccess){
+                Log.i(TAG,"insert location success");
+            } else {
+                Log.d(TAG,"insert failed");
+            }
         }
     }
 

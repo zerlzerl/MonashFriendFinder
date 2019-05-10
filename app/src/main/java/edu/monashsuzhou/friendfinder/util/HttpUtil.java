@@ -52,7 +52,7 @@ public class HttpUtil {
      */
     public static String get(String url) throws IOException {
         Request request = new Request.Builder()
-                .url(url).header("Connection", "close")
+                .url(url)
                 .build();
 
         Response response = client.newCall(request).execute();

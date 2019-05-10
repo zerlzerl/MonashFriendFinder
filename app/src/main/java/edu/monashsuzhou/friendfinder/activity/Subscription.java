@@ -319,6 +319,7 @@ public class Subscription extends AppCompatActivity {
             Log.i("New User Subscription:", JSON.toJSONString(objs[0]));
             try {
                 HttpUtil.post("Profile", "", objs[0]); // 无返回值
+
                 return true;
             } catch (IOException e) {
                 e.printStackTrace();
