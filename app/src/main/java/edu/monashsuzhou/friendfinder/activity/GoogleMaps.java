@@ -144,20 +144,20 @@ public class GoogleMaps extends FragmentActivity implements OnMapReadyCallback, 
 //        // get my info
 //        double latitude = mLastKnownLocation.getLatitude();
 //        double longtitude = mLastKnownLocation.getLongitude();
-        myStu = dh.getMiniStudent(String.valueOf(stu_id));
+//        myStu = dh.getMiniStudent(String.valueOf(stu_id));
 
 //        ms.setLatitude(latitude);
 //        ms.setLongtude(longtitude);
         //dh.insertMiniStudent(ms);
-        MiniStudent ms = myStu;
-        double latitude = ms.getLatitude();
-        double longtitude = ms.getLongtude();
-        LatLng my_loc = new LatLng(ms.getLatitude(), ms.getLongtude());
-        Marker my_loc_marker = mMap.addMarker(new MarkerOptions().position(my_loc).title("My location"));
-        my_loc_marker.setSnippet("name :" + ms.getFirstname());
-        my_loc_marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-        my_loc_marker.setTag(stu_id);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(my_loc));
+//        MiniStudent ms = myStu;
+//        double latitude = ms.getLatitude();
+//        double longtitude = ms.getLongtude();
+//        LatLng my_loc = new LatLng(ms.getLatitude(), ms.getLongtude());
+//        Marker my_loc_marker = mMap.addMarker(new MarkerOptions().position(my_loc).title("My location"));
+//        my_loc_marker.setSnippet("name :" + ms.getFirstname());
+//        my_loc_marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+//        my_loc_marker.setTag(stu_id);
+//        mMap.moveCamera(CameraUpdateFactory.newLatLng(my_loc));
 
 //        List<MiniStudent> ms_list =  new ArrayList<>();
 //        if (map_type.equals("friend")){
@@ -455,9 +455,24 @@ public class GoogleMaps extends FragmentActivity implements OnMapReadyCallback, 
     }
 
     public static class SetMarkersTask extends AsyncTask<Object, Integer, Object>{
-
+        JSONObject myLocationJson = null;
         @Override
         protected Object doInBackground(Object... objects) {
+
+            String myLocationJsonStr = null;
+            try {
+                myLocationJsonStr = HttpUtil.get("Location","findByStuId/" + Login.getCurrentId());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if (myLocationJsonStr != null) {
+                JSONArray myLoctionArray = JSON.parseArray(myLocationJsonStr);
+                if (myLoctionArray.size() > 0) {
+                    myLocationJson = myLoctionArray.getJSONObject(0);
+                }
+            }
+
             JSONArray studentsJson = null;
             if (fromActivity == 1){
                 studentsJson = MyFriends.currentShownStudnt;
@@ -500,6 +515,27 @@ public class GoogleMaps extends FragmentActivity implements OnMapReadyCallback, 
         @Override
         protected void onPostExecute(Object o) {
             super.onPostExecute(o);
+            // my location
+            //            MiniStudent ms = myStu;
+//        double latitude = ms.getLatitude();
+//        double longtitude = ms.getLongtude();
+//        LatLng my_loc = new LatLng(ms.getLatitude(), ms.getLongtude());
+//        Marker my_loc_marker = mMap.addMarker(new MarkerOptions().position(my_loc).title("My location"));
+//        my_loc_marker.setSnippet("name :" + ms.getFirstname());
+//        my_loc_marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+//        my_loc_marker.setTag(stu_id);
+//        mMap.moveCamera(CameraUpdateFactory.newLatLng(my_loc));
+            if (myLocationJson != null) {
+                Double latitude = myLocationJson.getDouble("latitude");
+                Double longitude = myLocationJson.getDouble("longitude");
+                LatLng my_loc = new LatLng(latitude, longitude);
+                Marker my_loc_marker = mMap.addMarker(new MarkerOptions().position(my_loc).title("My location"));
+                my_loc_marker.setSnippet("name :" + myLocationJson.getJSONObject("studentId").getString("firstName"));
+                my_loc_marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                my_loc_marker.setTag(myLocationJson.getJSONObject("studentId").getInteger("studentId"));
+            }
+
+
             JSONArray latestLocations = (JSONArray) o;
             for (Object ll : latestLocations){
                 JSONObject latestLocation = (JSONObject) ll;

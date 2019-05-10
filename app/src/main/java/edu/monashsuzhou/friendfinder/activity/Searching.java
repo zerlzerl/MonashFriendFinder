@@ -80,7 +80,7 @@ public class Searching extends AppCompatActivity {
     protected static JSONArray currentShownStudnt = new JSONArray();
 
     private static Set<Integer> friendsList;
-
+    private static FloatingActionButton fab;
     public static void addFriendId(Integer i){
         friendsList.add(i);
     }
@@ -738,6 +738,28 @@ public class Searching extends AppCompatActivity {
                     // specify an adapter (see also next example)
                     mAdapter = new StudentsAdapter(students);
                     recyclerView.setAdapter(mAdapter);
+                    recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                        @Override
+                        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                            super.onScrollStateChanged(recyclerView, newState);
+                        }
+
+                        @Override
+                        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                            if (dy >0) {
+                                // Scroll Down
+                                if (fab.isShown()) {
+                                    fab.hide();
+                                }
+                            }
+                            else if (dy <0) {
+                                // Scroll Up
+                                if (!fab.isShown()) {
+                                    fab.show();
+                                }
+                            }
+                        }
+                    });
                 }
             }
 
