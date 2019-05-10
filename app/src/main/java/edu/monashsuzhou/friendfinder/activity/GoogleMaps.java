@@ -73,17 +73,18 @@ public class GoogleMaps extends FragmentActivity implements OnMapReadyCallback, 
     private String map_type;
     private int stu_id;
     private MiniStudent myStu;
-    private AlertDialog.Builder builder;
+//    private AlertDialog.Builder builder;
     private LocationManager lm;
     private Location mLastKnownLocation;
     private AddressResultReceiver mResultReceiver;
     private Marker mMarker;
-
+    private static Context context;
     protected static int fromActivity;//Myfriends - 1, Searching result - 2
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_google_maps);
+        context = GoogleMaps.this;
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -114,7 +115,7 @@ public class GoogleMaps extends FragmentActivity implements OnMapReadyCallback, 
             map_type = "friend";
         }
 
-        initDialogBuild();
+//        initDialogBuild();
         initBtnListener();
         //mLastKnownLocation = getLocation();
         //startIntentService();
@@ -268,16 +269,16 @@ public class GoogleMaps extends FragmentActivity implements OnMapReadyCallback, 
 
         return Radius * c;
     }
-
-    public void initDialogBuild(){
-        builder = new AlertDialog.Builder(this);
-        builder.setNegativeButton("cancel", new DialogInterface.OnClickListener(){
-            @Override
-            public void onClick(DialogInterface dialog, int which){
-
-            }
-        });
-    }
+//
+//    public void initDialogBuild(){
+//        builder = new AlertDialog.Builder(this);
+//        builder.setNegativeButton("cancel", new DialogInterface.OnClickListener(){
+//            @Override
+//            public void onClick(DialogInterface dialog, int which){
+//
+//            }
+//        });
+//    }
 
     public void initBtnListener(){
         this.btn.setOnClickListener(new Button.OnClickListener(){
@@ -332,7 +333,7 @@ public class GoogleMaps extends FragmentActivity implements OnMapReadyCallback, 
         });
     }
 
-    private class HttpConnector extends AsyncTask<String, Void, String> {
+    private static class HttpConnector extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... params) {
@@ -358,6 +359,13 @@ public class GoogleMaps extends FragmentActivity implements OnMapReadyCallback, 
             try {
                 JSONObject obj = JSONObject.parseObject(info);
                 java.util.Map<String,Object> map = (java.util.Map<String,Object>)obj;
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setNegativeButton("cancel", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int which){
+
+                    }
+                });
                 builder.setTitle("Student info");
                 String detail = "";
                 for(String key : map.keySet()){
@@ -484,7 +492,7 @@ public class GoogleMaps extends FragmentActivity implements OnMapReadyCallback, 
 
                 }
             }
-//            mMap.setOnMarkerClickListener(GoogleMaps.this);
+//            mMap.setOnMarkerClickListener(this);
 
             return latestLocations;
         }
@@ -503,6 +511,15 @@ public class GoogleMaps extends FragmentActivity implements OnMapReadyCallback, 
                 friend_loc_marker.setSnippet("name : " + latestLocation.getJSONObject("studentId").getString("firstName"));
                 friend_loc_marker.setTag(latestLocation.getJSONObject("studentId").getInteger("studentId"));
             }
+            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(Marker marker) {
+                    Integer student_id = (Integer) marker.getTag();
+                    HttpConnector hc = new HttpConnector();
+                    hc.execute(new String[] {String.valueOf(student_id)});
+                    return false;
+                }
+            });
         }
     }
 
