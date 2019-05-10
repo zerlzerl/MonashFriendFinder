@@ -77,7 +77,7 @@ public class Searching extends AppCompatActivity {
 
     private static StudentProfile searchCriteria = null;
 
-    private static JSONArray currentShownStudnt = new JSONArray();
+    protected static JSONArray currentShownStudnt = new JSONArray();
 
     private static Set<Integer> friendsList;
 
@@ -242,6 +242,7 @@ public class Searching extends AppCompatActivity {
                     Intent intent = new Intent(getActivity().getApplicationContext() , GoogleMaps.class);
                     intent.putExtra("map_type","match");
                     Searching.insertMiniStu();
+                    GoogleMaps.fromActivity = 2;
                     startActivity(intent);
                 }
             });

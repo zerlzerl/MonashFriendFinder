@@ -64,7 +64,7 @@ import edu.monashsuzhou.friendfinder.util.SharedPreferencesUtils;
 
 public class GoogleMaps extends FragmentActivity implements OnMapReadyCallback,  GoogleMap.OnMarkerClickListener {
     private static String TAG = GoogleMaps.class.getName();
-    private GoogleMap mMap;
+    private static GoogleMap mMap;
     private  DatabaseHelper dh;
     private Spinner spinner;
     private TextView tv;
@@ -79,6 +79,7 @@ public class GoogleMaps extends FragmentActivity implements OnMapReadyCallback, 
     private AddressResultReceiver mResultReceiver;
     private Marker mMarker;
 
+    protected static int fromActivity;//Myfriends - 1, Searching result - 2
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -157,29 +158,33 @@ public class GoogleMaps extends FragmentActivity implements OnMapReadyCallback, 
         my_loc_marker.setTag(stu_id);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(my_loc));
 
-        List<MiniStudent> ms_list =  new ArrayList<>();
-        if (map_type.equals("friend")){
-            ms_list = dh.getFriend();
-        }
-        if( map_type.equals("match")){
-            ms_list = dh.getMatchingStudent();
-        }
-        for(int i = 0 ; i < ms_list.size(); i++){
-            ms = ms_list.get(i);
-            int ms_stu_id = ms.getStudentid();
-            if(ms_stu_id == stu_id){
-                continue;
-            }
-            String name = ms.getFirstname();
-            latitude = ms.getLatitude();
-            longtitude = ms.getLongtude();
-            LatLng friend_loc = new LatLng(latitude, longtitude);
-            Marker friend_loc_marker =  mMap.addMarker(new MarkerOptions().position(friend_loc).title("Student : " + name));
-            friend_loc_marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED ));
-            friend_loc_marker.setSnippet("name : " + name);
-            friend_loc_marker.setTag(ms_stu_id);
-        }
-        mMap.setOnMarkerClickListener(this);
+//        List<MiniStudent> ms_list =  new ArrayList<>();
+//        if (map_type.equals("friend")){
+//            ms_list = dh.getFriend();
+//        }
+//        if( map_type.equals("match")){
+//            ms_list = dh.getMatchingStudent();
+//        }
+//        for(int i = 0 ; i < ms_list.size(); i++){
+//            ms = ms_list.get(i);
+//            int ms_stu_id = ms.getStudentid();
+//            if(ms_stu_id == stu_id){
+//                continue;
+//            }
+//            String name = ms.getFirstname();
+//            latitude = ms.getLatitude();
+//            longtitude = ms.getLongtude();
+//            LatLng friend_loc = new LatLng(latitude, longtitude);
+//            Marker friend_loc_marker =  mMap.addMarker(new MarkerOptions().position(friend_loc).title("Student : " + name));
+//            friend_loc_marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED ));
+//            friend_loc_marker.setSnippet("name : " + name);
+//            friend_loc_marker.setTag(ms_stu_id);
+//        }
+
+        // Mark Points
+        SetMarkersTask setMarkersTask = new SetMarkersTask();
+        setMarkersTask.execute();
+//        mMap.setOnMarkerClickListener(this);
     }
 
     /** Called when the user clicks a marker. */
@@ -441,6 +446,64 @@ public class GoogleMaps extends FragmentActivity implements OnMapReadyCallback, 
         }
     }
 
+    public static class SetMarkersTask extends AsyncTask<Object, Integer, Object>{
 
+        @Override
+        protected Object doInBackground(Object... objects) {
+            JSONArray studentsJson = null;
+            if (fromActivity == 1){
+                studentsJson = MyFriends.currentShownStudnt;
+            } else if (fromActivity == 2){
+                studentsJson = Searching.currentShownStudnt;
+            } else {
+                studentsJson = null;
+            }
+            JSONArray latestLocations = new JSONArray();
+            if (studentsJson != null){
+                //有内容
+                for (Object s : studentsJson){
+                    JSONObject student = (JSONObject) s;
+                    String name = student.getString("firstName");
+                    Integer id = student.getInteger("studentId");
+
+                    String locationInfo = null;
+                    try {
+                        locationInfo = HttpUtil.get("Location","findByStuId/" + id);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    Log.i(SetMarkersTask.class.getName(), locationInfo);
+                    if (locationInfo != null){
+                        //无网络错误
+                        JSONArray locationArray = JSON.parseArray(locationInfo);
+                        if (locationArray.size() > 0){
+                            JSONObject latestLocation = locationArray.getJSONObject(0);
+                            latestLocations.add(latestLocation);
+                        }
+                    }
+
+                }
+            }
+//            mMap.setOnMarkerClickListener(GoogleMaps.this);
+
+            return latestLocations;
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            super.onPostExecute(o);
+            JSONArray latestLocations = (JSONArray) o;
+            for (Object ll : latestLocations){
+                JSONObject latestLocation = (JSONObject) ll;
+                Double latitude = latestLocation.getDouble("latitude");
+                Double longitude = latestLocation.getDouble("longitude");
+                LatLng friend_loc = new LatLng(latitude, longitude);
+                Marker friend_loc_marker =  mMap.addMarker(new MarkerOptions().position(friend_loc).title("Student : " + latestLocation.getJSONObject("studentId").getString("firstName")));
+                friend_loc_marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED ));
+                friend_loc_marker.setSnippet("name : " + latestLocation.getJSONObject("studentId").getString("firstName"));
+                friend_loc_marker.setTag(latestLocation.getJSONObject("studentId").getInteger("studentId"));
+            }
+        }
+    }
 
 }

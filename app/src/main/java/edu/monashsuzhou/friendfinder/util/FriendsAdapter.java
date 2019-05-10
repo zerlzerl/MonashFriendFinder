@@ -320,13 +320,13 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.MyViewHo
                     @Override
                     public void onDismiss(DialogInterface dialogInterface) {
                         //修改数据库
-                        DatabaseHelper dh = new DatabaseHelper();
-                        MiniStudent ms = new MiniStudent();
-                        ms.setFriendMarker(0);
-                        ms.setMatchingMarker(1);
-                        ms.setFirstname(studentName);
-                        ms.setStudentid(studentId);
-                        dh.insertMiniStudent(ms);
+//                        DatabaseHelper dh = new DatabaseHelper();
+//                        MiniStudent ms = new MiniStudent();
+//                        ms.setFriendMarker(0);
+//                        ms.setMatchingMarker(1);
+//                        ms.setFirstname(studentName);
+//                        ms.setStudentid(studentId);
+//                        dh.insertMiniStudent(ms);
                         //重绘页面
                         Activity currentActivity = getActivity(view);
                         currentActivity.finish();

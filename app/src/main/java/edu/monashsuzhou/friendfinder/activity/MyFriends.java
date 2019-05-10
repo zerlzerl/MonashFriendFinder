@@ -54,7 +54,7 @@ public class MyFriends extends AppCompatActivity {
     private FloatingActionButton fab_map;
     private static List<Friends> students;
 
-    private static JSONArray currentShownStudnt;
+    protected static JSONArray currentShownStudnt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +121,7 @@ public class MyFriends extends AppCompatActivity {
             Intent intent = new Intent(getApplicationContext() , GoogleMaps.class);
             intent.putExtra("map_type","friend");
             MyFriends.insertMiniStu();
+            GoogleMaps.fromActivity = 1;
             startActivity(intent);
         });
 

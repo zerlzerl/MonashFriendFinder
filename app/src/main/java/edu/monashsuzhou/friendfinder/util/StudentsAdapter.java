@@ -337,13 +337,13 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.MyView
                     @Override
                     public void onDismiss(DialogInterface dialogInterface) {
                         //修改数据库
-                        DatabaseHelper dh = new DatabaseHelper();
-                        MiniStudent ms = new MiniStudent();
-                        ms.setFriendMarker(1);
-                        ms.setMatchingMarker(0);
-                        ms.setFirstname(friendName);
-                        ms.setStudentid(friendId);
-                        dh.insertMiniStudent(ms);
+//                        DatabaseHelper dh = new DatabaseHelper();
+//                        MiniStudent ms = new MiniStudent();
+//                        ms.setFriendMarker(1);
+//                        ms.setMatchingMarker(0);
+//                        ms.setFirstname(friendName);
+//                        ms.setStudentid(friendId);
+//                        dh.insertMiniStudent(ms);
                         //重绘页面
                         Searching.addFriendId(friendId);
                         Searching.SearchAndRenderTask searchAndRenderTask = new Searching.SearchAndRenderTask();

@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         suburb = userSettings.getString("suburb","null");
         stu_id = userSettings.getInt("loginId",-1);
         Log.i(TAG,"suburb " + suburb);
-        startIntentService(suburb);
+
 
         Boolean user_first = setting.getBoolean("FIRST",true);
         if(user_first){ //第一次onCreate
@@ -277,6 +277,7 @@ public class MainActivity extends AppCompatActivity {
             iv_weather.setImageResource(weatherR);
             tv_city.setText(city);
             tv_uName.setText("Welcome, " + uName + "!");
+            startIntentService(city);
 
         }
     }
@@ -333,7 +334,7 @@ public class MainActivity extends AppCompatActivity {
             String myInfo = null;
             boolean state = false;
             try {
-                myInfo = HttpUtil.get("Profile","" + stu_id);
+                myInfo = HttpUtil.get("Profile","" + Login.getCurrentId());
             } catch (IOException e) {
                 e.printStackTrace();
             }
